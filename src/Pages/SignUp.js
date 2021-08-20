@@ -3,7 +3,7 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 
 function SignUp() {
-    let [ color, setColor ] = useState("deeppink");
+    let [ color, setColor ] = useState("blue");
     let [ code, setCode ] = useState('');
     let [ disabledCode, setDisabledCode ] = useState(true);
     let [ diabledSendBtn, setDisabledSendBtn ] = useState(true);
