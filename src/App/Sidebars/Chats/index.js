@@ -54,6 +54,33 @@ function Index() {
         </li>
     };
 
+    const getUserList = async function () {
+        try {
+            const response = await fetch(`http://localhost:8888/api/userlist`, {
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'applcation/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`${response.status} ${response.statusText}`);
+            }
+
+            const json = await response.json();
+            if (json.result !== 'success') {
+                throw json.message;
+            }
+
+            console.log(json.data);
+            //json.data.length > 0 && setMessages([...messages, ...json.data]);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    getUserList();
+    
     return (
         <div className="sidebar active">
             <header>

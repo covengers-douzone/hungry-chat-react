@@ -13,8 +13,8 @@ const reducers = combineReducers({
     profileSidebar: profileSidebarReducer,
     mobileProfileSidebar: mobileProfileSidebarReducer,
     selectedChat: selectedChatReducer
-
 });
+
 const store = createStore(reducers, composeWithDevTools());
 
 export default store
