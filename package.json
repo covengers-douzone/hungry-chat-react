@@ -25,6 +25,9 @@
     "tar": "^6.1.8",
     "webpack": "^4.42.0"
   },
+  "optionalDependencies": {
+  "fsevents": "*"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
