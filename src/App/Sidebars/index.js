@@ -36,7 +36,7 @@ function Index({chatList,roomList,userNo}) {
                 date: '03:41 PM',
                 unread_messages: 1,
                 messages: chats.map(chat => {
-                    if(chat.Participant.no === userNo){
+                    if(chat.Participant.no !== userNo){
                         return ({
                             text: chat.contents,
                             date: chat.createdAt
