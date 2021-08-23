@@ -7,6 +7,7 @@ import DisconnectedModal from "./Modals/DisconnectedModal";
 
 function Layout() {
 
+
     useEffect(() => {
         document.querySelector('*').addEventListener('click', (e) => {
             if (document.body.classList.contains('navigation-open') && e.target.nodeName === 'BODY') {
