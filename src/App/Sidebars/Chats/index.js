@@ -6,21 +6,13 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
-<<<<<<< HEAD
 //import {chatLists} from "./Data";
-import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
-import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
-
-function Index({chatList}) {
-=======
-import {chatLists} from "./Data";
 import myFetch from "../../modual/fetchApi"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
 
-function Index() {
->>>>>>> daeheon
+function Index({chatList}) {
 
     useEffect(() => {
         inputRef.current.focus();
@@ -66,10 +58,6 @@ function Index() {
         </li>
     };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> daeheon
     return (
         <div className="sidebar active">
             <header>
@@ -104,14 +92,7 @@ function Index() {
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
                         {
-<<<<<<< HEAD
                             chatList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
-=======
-                            chatLists.map((chat, i) => <ChatListView chat={chat} key={i}/>)
-
-
-
->>>>>>> daeheon
                         }
                     </ul>
                 </PerfectScrollbar>

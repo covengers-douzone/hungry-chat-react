@@ -51,19 +51,18 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        send: async function (user,room,message) {
+        send: async function (roomNo,contents) {
             try {
                 const response = await fetch(`http://localhost:${PORT}/api/message/`, {
-                    method: 'get',
+                    method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
+                        'Accept': 'application/json'
                     },
-                    body: {
-                        user,
-                        room,
-                        message,
-                    }
+                    body: JSON.stringify({
+                         roomNo,
+                        contents
+                    }),
                 });
 
                 if (!response.ok) {
