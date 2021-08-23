@@ -7,11 +7,14 @@ import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
 import {chatLists} from "./Data";
-//import {chatLists2} from "./Data2";
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
-function Index() {
+function Index(props) {
+
+    useEffect(()=> {
+        console.log('chat',props);
+    },[]);
 
     useEffect(() => {
         inputRef.current.focus();
@@ -24,8 +27,6 @@ function Index() {
     const {selectedChat} = useSelector(state => state);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
-
-    const [chatList, setChatList] = useState({});
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
@@ -56,59 +57,6 @@ function Index() {
             </div>
         </li>
     };
-
-    // 비동기 통신
-    const getlist = {
-        getRoomList : async function () {
-            try {
-                const response = await fetch(`http://localhost:8888/api/roomlist?userNo=${1}`, {
-                    method: 'get',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
-                    }
-                });
-    
-                if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
-                }
-    
-                const json = await response.json();
-                if (json.result !== 'success') {
-                    throw json.message;
-                }
-    
-                json.data.length > 0 && setChatList([...chatList, ...json.data]);
-            } catch (err) {
-                console.error(err);
-            }
-        },
-        getChatList : async function (roomNo) {
-            try {
-                const response = await fetch(`http://localhost:8888/api/chatlist?roomNo=${roomNo}`, {
-                    method: 'get',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
-                    }
-                });
-    
-                if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
-                }
-    
-                const json = await response.json();
-                if (json.result !== 'success') {
-                    throw json.message;
-                }
-                
-                //json.data.length > 0 && setChatList([...chatList, ...json.data]);
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
-    
 
     return (
         <div className="sidebar active">

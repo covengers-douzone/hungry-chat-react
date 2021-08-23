@@ -13,7 +13,6 @@ function Layout() {
                 document.body.classList.remove('navigation-open')
             }
         });
-
     }, []);
 
     return (
