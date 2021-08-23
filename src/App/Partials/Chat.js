@@ -3,7 +3,7 @@ import ChatHeader from "./ChatHeader"
 import ChatFooter from "./ChatFooter"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {useSelector} from "react-redux"
-import myFetch from "../modual/fetchApi";
+import myFetch from "../Module/fetchApi";
 
 function Chat() {
 
