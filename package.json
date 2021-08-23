@@ -26,7 +26,7 @@
     "webpack": "^4.42.0"
   },
   "optionalDependencies": {
-  "fsevents": "*"
+    "fsevents": "*"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -48,9 +48,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "optionalDependencies": {
-    "fsevents": "*"
   },
   "devDependencies": {
     "redux-devtools-extension": "^2.13.9"

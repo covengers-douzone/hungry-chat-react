@@ -6,7 +6,9 @@ import Chat from "./Partials/Chat"
 import DisconnectedModal from "./Modals/DisconnectedModal";
 import fetchApi from "./Module/fetchApi";
 
+
 function Layout() {
+
 
     useEffect(() => {
         document.querySelector('*').addEventListener('click', (e) => {

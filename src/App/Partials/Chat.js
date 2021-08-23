@@ -3,6 +3,7 @@ import ChatHeader from "./ChatHeader"
 import ChatFooter from "./ChatFooter"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {useSelector} from "react-redux"
+import myFetch from "../modual/fetchApi";
 
 function Chat() {
 
@@ -14,6 +15,8 @@ function Chat() {
 
     const handleSubmit = (newValue) => {
         console.log(newValue)
+        console.log(newValue.text)
+        myFetch(null,null).send(1,newValue.text);
         selectedChat.messages.push(newValue);
         setInputMsg("");
     };
