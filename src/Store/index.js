@@ -1,4 +1,5 @@
 import {createStore, combineReducers} from "redux"
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import sidebarReducer from "./Reducers/sidebarReducer"
 import mobileSidebarReducer from "./Reducers/mobileSidebarReducer"
@@ -14,6 +15,6 @@ const reducers = combineReducers({
     selectedChat: selectedChatReducer
 });
 
-const store = createStore(reducers);
+const store = createStore(reducers, composeWithDevTools());
 
 export default store

@@ -13,6 +13,7 @@ function Chat() {
     const [scrollEl, setScrollEl] = useState();
 
     const handleSubmit = (newValue) => {
+        console.log(newValue)
         selectedChat.messages.push(newValue);
         setInputMsg("");
     };
@@ -35,15 +36,16 @@ function Chat() {
         if (message.type === 'divider') {
             return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
         } else {
-            return <div className={"message-item " + message.type}>
-                <div className={"message-content " + (message.file ? 'message-file' : null)}>
-                    {message.file ? message.file : message.text}
-                </div>
-                <div className="message-action">
-                    {message.date}
-                    {message.type ? <i className="ti-double-check text-info"></i> : null}
-                </div>
-            </div>
+            return (
+                <div className={"message-item " + message.type}>
+                    <div className={"message-content " + (message.file ? 'message-file' : null)}>
+                        {message.file ? message.file : message.text}
+                    </div>
+                    <div className="message-action">
+                        {message.date}
+                        {message.type ? <i className="ti-double-check text-info"></i> : null}
+                    </div>
+                </div>);
         }
     };
 
