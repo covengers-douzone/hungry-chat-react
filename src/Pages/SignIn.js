@@ -4,27 +4,34 @@ import {useHistory} from "react-router-dom";
 
 
 function SignIn() {
-
     let history = useHistory();
 
+
     function loginHandler(e){
+        console.log(e.target.email.value);
+        console.log(e.target.password.value);
         e.preventDefault();
         if(e.target.email !== null && e.target.password !== null){
-            fetch("http://localhost:8888/api/login", {
+            fetch("http://localhost:8888/api/user/login", {
                 method: "POST",
                 headers: {
-                    "Access-Control-Allow-Headers" : "Content-Type, Authentication",
-                    "Access-Control-Allow-Origin": "http://localhost:8888",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                    'Accept': 'application/json, text/plain',
-                    'Content-Type': 'application/json;charset=UTF-8'
+                    // "Access-Control-Allow-Headers":"Content-Type",
+                    "Access-Control-Allow-Headers":"Authorizationc",
+                    "Access-Control-Allow-Origin":"http://localhost:8888",
+                    "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                    "Accept":"application/json, text/plain",
+                    "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
                     username: e.target.email.value,
                     password: e.target.password.value,
                 })
             }). then(response => {
+                history.push("/");
                 console.log(response);
+
+            }).catch(error => {
+                console.log(error);
             })
         } else {
             alert("아이디/패스워드를 입력하세요.");
@@ -32,6 +39,8 @@ function SignIn() {
         }
     }
     useEffect(() => document.body.classList.add('form-membership'), []);
+
+
 
     return (
         <div className="form-wrapper">
