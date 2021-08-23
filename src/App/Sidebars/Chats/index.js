@@ -12,11 +12,8 @@ import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
 function Index(props) {
 
-    useEffect(()=> {
-        console.log('chat',props);
-    },[]);
-
     useEffect(() => {
+        console.log('chat_effect',props);
         inputRef.current.focus();
     });
 

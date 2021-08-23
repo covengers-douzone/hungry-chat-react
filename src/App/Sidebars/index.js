@@ -10,30 +10,8 @@ function Index() {
 
     const [chatList, setChatList] = useState([]);
 
-    useEffect(async () => {
-        try {
-            const response = await fetch(`http://localhost:9999/api/roomlist?userNo=${1}`, {
-                method: 'get',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'applcation/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`${response.status} ${response.statusText}`);
-            }
-
-            const json = await response.json();
-            if (json.result !== 'success') {
-                throw json.message;
-            }
-
-            json.data.length > 0 && setChatList([...chatList, ...json.data]);
-            console.log('layout in',json.data);
-        } catch (err) {
-            console.error(err);
-        }
+    useEffect(()=>{
+        getlist.getRoomList();
     },[]);
 
      // chat list
@@ -58,7 +36,6 @@ function Index() {
                 }
     
                 json.data.length > 0 && setChatList([...chatList, ...json.data]);
-                console.log('layout in',json.data);
                 console.log('layout in',json.data);
             } catch (err) {
                 console.error(err);
