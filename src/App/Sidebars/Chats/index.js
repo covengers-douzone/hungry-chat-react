@@ -7,9 +7,10 @@ import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
 import {chatLists} from "./Data";
-import myFetch from "../../modual/apifetch"
+import myFetch from "../../modual/fetchApi"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
+
 
 function Index() {
 
@@ -29,10 +30,12 @@ function Index() {
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
+
     const mobileSidebarClose = () => {
         dispatch(mobileSidebarAction(false));
         document.body.classList.remove('navigation-open');
     };
+
 
     const chatSelectHandle = (chat) => {
         chat.unread_messages = 0;
@@ -56,7 +59,6 @@ function Index() {
             </div>
         </li>
     };
-
 
 
     return (
@@ -93,8 +95,10 @@ function Index() {
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
                         {
-                            // chatLists.map((chat, i) => <ChatListView chat={chat} key={i}/>)
-                            myFetch.getChatList().map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                            chatLists.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+
+
+
                         }
                     </ul>
                 </PerfectScrollbar>
