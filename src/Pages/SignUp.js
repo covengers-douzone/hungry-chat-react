@@ -37,14 +37,15 @@ function SignUp() {
         if(userPhoneNumber === "" || userPhoneNumber === null){
             alert("번호를 입력해주세요.");
         }
-        fetch("http://localhost:8888/api/sendSms", {
+        fetch("http://localhost:8888/api/user/sms", {
             method: "POST",
+            credentials: 'include',
             headers: {
                 "Access-Control-Allow-Headers" : "Content-Type",
                 "Access-Control-Allow-Origin": "http://localhost:8888",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                 'Accept': 'application/json, text/plain',
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json;charset=UTF-8',
             },
             body: JSON.stringify({
                 recipients : userPhoneNumber,
@@ -66,9 +67,15 @@ function SignUp() {
     function handleSubmit(e) {
         e.preventDefault();
 
+<<<<<<< HEAD
         //if(e.target.text.value === e.target.code.value){
             fetch("http://localhost:8888/api/join", {
+=======
+        if(e.target.text.value === e.target.code.value){
+            fetch("http://localhost:8888/api/user/join", {
+>>>>>>> 960708d19df25d6ad6af52e2ec7ccb98ad610155
                 method: "POST",
+                credentials: 'include',
                 headers: {
                     "Access-Control-Allow-Headers" : "Content-Type",
                     "Access-Control-Allow-Origin": "http://localhost:8888",

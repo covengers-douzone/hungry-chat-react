@@ -12,6 +12,7 @@ const SignIn= ({loading,error, ...props}) => {
         password: ''
     });
 
+<<<<<<< HEAD
     const handleSubmit=(evt)=>{
         evt.preventDefault();
         props.authenticate();
@@ -43,6 +44,42 @@ const SignIn= ({loading,error, ...props}) => {
                     props.loginFailure('Something Wrong!Please Try Again');
                 }
         })
+=======
+function SignIn() {
+    let history = useHistory();
+
+
+    function loginHandler(e){
+        console.log(e.target.email.value);
+        console.log(e.target.password.value);
+        e.preventDefault();
+        if(e.target.email !== null && e.target.password !== null){
+            fetch("http://localhost:8888/api/user/login", {
+                method: "POST",
+                headers: {
+                    // "Access-Control-Allow-Headers":"Content-Type",
+                    "Access-Control-Allow-Headers":"Authorizationc",
+                    "Access-Control-Allow-Origin":"http://localhost:8888",
+                    "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                    "Accept":"application/json, text/plain",
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    username: e.target.email.value,
+                    password: e.target.password.value,
+                })
+            }). then(response => {
+                history.push("/");
+                console.log(response);
+
+            }).catch(error => {
+                console.log(error);
+            })
+        } else {
+            alert("아이디/패스워드를 입력하세요.");
+            history.push("/sign-in")
+        }
+>>>>>>> 960708d19df25d6ad6af52e2ec7ccb98ad610155
     }
 
     const handleChange = (e) => {
@@ -54,6 +91,8 @@ const SignIn= ({loading,error, ...props}) => {
     };
     console.log("Loading ",loading);
     useEffect(() => document.body.classList.add('form-membership'), []);
+
+
 
     return (
         <div className="form-wrapper">
