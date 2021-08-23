@@ -1,36 +1,58 @@
-import React, {useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
+import { connect } from "react-redux";
+import {userLogin} from '../api/authenticationService';
+import { authenticate, authFailure, authSuccess } from '../redux/authActions';
 
-
-function SignIn() {
-
+const SignIn= ({loading,error, ...props}) => {
     let history = useHistory();
+    const [values, setValues] = useState({
+        username: '',
+        password: ''
+    });
 
-    function loginHandler(e){
-        e.preventDefault();
-        if(e.target.email !== null && e.target.password !== null){
-            fetch("http://localhost:8888/api/login", {
-                method: "POST",
-                headers: {
-                    "Access-Control-Allow-Headers" : "Content-Type, Authentication",
-                    "Access-Control-Allow-Origin": "http://localhost:8888",
-                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                    'Accept': 'application/json, text/plain',
-                    'Content-Type': 'application/json;charset=UTF-8'
-                },
-                body: JSON.stringify({
-                    username: e.target.email.value,
-                    password: e.target.password.value,
-                })
-            }). then(response => {
-                console.log(response);
-            })
-        } else {
-            alert("아이디/패스워드를 입력하세요.");
-            history.push("/sign-in")
-        }
+    const handleSubmit=(evt)=>{
+        evt.preventDefault();
+        props.authenticate();
+
+        userLogin(values).then((response)=>{
+            console.log("res: " , response);
+
+            if(response.status === 200){
+                props.setUser(response.date);
+                props.history.push('/chat');
+            }else{
+                props.logingFailure("Something Wrong!Please Try Again");
+            }
+        }).catch((err)=>{
+            if(err && err.response){
+            
+                switch(err.response.status){
+                    case 401:
+                        console.log("401 status");
+                        props.loginFailure("Authentication Failed.Bad Credentials");
+                        break;
+                    default:
+                        props.loginFailure('Something Wrong!Please Try Again'); 
+    
+                }
+    
+                }
+                else{
+                    props.loginFailure('Something Wrong!Please Try Again');
+                }
+        })
     }
+
+    const handleChange = (e) => {
+        e.persist();
+        setValues(values => ({
+            ...values,
+            [e.target.name]: e.target.value
+        }));
+    };
+    console.log("Loading ",loading);
     useEffect(() => document.body.classList.add('form-membership'), []);
 
     return (
@@ -38,10 +60,10 @@ function SignIn() {
             <div className="logo">
                 <Logo/>
             </div>
-            <h5>Sign in</h5>
-            <form onSubmit={ loginHandler }>
+            <h5>로그인</h5>
+            <form onSubmit={handleSubmit} noValidate={false}>
                 <div className="form-group input-group-lg">
-                    <input type="text" name="email" className="form-control" placeholder="Username or email"/>
+                    <input type="text" name="username" className="form-control" placeholder="email"/>
                 </div>
                 <div className="form-group input-group-lg">
                     <input type="password" name="password" className="form-control" placeholder="Password"/>
@@ -56,6 +78,7 @@ function SignIn() {
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Sign in</button>
                 <hr/>
                 <p className="text-muted">Login with your social media account.</p>
+                
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <a href="/" className="btn btn-floating btn-facebook">
@@ -68,25 +91,11 @@ function SignIn() {
                         </a>
                     </li>
                     <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-dribbble">
-                            <i className="fa fa-dribbble"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-linkedin">
-                            <i className="fa fa-linkedin"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
                         <a href="/" className="btn btn-floating btn-google">
                             <i className="fa fa-google"></i>
                         </a>
                     </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-behance">
-                            <i className="fa fa-behance"></i>
-                        </a>
-                    </li>
+
                     <li className="list-inline-item">
                         <a href="/" className="btn btn-floating btn-instagram">
                             <i className="fa fa-instagram"></i>
@@ -101,4 +110,20 @@ function SignIn() {
     )
 }
 
-export default SignIn
+const mapStateToProps=({auth})=>{
+    console.log("state ",auth)
+    return {
+        loading:auth,
+        error:auth
+}}
+
+const mapDispatchToProps=(dispatch)=>{
+
+    return {
+        authenticate :()=> dispatch(authenticate()),
+        setUser:(data)=> dispatch(authSuccess(data)),
+        loginFailure:(message)=>dispatch(authFailure(message))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn)

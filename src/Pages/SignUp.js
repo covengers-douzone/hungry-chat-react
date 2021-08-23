@@ -3,7 +3,7 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 
 function SignUp() {
-    let [ color, setColor ] = useState("blue");
+    let [ color, setColor ] = useState("deeppink");
     let [ code, setCode ] = useState('');
     let [ disabledCode, setDisabledCode ] = useState(true);
     let [ diabledSendBtn, setDisabledSendBtn ] = useState(true);
@@ -17,11 +17,12 @@ function SignUp() {
         }else {
             setDisabledSendBtn(true);
         }
+
         userPhoneNumber = e.target.value;
     }
 
     // sms 인증
-    function smsApiHandler(e){
+   /* function smsApiHandler(e){
         e.preventDefault();
         setColor("blue");
         let authCode = Math.floor(Math.random()*100) + 1000;
@@ -51,21 +52,21 @@ function SignUp() {
             })
         })
             .then(response =>  {
-                if(response.ok) {
+                if(response.status === 200) {
                     alert("인증 코드 발송 완료");
                     setDisabledCode(false);
                 }else {
                     alert("인증 코드 발송 실패, 번호를 확인 해주세요.");
                 }
             })
-    }
+    }*/
     // sms 인증 끝
 
     //  회원가입 submit
     function handleSubmit(e) {
         e.preventDefault();
 
-        if(e.target.text.value === e.target.code.value){
+        //if(e.target.text.value === e.target.code.value){
             fetch("http://localhost:8888/api/join", {
                 method: "POST",
                 headers: {
@@ -79,7 +80,7 @@ function SignUp() {
                     username: e.target.email.value,
                     password: e.target.password.value,
                     name: e.target.name.value,
-                    phoneNumber: e.target.number.value,
+                    //phoneNumber: e.target.number.value,
                 })
             })
                 .then(response =>  {
@@ -91,25 +92,10 @@ function SignUp() {
                         history.push("/sign-up");
                     }
                 })
-                // .then(response => {
-                //     if(response.status === 200){
-                //         location.pathname("/sign-in");
-                //     }
-                // })
-                // .then(response => response.json())
-                // .then(response => {
-                //     if (response.token) {
-                //         localStorage.setItem("wtw-token", response.token);
-                //         this.props.history.push("/main_gh");
-                //     } else if (!response.token) {
-                //         alert("올바른 회원이 아닙니다");
-                //         this.props.history.push("/signup_gh");
-                //     }
-                // });
-        }else{
-            alert("인증 실패");
-            history.push("/sign-up")
-        }
+        //}else{
+        //    alert("인증 실패");
+        //    history.push("/sign-up")
+        
     }
     useEffect(() => document.body.classList.add('form-membership'), []);
 
@@ -129,14 +115,14 @@ function SignUp() {
                 <div className="form-group">
                     <input name="password" type="password" className="form-control form-control-lg" placeholder="Password" required/>
                 </div>
-                <div className="form-group">
+                {/*<div className="form-group">
                     <input onChange={ getNumHandler } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
                     <button onClick={ smsApiHandler } disabled={ diabledSendBtn} style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">Send Code</button>
                 </div>
                 <div className="form-group">
                     <input disabled={ disabledCode } id="userNum" name="code" type="number" className="form-control form-control-lg" placeholder="Input your code" required/>
                 </div>
-                <input id="text" name="text" type="hidden" value={ code }  required/>
+    <input id="text" name="text" type="hidden" value={ code }  required/>*/}
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Register</button>
                 <hr/>
                 <p className="text-muted">Already have an account?</p>
