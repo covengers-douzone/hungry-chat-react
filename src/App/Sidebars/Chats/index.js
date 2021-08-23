@@ -6,14 +6,13 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
-import {chatLists} from "./Data";
+//import {chatLists} from "./Data";
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
-function Index(props) {
+function Index({chatList}) {
 
     useEffect(() => {
-        console.log('chat_effect',props);
         inputRef.current.focus();
     });
 
@@ -89,7 +88,7 @@ function Index(props) {
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
                         {
-                            chatLists.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                            chatList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                         }
                     </ul>
                 </PerfectScrollbar>
