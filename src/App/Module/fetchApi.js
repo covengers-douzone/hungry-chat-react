@@ -2,10 +2,11 @@
 
 export default function (defaultState , setState) {
     const PORT = 9999;
+    const domain = `http://localhost`;
     return {
         getRoomList: async function () {
             try {
-                const response = await fetch(`http://localhost:${PORT}/api/roomlist?userNo=${1}`, {
+                const response = await fetch(`${domain}:${PORT}/api/roomlist?userNo=${1}`, {
                     method: 'get',
                     headers: {
                         'Content-Type': 'application/json',
@@ -30,7 +31,7 @@ export default function (defaultState , setState) {
         },
         getChatList: async function (roomNo) {
             try {
-                const response = await fetch(`http://localhost:${PORT}/api/chatlist/${roomNo}`, {
+                const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}`, {
                     method: 'get',
                     headers: {
                         'Content-Type': 'application/json',
@@ -53,14 +54,14 @@ export default function (defaultState , setState) {
         },
         send: async function (roomNo,contents) {
             try {
-                const response = await fetch(`http://localhost:${PORT}/api/message/`, {
+                const response = await fetch(`${domain}:${PORT}/api/message/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                         roomNo,
+                        roomNo,
                         contents
                     }),
                 });
@@ -78,6 +79,32 @@ export default function (defaultState , setState) {
             } catch (err) {
                 console.error(err);
             }
-        }
+        },
+        create: async function (title) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/create/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+
     }
 }

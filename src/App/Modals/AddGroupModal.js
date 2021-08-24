@@ -15,17 +15,32 @@ import {
 
 import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
 import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
+import fetchApi from "../Module/fetchApi";
+
+
 
 
 function AddGroupModal() {
+
     const [modal, setModal] = useState(false);
 
-    const modalToggle = () => setModal(!modal);
+    const [title , setTitle] = useState("");
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
+    // Create Button Event
+    const modalToggle = () => {
+        fetchApi(null,null).create(title);
+        setModal(!modal);
+
+    }
+
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
 
+    // 방 제목 변경
+    const titleEvent = (e) => {
+        setTitle(e.target.value);
+    }
     const AvatarTooltip = (props) => {
 
         const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -59,13 +74,13 @@ function AddGroupModal() {
                 <ModalBody>
                     <Form>
                         <FormGroup>
-                            <Label for="group_name">Group name</Label>
+                            <Label for="title">방 제목</Label>
                             <InputGroup>
-                                <Input type="text" name="group_name" id="group_name"/>
+                                <Input type="text" name="title" id="title" onChange = {titleEvent}/>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
-                            <p>The group members</p>
+                            <p>방 인원 목록</p>
                             <div className="avatar-group">
                                 <figure className="avatar" id="Tooltip-Avatar1">
                                     <span className="avatar-title bg-success rounded-circle">T</span>
@@ -101,13 +116,13 @@ function AddGroupModal() {
                             </div>
                         </FormGroup>
                         <FormGroup>
-                            <Label for="description">Description</Label>
+                            <Label for="description">방 설명</Label>
                             <Input type="textarea" name="description" id="description"/>
                         </FormGroup>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={modalToggle}>Create Group</Button>
+                    <Button color="primary" onClick={modalToggle}>방 만들기</Button>
                 </ModalFooter>
             </Modal>
         </div>

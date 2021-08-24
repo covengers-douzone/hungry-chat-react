@@ -6,8 +6,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
-//import {chatLists} from "./Data";
-import myFetch from "../../Module/fetchApi"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
@@ -16,7 +14,10 @@ function Index({chatList}) {
 
     useEffect(() => {
         inputRef.current.focus();
+
+
     });
+
 
     const dispatch = useDispatch();
 
