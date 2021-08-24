@@ -12,13 +12,11 @@ import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
 
-function Index({roomList}) {
+function Index({roomList, userNo}) {
 
     useEffect(() => {
-        console.log('chats',roomList);
         inputRef.current.focus();
     });
-
 
     const dispatch = useDispatch();
 
@@ -40,17 +38,38 @@ function Index({roomList}) {
 
 
     const chatSelectHandle = (chat) => {
-        chat.unread_messages = 0;
-        dispatch(selectedChatAction(chat));
-        dispatch(mobileSidebarAction(false));
+
+        fetchApi(chatList,setChatList).getChatList(chat.id)
+            .then(chatlist => {
+                let room;
+                if(chatlist.length){
+                    room = roomList.filter(room => room.id == chatlist[0].no);
+                }
+                if(room && room.length ){
+                    room[0].messages = chatlist.map(chat => {
+                        if(chat.Participant.no !== Number(userNo)){
+                            return ({
+                                text: chat.contents,
+                                date: chat.createdAt
+                            })
+                        } else {
+                            return ({
+                                text: chat.contents,
+                                date: chat.createdAt,
+                                type: 'outgoing-message'
+                            })    
+                        }
+                    });
+                    console.log(room[0]);
+                }
+                chat.unread_messages = 0;
+                dispatch(selectedChatAction(chat));
+                dispatch(mobileSidebarAction(false));
+            });
     };
 
     const ChatListView = (props) => {
         const {chat} = props;
-        
-        fetchApi(chatList,setChatList).getChatList(chat.id);
-
-        console.log(chatList);
 
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>

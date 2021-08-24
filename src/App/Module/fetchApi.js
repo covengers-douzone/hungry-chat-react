@@ -4,9 +4,9 @@ export default function (defaultState , setState) {
     const PORT = 9999;
     const domain = `http://localhost`;
     return {
-        getRoomList: async function () {
+        getRoomList: async function (userNo) {
             try {
-                const response = await fetch(`${domain}:${PORT}/api/roomlist?userNo=${1}`, {
+                const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
                     method: 'get',
                     headers: {
                         'Content-Type': 'application/json',
@@ -48,6 +48,7 @@ export default function (defaultState , setState) {
                     throw json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
+                return json.data
             } catch (err) {
                 console.error(err);
             }
