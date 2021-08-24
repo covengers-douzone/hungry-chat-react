@@ -7,14 +7,15 @@ import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
 //import {chatLists} from "./Data";
-import myFetch from "../../Module/fetchApi"
+import fetchApi from "../../Module/fetchApi";
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
 
-function Index({chatList}) {
+function Index({roomList}) {
 
     useEffect(() => {
+        console.log('chats',roomList);
         inputRef.current.focus();
     });
 
@@ -25,6 +26,8 @@ function Index({chatList}) {
     const {selectedChat} = useSelector(state => state);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
+
+    const [chatList, setChatList] = useState([]);
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
@@ -43,6 +46,10 @@ function Index({chatList}) {
 
     const ChatListView = (props) => {
         const {chat} = props;
+        
+        fetchApi(chatList,setChatList).getChatList(chat.id);
+
+        console.log(chatList);
 
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>
@@ -92,7 +99,7 @@ function Index({chatList}) {
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
                         {
-                            chatList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                            roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                         }
                     </ul>
                 </PerfectScrollbar>
