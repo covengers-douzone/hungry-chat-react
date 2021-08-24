@@ -15,7 +15,6 @@ import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 function Index({roomList}) {
 
     useEffect(() => {
-        console.log('chats',roomList);
         inputRef.current.focus();
     });
 
@@ -40,18 +39,15 @@ function Index({roomList}) {
 
 
     const chatSelectHandle = (chat) => {
+        console.log("chatSelectHandle" + chat.id)
         chat.unread_messages = 0;
+        fetchApi(chatList, setChatList).getChatList(chat.id);
         dispatch(selectedChatAction(chat));
         dispatch(mobileSidebarAction(false));
     };
 
     const ChatListView = (props) => {
         const {chat} = props;
-        
-        fetchApi(chatList,setChatList).getChatList(chat.id);
-
-        console.log(chatList);
-
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>
             {chat.avatar}
@@ -98,8 +94,7 @@ function Index({roomList}) {
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">
-                        {
+                    <ul className="list-group list-group-flush">{
                             roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                         }
                     </ul>
