@@ -21,25 +21,6 @@ function Layout() {
         });
     }, []);
 
-    // get room list & chat list
-    // useEffect(()=>{
-    //     fetchApi(roomList,setRoomList).getRoomList(userNo)
-    //         .then( roomlist => {
-    //             //const roomNoList = roomlist.map((room) => {return room.no});
-    //             roomlist.map((room) => {
-    //                 fetchApi(chatList,setChatList).getChatList(room.no);
-    //             });
-    //         });
-    // },[]);
-
-    // useEffect(()=>{
-    //     const getBoardList =  async () =>  {
-    //         const roomNoList = fetchApi(roomList,setRoomList).getRoomList(userNo)
-    //         const roomNos = await roomlist.filter((room) => {return room.no});
-    //         await fetchApi(chatList,setChatList).getChatList(room.no);
-    //     }
-    // },[]);
-
     return (
         <div className="layout">
             <Navigation/>
