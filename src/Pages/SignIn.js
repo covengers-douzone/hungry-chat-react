@@ -5,21 +5,20 @@ import {useHistory} from "react-router-dom";
 
 function SignIn() {
     let history = useHistory();
-
-
     function loginHandler(e){
-        console.log(e.target.email.value);
+
+        console.log(e.target.email.value==='');
         console.log(e.target.password.value);
+
         e.preventDefault();
-        if(e.target.email !== null && e.target.password !== null){
+        if(e.target.email.value !== '' && e.target.password.value !== ''){
             fetch("http://localhost:8888/api/user/login", {
                 method: "POST",
                 headers: {
-                    // "Access-Control-Allow-Headers":"Content-Type",
-                    "Access-Control-Allow-Headers":"Authorizationc",
+                    "Access-Control-Allow-Headers":"Authorization",
                     "Access-Control-Allow-Origin":"http://localhost:8888",
                     "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
-                    "Accept":"application/json, text/plain",
+                    "Accept":"application/json",
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
@@ -27,15 +26,29 @@ function SignIn() {
                     password: e.target.password.value,
                 })
             }). then(response => {
-                history.push("/");
-                console.log(response);
-
+                console.log(response.status);
+                console.log(response)
+                if(response.status === 401){
+                    alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
+                    history.push("/sign-in");
+                }else if (response.status === 500){
+                    history.push("/sign-in");
+                    console.log("500 Error, 서버를 재시작해주세요.");
+                }else {
+                    if(response.status === 200){
+                        history.push("/");
+                        console.log( response.headers.get("Authorization"));
+                        localStorage.setItem("Authorization", response.headers.get("Authorization"));
+                        console.log("This is token!!"+localStorage.getItem("Authorization"));
+                    }
+                }
             }).catch(error => {
-                console.log(error);
+                alert("Error: "+error.message);
+                history.push("/sign-in");
             })
-        } else {
+        } else{
             alert("아이디/패스워드를 입력하세요.");
-            history.push("/sign-in")
+            history.push("/sign-in");
         }
     }
     useEffect(() => document.body.classList.add('form-membership'), []);
