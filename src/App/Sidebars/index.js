@@ -27,11 +27,9 @@ function Index({userNo}) {
     },[]);
 
     roomList.map((room) => {
-        //const chats = chatList.filter(chat => room.no === chat.roomNo);
-        //if(chats && chats.length > 0){
         userRoomList.push({
             id: room.no,
-            name: room.title, //chats[0].Participant.nickname,
+            name: room.title,
             avatar: <figure className="avatar avatar-state-success">
                 <img src={ManAvatar1} className="rounded-circle" alt="avatar"/>
             </figure>,
@@ -39,7 +37,6 @@ function Index({userNo}) {
             date: '03:41 PM',
             unread_messages: 1
         });
-        //}
     })
 
     return (
@@ -47,7 +44,7 @@ function Index({userNo}) {
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList}/>
+                        return <ChatsIndex roomList={userRoomList} userNo={userNo}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex/>
                     } else if (selectedSidebar === 'Favorites') {

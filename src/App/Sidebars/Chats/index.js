@@ -12,12 +12,11 @@ import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
 
 
-function Index({roomList}) {
+function Index({roomList, userNo}) {
 
     useEffect(() => {
         inputRef.current.focus();
     });
-
 
     const dispatch = useDispatch();
 
@@ -39,15 +38,39 @@ function Index({roomList}) {
 
 
     const chatSelectHandle = (chat) => {
-        console.log("chatSelectHandle" + chat.id)
-        chat.unread_messages = 0;
-        fetchApi(chatList, setChatList).getChatList(chat.id);
-        dispatch(selectedChatAction(chat));
-        dispatch(mobileSidebarAction(false));
+
+        fetchApi(chatList,setChatList).getChatList(chat.id)
+            .then(chatlist => {
+                let room;
+                if(chatlist.length){
+                    room = roomList.filter(room => room.id == chatlist[0].no);
+                }
+                if(room && room.length ){
+                    room[0].messages = chatlist.map(chat => {
+                        if(chat.Participant.no !== Number(userNo)){
+                            return ({
+                                text: chat.contents,
+                                date: chat.createdAt
+                            })
+                        } else {
+                            return ({
+                                text: chat.contents,
+                                date: chat.createdAt,
+                                type: 'outgoing-message'
+                            })
+                        }
+                    });
+                    console.log(room[0]);
+                }
+                chat.unread_messages = 0;
+                dispatch(selectedChatAction(chat));
+                dispatch(mobileSidebarAction(false));
+            });
     };
 
     const ChatListView = (props) => {
         const {chat} = props;
+
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>
             {chat.avatar}
@@ -94,7 +117,8 @@ function Index({roomList}) {
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">{
+                    <ul className="list-group list-group-flush">
+                        {
                             roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                         }
                     </ul>

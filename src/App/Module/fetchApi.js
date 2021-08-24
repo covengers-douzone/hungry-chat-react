@@ -48,6 +48,7 @@ export default function (defaultState , setState) {
                     throw json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
+                return json.data
             } catch (err) {
                 console.error(err);
             }
