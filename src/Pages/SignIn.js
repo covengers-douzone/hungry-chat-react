@@ -9,7 +9,7 @@ function SignIn() {
     function loginHandler(e){
         e.preventDefault();
         if(e.target.email.value !== '' || e.target.password.value !== ''){
-            fetch("http://localhost:8888/api/user/login", {
+            fetch("http://localhost:8888/api/user/login",{
                 method: "POST",
                 headers: {
                     "Access-Control-Allow-Headers":"Authorization",
@@ -78,6 +78,7 @@ function SignIn() {
                         <input type="checkbox" className="custom-control-input" defaultChecked id="customCheck1"/>
                         <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
                     </div>
+                    <a href="/userinfo" className="btn btn-outline-light btn-sm">ID/PW 찾기</a>
                     <a href="/reset-password">Reset password</a>
                 </div>
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Sign in</button>
@@ -122,6 +123,7 @@ function SignIn() {
                 </ul>
                 <hr/>
                 <p className="text-muted">Don't have an account?</p>
+                
                 <a href="/sign-up" className="btn btn-outline-light btn-sm">Register now!</a>
             </form>
         </div>
