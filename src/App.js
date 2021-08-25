@@ -21,8 +21,8 @@ function App() {
                 <Route path="/lock-screen" component={LockScreen}/>
                 <Route path="/reset-password" component={ResetPassword}/>
                 <Route path="/phone-code" component={PhoneCode}/>
-                 {/*<Route path="/" component={Layout}/> */}
-                <Route path="/:userNo" component={Layout}/>
+                 <Route path="/" component={Layout}/>
+                {/*<Route path="/:userNo" component={Layout}/>*/}
             </Switch>
         </Router>
     )

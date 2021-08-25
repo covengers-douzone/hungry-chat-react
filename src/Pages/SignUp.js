@@ -50,10 +50,12 @@ function SignUp() {
                 return response.json();
             })
             .then(response => {
-                if(response.result === "success") {
+                if(response.result === "success") { // 성공
                     alert("인증 코드 발송 완료");
                     setDisabledCode(false);
-                }else {
+                }else if(response.status === 400){ // 이미 등록된 번호
+                    alert(response.message);
+                }else { // 서버 문제
                     alert("인증 코드 발송 실패");
                 }
             })

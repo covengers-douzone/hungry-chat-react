@@ -44,7 +44,8 @@ function SignIn() {
                     localStorage.setItem("username", response.username);
                     console.log(response.username);
                     console.log(response.Authorization);
-                    history.push("/1");
+                    history.push("/");
+                    // return fetch("http://localhost:3000/")
                 })
                 .catch(error => {
                 alert("Error: "+error.message);
