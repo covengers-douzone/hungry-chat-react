@@ -5,13 +5,10 @@ import {useHistory} from "react-router-dom";
 
 function SignIn() {
     let history = useHistory();
+
     function loginHandler(e){
-
-        console.log(e.target.email.value==='');
-        console.log(e.target.password.value);
-
         e.preventDefault();
-        if(e.target.email.value !== '' && e.target.password.value !== ''){
+        if(e.target.email.value !== '' || e.target.password.value !== ''){
             fetch("http://localhost:8888/api/user/login", {
                 method: "POST",
                 headers: {
@@ -27,7 +24,6 @@ function SignIn() {
                 })
             }). then(response => {
                 console.log(response.status);
-                console.log(response)
                 if(response.status === 401){
                     alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
                     history.push("/sign-in");
@@ -35,14 +31,22 @@ function SignIn() {
                     history.push("/sign-in");
                     console.log("500 Error, 서버를 재시작해주세요.");
                 }else {
-                    if(response.status === 200){
-                        history.push("/");
-                        console.log( response.headers.get("Authorization"));
-                        localStorage.setItem("Authorization", response.headers.get("Authorization"));
-                        console.log("This is token!!"+localStorage.getItem("Authorization"));
+                    if(response.ok){
+                        // console.log(response.headers.get("Authorization"));
+                        // localStorage.setItem("Authorization", response.headers.get("Authorization"));
+                        // console.log("This is token!!"+localStorage.getItem("Authorization"));
+                        return response.json();
                     }
                 }
-            }).catch(error => {
+            })
+                .then(response => {
+                    localStorage.setItem("Authorization", response.Authorization);
+                    localStorage.setItem("username", response.username);
+                    console.log(response.username);
+                    console.log(response.Authorization);
+                    history.push("/1");
+                })
+                .catch(error => {
                 alert("Error: "+error.message);
                 history.push("/sign-in");
             })
@@ -63,7 +67,7 @@ function SignIn() {
             <h5>Sign in</h5>
             <form onSubmit={ loginHandler }>
                 <div className="form-group input-group-lg">
-                    <input type="text" name="email" className="form-control" placeholder="Username or email"/>
+                    <input type="text" name="email" className="form-control" placeholder="Email"/>
                 </div>
                 <div className="form-group input-group-lg">
                     <input type="password" name="password" className="form-control" placeholder="Password"/>
