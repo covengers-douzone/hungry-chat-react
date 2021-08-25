@@ -96,7 +96,7 @@ function Navigation() {
                         </a>
                     </li>
                     <li>
-                        <a href="/#/" onClick={() => window.location.href = '/sign-in'}>
+                        <a href="/" onClick={() => window.localStorage.clear()}>
                             <i className="ti ti-power-off"></i>
                         </a>
                     </li>

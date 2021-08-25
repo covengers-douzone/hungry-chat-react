@@ -11,17 +11,21 @@ import LockScreen from "./Pages/LockScreen"
 import ResetPassword from "./Pages/ResetPassword"
 import PhoneCode from "./Pages/PhoneCode"
 import Layout from "./App/Layout"
+import UserInfoSearch from "./Pages/UserInfoSearch"
+import UserId from "./Pages/UserId"
 
 function App() {
     return (
         <Router>
             <Switch>
-                <Route path="/sign-in" component={SignIn}/>
+                <Route exact path="/" component={SignIn}/>
                 <Route path="/sign-up" component={SignUp}/>
                 <Route path="/lock-screen" component={LockScreen}/>
                 <Route path="/reset-password" component={ResetPassword}/>
+                <Route path="/userinfo" component={UserInfoSearch}/>
+                <Route path="/userId" component={UserId}/>
                 <Route path="/phone-code" component={PhoneCode}/>
-                <Route path="/" component={Layout}/>
+                <Route path="/chat" component={Layout}/>
             </Switch>
         </Router>
     )

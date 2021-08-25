@@ -1,8 +1,8 @@
 import React, {useEffect} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 
-function ResetPassword() {
-
+function ResetPassword(location) {
+    const getParams = location.username;
     useEffect(() => document.body.classList.add('form-membership'), []);
 
     return (
@@ -12,6 +12,9 @@ function ResetPassword() {
             </div>
             <h5>Reset password</h5>
             <form>
+            <div className="form-group">
+                    <h2 className="form-control form-control-lg">{getParams}</h2>
+                </div>
                 <div className="form-group">
                     <input type="text" className="form-control form-control-lg" placeholder="Username or email" required autoFocus/>
                 </div>
