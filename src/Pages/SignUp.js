@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
-
 function SignUp() {
     let [ color, setColor ] = useState("deeppink");
     let [ code, setCode ] = useState('');
@@ -101,10 +100,12 @@ function SignUp() {
             })
             .catch(error => {
                 alert("Error: " + error.message);
-                history.push("/sign-in");
+                history.push("/");
             })
     }
+
     useEffect(() => document.body.classList.add('form-membership'), []);
+
 
     return (
         <div className="form-wrapper">
@@ -123,17 +124,17 @@ function SignUp() {
                     <input name="password" type="password" className="form-control form-control-lg" placeholder="Password" required/>
                 </div>
                 <div className="form-group">
-                    <input onChange={ getNumHandler } value={userPhoneNumber} id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
-                    <button onClick={ smsApiHandler }  disabled={ disabledSendBtn} style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">Send Code</button>
+                    <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
+                    <button onClick={ smsApiHandler } disabled={ disabledSendBtn } style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">Send Code</button>
                 </div>
                 <div className="form-group">
-                    <input disabled={ disabledCode } id="userNum" name="code" type="number" className="form-control form-control-lg" placeholder="Input your code" required/>
+                    <input disabled={ disabledCode } id="code" name="code" type="number" className="form-control form-control-lg" placeholder="Input your code" required/>
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Register</button>
                 <hr/>
                 <p className="text-muted">Already have an account?</p>
-                <a href="/" className="btn btn-outline-light btnc-sm">Sign in!</a>
+                <a href="/sign-in" className="btn btn-outline-light btn-sm">Sign in!</a>
             </form>
         </div>
     )

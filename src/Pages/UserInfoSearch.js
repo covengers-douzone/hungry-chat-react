@@ -8,33 +8,30 @@ function UserInfoSearch() {
     let [ color, setColor ] = useState("deeppink");
     let [ code, setCode ] = useState('');
     let [ disabledCode, setDisabledCode ] = useState(true);
-    let [ diabledSendBtn, setDisabledSendBtn ] = useState(true);
-    let userPhoneNumber;
+    let [ disabledSendBtn, setDisabledSendBtn ] = useState(true);
+    let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
     let history = useHistory();
 
     function getNumHandler(e){
         e.preventDefault();
         if(e.target.value.length === 11){
-            setDisabledSendBtn(!diabledSendBtn);
+            setDisabledSendBtn(!disabledSendBtn);
         }else {
             setDisabledSendBtn(true);
         }
-        userPhoneNumber = e.target.value;
+        setUserPhoneNumber(e.target.value);
     }
 
-    function smsApiHandler(e){
+     // sms 인증
+     function smsApiHandler(e){
         e.preventDefault();
         setColor("blue");
         let authCode = Math.floor(Math.random()*100) + 1000;
         if(authCode>10000){
             authCode -= 1000;
         }
-
         setCode(authCode);// 인증코드
-
-        if(userPhoneNumber === "" || userPhoneNumber === null){
-            alert("번호를 입력해주세요.");
-        }
+        // console.log(e.target.number.value);
         fetch("http://localhost:8888/api/user/sms", {
             method: "POST",
             credentials: 'include',
@@ -42,7 +39,7 @@ function UserInfoSearch() {
                 "Access-Control-Allow-Headers" : "Content-Type",
                 "Access-Control-Allow-Origin": "http://localhost:8888",
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                'Accept': 'application/json, text/plain',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
             },
             body: JSON.stringify({
@@ -51,12 +48,19 @@ function UserInfoSearch() {
             })
         })
             .then(response =>  {
-                if(response.ok) {
+                return response.json();
+            })
+            .then(response => {
+                if(response.result === "success") {
                     alert("인증 코드 발송 완료");
                     setDisabledCode(false);
                 }else {
-                    alert("인증 코드 발송 실패, 번호를 확인 해주세요.");
+                    alert("인증 코드 발송 실패");
                 }
+            })
+            .catch(error => {
+                alert("Error: " + error.message);
+                history.push("/");
             })
     }
 /*
@@ -155,8 +159,8 @@ function UserInfoSearch() {
                 </div>
 
                 <div className="form-group">
-                    <input onChange={ getNumHandler } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
-                    <button onClick={ smsApiHandler } disabled={ diabledSendBtn} style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">Send Code</button>
+                    <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
+                    <button onClick={ smsApiHandler } disabled={ disabledSendBtn} style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">Send Code</button>
                 </div>
                 <div className="form-group">
                     <input disabled={ disabledCode } id="userNum" name="code" type="number" className="form-control form-control-lg" placeholder="Input your code" required/>
