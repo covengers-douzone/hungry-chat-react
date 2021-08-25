@@ -5,6 +5,7 @@ function ResetPassword() {
 
     useEffect(() => document.body.classList.add('form-membership'), []);
 
+
     return (
         <div className="form-wrapper">
             <div className="logo">

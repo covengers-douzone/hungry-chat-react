@@ -1,32 +1,30 @@
 // 비동기 통신
-
 export default function (defaultState , setState) {
     const PORT = 9999;
-    const domain = `http://localhost`;
+    const domain = `http://localhost:`;
+    const URL = domain+PORT;
     return {
-        getRoomList: async function (userNo) {
+        getRoomList: async function (userNo, token) {
             try {
-                const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
+                const response = await fetch(`${URL}/api/roomlist/${userNo}`, {
                     method: 'get',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
+                        'Accept': 'application/json',
+                        Authorization: token
                     }
                 });
-
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
                 }
-
                 const json = await response.json();
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data;
             } catch (err) {
-                console.error(err);
+                console.error("Error: "+err.message);
             }
         },
         getChatList: async function (roomNo) {

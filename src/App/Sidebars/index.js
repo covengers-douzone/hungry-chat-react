@@ -23,7 +23,7 @@ function Index({userNo}) {
     const [roomList, setRoomList] = useState([]);
 
     useEffect(()=>{
-        fetchApi(roomList,setRoomList).getRoomList(userNo);
+        fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
     },[]);
 
     roomList.map((room) => {
