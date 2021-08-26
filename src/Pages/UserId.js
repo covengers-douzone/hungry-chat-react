@@ -1,13 +1,20 @@
+import { func } from "prop-types";
 import React, {useEffect} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
+import {useHistory} from "react-router-dom";
 
 function UserId({location}) {
-
-    const username = location.username;
-    console.log(username);
-
-
+    let history = useHistory();
+    const userName = location.username;
+    console.log(userName);
     useEffect(() => document.body.classList.add('form-membership'), []);
+
+    function toFindPassword(){
+        history.push({
+            pathname: '/reset-password', 
+            username: userName
+        })
+    }
 
     return (
         <div className="form-wrapper">
@@ -18,15 +25,14 @@ function UserId({location}) {
 
             <form>
                 <div className="form-group">
-                    <h2 className="form-control form-control-lg">{username}</h2>
+                    <h2 id={userName} name={userName} className="form-control form-control-lg">{userName}</h2>
                 </div>
 
                 <hr/>
 
                 <a href="/" className="btn btn-sm btn-outline-light mr-1">로그인하기</a>
                 
-                {/*<button property={ username } className="btn btn-sm btn-outline-light ml-1">비밀번호찾기</button>*/}
-                <a href="/reset-password" className="btn btn-sm btn-outline-light ml-1">비밀번호찾기</a>
+                <button type="button" onClick = {toFindPassword} className="btn btn-sm btn-outline-light ml-1">비밀번호찾기</button>
             </form>
             
         </div>

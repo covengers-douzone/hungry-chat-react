@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import ChatsIndex from "./Chats"
 import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
@@ -12,9 +12,12 @@ import ManAvatar4 from "../../assets/img/man_avatar4.jpg"
 import WomenAvatar1 from "../../assets/img/women_avatar1.jpg"
 import WomenAvatar2 from "../../assets/img/women_avatar2.jpg"
 import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
+import {userNoAction} from "../../Store/Actions/userNoAction";
 
 
 function Index({userNo}) {
+
+    const dispatch = useDispatch;
 
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
 
@@ -23,19 +26,23 @@ function Index({userNo}) {
     const [roomList, setRoomList] = useState([]);
 
     useEffect(()=>{
+
         fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
     },[]);
 
     roomList.map((room) => {
+        dispatch(userNoAction((userNo)))
         userRoomList.push({
             id: room.no,
             name: room.title,
+            participantNo : room.Participants[0].no,
             avatar: <figure className="avatar avatar-state-success">
                 <img src={ManAvatar1} className="rounded-circle" alt="avatar"/>
             </figure>,
             text: <p>What's up, how are you?</p>,
             date: '03:41 PM',
-            unread_messages: 1
+            unread_messages: 1,
+            messages: []
         });
     })
 

@@ -15,7 +15,11 @@ import {
 
 import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
 import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
+import inviteModal from "./InviteModal";
 import fetchApi from "../Module/fetchApi";
+import {useSelector} from "react-redux";
+import InviteModal from "./InviteModal";
+
 
 
 
@@ -23,16 +27,26 @@ import fetchApi from "../Module/fetchApi";
 function AddGroupModal() {
 
     const [modal, setModal] = useState(false);
-
     const [title , setTitle] = useState("");
+
+    const [openInvite , setOpenInvite] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
+    const {UserNo} = useSelector(state => state)
+
+    const openInviteModal  = () => {
+            setOpenInvite(!openInvite)
+    }
+
     // Create Button Event
     const modalToggle = () => {
-        fetchApi(null,null).create(title);
         setModal(!modal);
+    }
 
+    const createRoom = () => {
+        fetchApi(null,null).create(title,2);
+        setModal(!modal);
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
@@ -40,6 +54,10 @@ function AddGroupModal() {
     // 방 제목 변경
     const titleEvent = (e) => {
         setTitle(e.target.value);
+    }
+
+    const addFriends  = (e) =>{
+
     }
     const AvatarTooltip = (props) => {
 
@@ -92,22 +110,8 @@ function AddGroupModal() {
                                 </figure>
                                 <AvatarTooltip name="Cloe Jeayes" id={2}/>
 
-                                <figure className="avatar" id="Tooltip-Avatar3">
-                                    <span className="avatar-title bg-warning rounded-circle">M</span>
-                                </figure>
-                                <AvatarTooltip name="Marlee Perazzo" id={3}/>
-
-                                <figure className="avatar" id="Tooltip-Avatar4">
-                                    <img src={ManAvatar1} className="rounded-circle" alt="avatar"/>
-                                </figure>
-                                <AvatarTooltip name="Stafford Pioch" id={4}/>
-
-                                <figure className="avatar" id="Tooltip-Avatar5">
-                                    <span className="avatar-title bg-info rounded-circle">B</span>
-                                </figure>
-                                <AvatarTooltip name="Bethena Langsdon" id={5}/>
-
-                                <a href="#/" title="Add friends" id="Tooltip-Avatar6">
+                                <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
+                                    <InviteModal openValue = {openInvite}/>
                                     <figure className="avatar">
                                         <span className="avatar-title bg-primary rounded-circle">+</span>
                                     </figure>
@@ -122,7 +126,7 @@ function AddGroupModal() {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={modalToggle}>방 만들기</Button>
+                    <Button color="primary" onClick={createRoom}>방 만들기</Button>
                 </ModalFooter>
             </Modal>
         </div>
