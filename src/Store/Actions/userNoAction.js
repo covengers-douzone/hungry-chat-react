@@ -1,4 +1,4 @@
-export const roomNoAction = (no ) => ({
-    type: 'ROOM_NO',
+export const userNoAction = (no ) => ({
+    type: 'USER_NO',
     no
 });

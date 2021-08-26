@@ -1,10 +1,10 @@
-const roomNoReducer = (state = false, action) => {
+const userNoReducer = (state = false, action) => {
     switch (action.type) {
-        case 'ROOM_NO':
+        case 'USER_NO':
             return action.no
         default:
             return state
     }
 };
 
-export default roomNoReducer;
+export default userNoReducer;
