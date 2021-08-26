@@ -8,8 +8,12 @@ export default function (defaultState , setState) {
             try {
                 const response = await fetch(`${URL}/api/roomlist/${userNo}`, {
                     method: 'get',
+                    credentials: 'include',
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
                     }
@@ -24,7 +28,7 @@ export default function (defaultState , setState) {
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data;
             } catch (err) {
-                console.error("Error: "+err.message);
+                console.error("Error From React-Fetch: "+err.message);
             }
         },
         getChatList: async function (roomNo) {
