@@ -129,17 +129,19 @@ function UserInfoSearch() {
             })
                 .then(response =>  {
                     if(response.status === 200) {
-                    return response.clone().json();
+                        response.json().then(data => {
+                            console.log(data.username);
+                            history.push({
+                                pathname: '/userId', 
+                                username: data.username
+                             })
+                        })
+                    }else{
+                        alert("이름과 휴대폰번호를 다시 확인해주세요")
+                        history.push("/userinfo")
                     }
                 })
-                .then(data => {
-                    console.log(data.username);
-                    history.push({
-                        pathname: '/userId', 
-                        username: data.username
-                    })
-                }
-                )
+            
         }else{
             alert("인증 실패");
             history.push("/userinfo")
