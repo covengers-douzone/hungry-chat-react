@@ -32,9 +32,6 @@ function SignIn() {
                     console.log("500 Error, 서버를 재시작해주세요.");
                 }else {
                     if(response.ok){
-                        // console.log(response.headers.get("Authorization"));
-                        // localStorage.setItem("Authorization", response.headers.get("Authorization"));
-                        // console.log("This is token!!"+localStorage.getItem("Authorization"));
                         return response.json();
                     }
                 }
@@ -44,8 +41,8 @@ function SignIn() {
                     localStorage.setItem("username", response.username);
                     console.log(response.username);
                     console.log(response.Authorization);
-                    history.push("/");
-                    // return fetch("http://localhost:3000/")
+                    console.log(response.no);
+                    history.push('/'+response.no);
                 })
                 .catch(error => {
                 alert("Error: "+error.message);

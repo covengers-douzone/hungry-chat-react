@@ -25,8 +25,7 @@ function App() {
                 <Route path="/phone-code" component={PhoneCode}/>
                 <Route path="/userinfo" component={UserInfoSearch}/>
                 <Route path="/userId" component={UserId}/>
-                 <Route path="/" component={Layout}/>
-                {/*<Route path="/:userNo" component={Layout}/>*/}
+                <Route path="/:userNo" component={Layout}/>
             </Switch>
         </Router>
     )

@@ -1,5 +1,4 @@
 // 비동기 통신
-
 import {func} from "prop-types";
 
 export default function (defaultState , setState) {
@@ -10,29 +9,31 @@ export default function (defaultState , setState) {
             PORT,
             domain,
         },
-        getRoomList: async function (userNo) {
+        getRoomList: async function (userNo,token) {
             try {
-                const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
+                const response = await fetch(`${URL}/api/roomlist/${userNo}`, {
                     method: 'get',
+                    credentials: 'include',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
                     }
                 });
-
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
                 }
-
                 const json = await response.json();
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data;
             } catch (err) {
-                console.error(err);
+                console.error("Error From React-Fetch: "+err.message);
             }
         },
         getChatList: async function (roomNo) {

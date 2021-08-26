@@ -34,9 +34,6 @@ function ResetPassword({location}) {
         }
     })
     }
-    
-    
-
     return (
         <div className="form-wrapper">
             <div className="logo">
