@@ -11,6 +11,8 @@ import LockScreen from "./Pages/LockScreen"
 import ResetPassword from "./Pages/ResetPassword"
 import PhoneCode from "./Pages/PhoneCode"
 import Layout from "./App/Layout"
+import UserInfoSearch from "./Pages/UserInfoSearch"
+import UserId from "./Pages/UserId"
 
 function App() {
     return (
@@ -21,8 +23,10 @@ function App() {
                 <Route path="/lock-screen" component={LockScreen}/>
                 <Route path="/reset-password" component={ResetPassword}/>
                 <Route path="/phone-code" component={PhoneCode}/>
-                {/* <Route path="/" component={Layout}/> */}
-                <Route path="/:userNo" component={Layout}/>
+                <Route path="/userinfo" component={UserInfoSearch}/>
+                <Route path="/userId" component={UserId}/>
+                 <Route path="/" component={Layout}/>
+                {/*<Route path="/:userNo" component={Layout}/>*/}
             </Switch>
         </Router>
     )

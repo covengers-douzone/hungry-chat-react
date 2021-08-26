@@ -6,20 +6,16 @@ import {useHistory} from "react-router-dom";
 function SignIn() {
     let history = useHistory();
 
-
     function loginHandler(e){
-        console.log(e.target.email.value);
-        console.log(e.target.password.value);
         e.preventDefault();
-        if(e.target.email !== null && e.target.password !== null){
-            fetch("http://localhost:8888/api/user/login", {
+        if(e.target.email.value !== '' || e.target.password.value !== ''){
+            fetch("http://localhost:8888/api/user/login",{
                 method: "POST",
                 headers: {
-                    // "Access-Control-Allow-Headers":"Content-Type",
-                    "Access-Control-Allow-Headers":"Authorizationc",
+                    "Access-Control-Allow-Headers":"Authorization",
                     "Access-Control-Allow-Origin":"http://localhost:8888",
                     "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
-                    "Accept":"application/json, text/plain",
+                    "Accept":"application/json",
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
@@ -27,15 +23,37 @@ function SignIn() {
                     password: e.target.password.value,
                 })
             }). then(response => {
-                history.push("/");
-                console.log(response);
-
-            }).catch(error => {
-                console.log(error);
+                console.log(response.status);
+                if(response.status === 401){
+                    alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
+                    history.push("/sign-in");
+                }else if (response.status === 500){
+                    history.push("/sign-in");
+                    console.log("500 Error, 서버를 재시작해주세요.");
+                }else {
+                    if(response.ok){
+                        // console.log(response.headers.get("Authorization"));
+                        // localStorage.setItem("Authorization", response.headers.get("Authorization"));
+                        // console.log("This is token!!"+localStorage.getItem("Authorization"));
+                        return response.json();
+                    }
+                }
             })
-        } else {
+                .then(response => {
+                    localStorage.setItem("Authorization", response.Authorization);
+                    localStorage.setItem("username", response.username);
+                    console.log(response.username);
+                    console.log(response.Authorization);
+                    history.push("/");
+                    // return fetch("http://localhost:3000/")
+                })
+                .catch(error => {
+                alert("Error: "+error.message);
+                history.push("/sign-in");
+            })
+        } else{
             alert("아이디/패스워드를 입력하세요.");
-            history.push("/sign-in")
+            history.push("/sign-in");
         }
     }
     useEffect(() => document.body.classList.add('form-membership'), []);
@@ -50,7 +68,7 @@ function SignIn() {
             <h5>Sign in</h5>
             <form onSubmit={ loginHandler }>
                 <div className="form-group input-group-lg">
-                    <input type="text" name="email" className="form-control" placeholder="Username or email"/>
+                    <input type="text" name="email" className="form-control" placeholder="Email"/>
                 </div>
                 <div className="form-group input-group-lg">
                     <input type="password" name="password" className="form-control" placeholder="Password"/>
@@ -60,6 +78,7 @@ function SignIn() {
                         <input type="checkbox" className="custom-control-input" defaultChecked id="customCheck1"/>
                         <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
                     </div>
+                    <a href="/userinfo" className="btn btn-outline-light btn-sm">ID/PW 찾기</a>
                     <a href="/reset-password">Reset password</a>
                 </div>
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Sign in</button>
@@ -104,6 +123,7 @@ function SignIn() {
                 </ul>
                 <hr/>
                 <p className="text-muted">Don't have an account?</p>
+                
                 <a href="/sign-up" className="btn btn-outline-light btn-sm">Register now!</a>
             </form>
         </div>
