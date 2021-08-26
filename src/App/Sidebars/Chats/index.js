@@ -57,7 +57,7 @@ function Index({roomList, userNo}) {
                                 text: chat.contents,
                                 date: chat.createdAt,
                                 type: 'outgoing-message'
-                            })    
+                            })
                         }
                     });
                     console.log(room[0]);
