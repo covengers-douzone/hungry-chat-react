@@ -3,7 +3,7 @@ import {func} from "prop-types";
 
 export default function (defaultState , setState) {
     const PORT = 9999;
-    const domain = `http://192.168.254.8`;
+    const domain = `http://localhost`;
     return {
         ipAddress : {
             PORT,
@@ -11,7 +11,7 @@ export default function (defaultState , setState) {
         },
         getRoomList: async function (userNo,token) {
             try {
-                const response = await fetch(`${URL}/api/roomlist/${userNo}`, {
+                const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
                     method: 'get',
                     credentials: 'include',
                     headers: {
