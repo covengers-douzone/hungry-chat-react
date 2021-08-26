@@ -18,8 +18,7 @@ import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 function Index({roomList, userNo}) {
 
 
-
-    const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
+    // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
 
     const dispatch = useDispatch();
 
@@ -36,30 +35,18 @@ function Index({roomList, userNo}) {
     const [chatList, setChatList] = useState([]);
 
 
-
     const toggle = () => setTooltipOpen(!tooltipOpen);
-
 
 
     useEffect(() => {
         inputRef.current.focus();
     });
 
-    useEffect( () => {
-
-            return () => {
-                if(roomNo) {
-                console.log("방 나가기")
-                fetchApi(null,null).setStatus(participantNo,0)
-                }
-            }
-
-    },[roomNo])
     const callback = ({socketUserNo, text, data, notReadCount}) => {
         console.log('--->callback', selectedChat.messages.length); //[] -> {}
 
         socketUserNo === userNo && selectedChat.messages && selectedChat.messages.push({
-            userNo, text, data, notReadCount , type : "outgoing-message"
+            userNo, text, data, notReadCount, type: "outgoing-message"
         })
 
         socketUserNo !== userNo && selectedChat.messages && selectedChat.messages.push({
@@ -71,18 +58,27 @@ function Index({roomList, userNo}) {
     }
 
 
-        useEffect(() => {
-        if(!selectedChat){
+    useEffect(() => {
+        if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         }
+        const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
         }, (response) => {
-            console.log("join res " , response.status)
-            response.status === 'ok' && fetchApi(null,null).setStatus(selectedChat.participantNo,1)
+            console.log("join res ", response.status)
+            response.status === 'ok' && fetchApi(null, null).setStatus(selectedChat.participantNo, 1)
         });
         socket.on('message', callback);
+
+        return () => {
+            if (roomNo) {
+                console.log("방 나가기")
+                fetchApi(null, null).setStatus(participantNo, 0);
+                socket.disconnect();
+            }
+        }
 
     }, [selectedChat]);
 
@@ -94,7 +90,7 @@ function Index({roomList, userNo}) {
 
     const chatSelectHandle = async (chat) => {
 
-       const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id)
+        const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id)
         let room;
         if (chatlist.length !== 0) {
             room = roomList.filter(room => room.id === chatlist[0].roomNo);
@@ -121,12 +117,12 @@ function Index({roomList, userNo}) {
 
         dispatch(participantNoAction(chat.participantNo))
         dispatch(roomNoAction(chat.id))
-        if(chat.messages){
+        if (chat.messages) {
             dispatch(messageLengthAction(chat.messages.length))
         }
 
         dispatch(selectedChatAction(chat));
-         dispatch(mobileSidebarAction(false));
+        dispatch(mobileSidebarAction(false));
     };
 
     const ChatListView = (props) => {
@@ -179,8 +175,8 @@ function Index({roomList, userNo}) {
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">{
-                            roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
-                        }
+                        roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                    }
                     </ul>
                 </PerfectScrollbar>
             </div>

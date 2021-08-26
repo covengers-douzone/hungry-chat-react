@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Button,
     Modal,
@@ -13,44 +13,53 @@ import {
     InputGroup,
 } from 'reactstrap';
 
-import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
-import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
-import fetchApi from "../Module/fetchApi";
 import {useSelector} from "react-redux";
 
-
-
-
-function AddGroupModal() {
+function InviteModal({openValue}) {
+    const friendsList = [{}]
 
     const [modal, setModal] = useState(false);
-    const [friendsModal , setFriendsModal] = useState(false)
-
-    const [title , setTitle] = useState("");
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
-    const {UserNo} = useSelector(state => state)
+
+    useEffect(() => {
+
+        if(openValue === true){
+            setModal(true)
+        }else{
+            setModal(!openValue);
+        }
+    },[openValue])
+    useEffect(() => {
+       setModal(false)
+    },[])
+
+    useEffect(() => {
+        function handleTouchMove(event) {
+            if (modal) {
+                event.preventDefault(); // 여기가 핵심
+            }
+        }
+        window.addEventListener("touchmove", handleTouchMove, {
+            passive: false
+        });
+        return () =>
+            window.removeEventListener("touchmove", handleTouchMove);
+    }, [modal]);
 
     // Create Button Event
     const modalToggle = () => {
         setModal(!modal);
     }
-
     const inviteFriends = () => {
         setModal(!modal);
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
 
-    // 방 제목 변경
-    const titleEvent = (e) => {
-        setTitle(e.target.value);
-    }
 
-    const addFriends  = (e) =>{
 
-    }
     const AvatarTooltip = (props) => {
 
         const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -66,17 +75,9 @@ function AddGroupModal() {
         </Tooltip>
     };
 
+
     return (
         <div>
-            <button className="btn btn-light" onClick={modalToggle} id="Tooltip-Add-Group">
-                <i className="fa fa-users"></i>
-            </button>
-            <Tooltip
-                isOpen={tooltipOpen}
-                target={"Tooltip-Add-Group"}
-                toggle={tooltipToggle}>
-                친구 목록
-            </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
                     <i className="fa fa-users"></i> 친구 목록
@@ -84,10 +85,8 @@ function AddGroupModal() {
                 <ModalBody>
                     <Form>
                         <FormGroup>
-                            <Label for="title">방 제목</Label>
-                            <InputGroup>
-                                <Input type="text" name="title" id="title" onChange = {titleEvent}/>
-                            </InputGroup>
+                            <Label for="title">이름</Label>
+
                         </FormGroup>
                         <FormGroup>
                             <p>방 인원 목록</p>
@@ -109,4 +108,4 @@ function AddGroupModal() {
     )
 }
 
-export default AddGroupModal
+export default InviteModal

@@ -165,6 +165,32 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        getUserList: async function (UserNo , FriendNo) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        UserNo,
+                        FriendNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
 
 
     }
