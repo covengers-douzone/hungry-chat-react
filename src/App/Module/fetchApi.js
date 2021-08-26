@@ -1,9 +1,15 @@
 // 비동기 통신
 
+import {func} from "prop-types";
+
 export default function (defaultState , setState) {
     const PORT = 9999;
-    const domain = `http://localhost`;
+    const domain = `http://192.168.254.8`;
     return {
+        ipAddress : {
+            PORT,
+            domain,
+        },
         getRoomList: async function (userNo) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
@@ -53,7 +59,7 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        send: async function (roomNo,contents) {
+        send: async function (roomNo,participantNo,contents) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/message/`, {
                     method: 'post',
@@ -63,6 +69,7 @@ export default function (defaultState , setState) {
                     },
                     body: JSON.stringify({
                         roomNo,
+                        participantNo,
                         contents
                     }),
                 });
@@ -81,7 +88,7 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        create: async function (title) { // 방 생성
+        create: async function (title , UserNo) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/create/`, {
                     method: 'post',
@@ -91,6 +98,7 @@ export default function (defaultState , setState) {
                     },
                     body: JSON.stringify({
                         title,
+                        UserNo
                     }),
                 });
 
@@ -106,6 +114,58 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        getStatus: async function (ParticipantNo) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/getStatus/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ParticipantNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        setStatus: async function (ParticipantNo,status) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ParticipantNo,
+                        status
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+
 
     }
 }

@@ -10,13 +10,16 @@ import {sidebarAction} from "../../../Store/Actions/sidebarAction"
 import fetchApi from "../../Module/fetchApi";
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
-
+import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
+import io from "socket.io-client"
+import {roomNoAction} from "../../../Store/Actions/roomNoAction";
+import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 
 function Index({roomList, userNo}) {
 
-    useEffect(() => {
-        inputRef.current.focus();
-    });
+
+
+    const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
 
     const dispatch = useDispatch();
 
@@ -24,12 +27,64 @@ function Index({roomList, userNo}) {
 
     const {selectedChat} = useSelector(state => state);
 
+    const {participantNo} = useSelector(state => state);
+
+    const {roomNo} = useSelector(state => state);
+
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const [chatList, setChatList] = useState([]);
 
+
+
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
+
+
+    useEffect(() => {
+        inputRef.current.focus();
+    });
+
+    useEffect( () => {
+
+            return () => {
+                if(roomNo) {
+                console.log("방 나가기")
+                fetchApi(null,null).setStatus(participantNo,0)
+                }
+            }
+
+    },[roomNo])
+    const callback = ({socketUserNo, text, data, notReadCount}) => {
+        console.log('--->callback', selectedChat.messages.length); //[] -> {}
+
+        socketUserNo === userNo && selectedChat.messages && selectedChat.messages.push({
+            userNo, text, data, notReadCount , type : "outgoing-message"
+        })
+
+        socketUserNo !== userNo && selectedChat.messages && selectedChat.messages.push({
+            userNo, text, data, notReadCount
+        })
+
+        dispatch(messageLengthAction(selectedChat.messages.length))
+
+    }
+
+
+        useEffect(() => {
+        if(!selectedChat){
+            return;
+        }
+        socket.emit("join", {
+            nickName: selectedChat.name,
+            roomNo: selectedChat.id,
+        }, (response) => {
+            console.log("join res " , response.status)
+            response.status === 'ok' && fetchApi(null,null).setStatus(selectedChat.participantNo,1)
+        });
+        socket.on('message', callback);
+
+    }, [selectedChat]);
 
     const mobileSidebarClose = () => {
         dispatch(mobileSidebarAction(false));
@@ -37,35 +92,41 @@ function Index({roomList, userNo}) {
     };
 
 
-    const chatSelectHandle = (chat) => {
+    const chatSelectHandle = async (chat) => {
 
-        fetchApi(chatList,setChatList).getChatList(chat.id)
-            .then(chatlist => {
-                let room;
-                if(chatlist.length){
-                    room = roomList.filter(room => room.id == chatlist[0].no);
+       const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id)
+        let room;
+        if (chatlist.length !== 0) {
+            room = roomList.filter(room => room.id === chatlist[0].roomNo);
+        }
+
+        if (room && room.length) {
+            room[0].messages = chatlist.map(chat => {
+                if (chat.Participant.no !== Number(userNo)) {
+                    return ({
+                        text: chat.contents,
+                        date: chat.createdAt
+                    })
+                } else {
+                    return ({
+                        text: chat.contents,
+                        date: chat.createdAt,
+                        type: 'outgoing-message'
+                    })
                 }
-                if(room && room.length ){
-                    room[0].messages = chatlist.map(chat => {
-                        if(chat.Participant.no !== Number(userNo)){
-                            return ({
-                                text: chat.contents,
-                                date: chat.createdAt
-                            })
-                        } else {
-                            return ({
-                                text: chat.contents,
-                                date: chat.createdAt,
-                                type: 'outgoing-message'
-                            })
-                        }
-                    });
-                    console.log(room[0]);
-                }
-                chat.unread_messages = 0;
-                dispatch(selectedChatAction(chat));
-                dispatch(mobileSidebarAction(false));
             });
+
+        }
+        chat.unread_messages = 0;
+
+        dispatch(participantNoAction(chat.participantNo))
+        dispatch(roomNoAction(chat.id))
+        if(chat.messages){
+            dispatch(messageLengthAction(chat.messages.length))
+        }
+
+        dispatch(selectedChatAction(chat));
+         dispatch(mobileSidebarAction(false));
     };
 
     const ChatListView = (props) => {
@@ -117,8 +178,7 @@ function Index({roomList, userNo}) {
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">
-                        {
+                    <ul className="list-group list-group-flush">{
                             roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                         }
                     </ul>

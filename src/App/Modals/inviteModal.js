@@ -15,7 +15,6 @@ import {
 
 import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
 import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
-import inviteModal from "inviteModal"
 import fetchApi from "../Module/fetchApi";
 import {useSelector} from "react-redux";
 
@@ -38,13 +37,7 @@ function AddGroupModal() {
         setModal(!modal);
     }
 
-    const firendsModalToggle = () => {
-        console.log("firendsModalToggle")
-        setFriendsModal(!friendsModal);
-    }
-
-    const createRoom = () => {
-        fetchApi(null,null).create(title,2);
+    const inviteFriends = () => {
         setModal(!modal);
     }
 
@@ -82,11 +75,11 @@ function AddGroupModal() {
                 isOpen={tooltipOpen}
                 target={"Tooltip-Add-Group"}
                 toggle={tooltipToggle}>
-                New Group
+                친구 목록
             </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> New Group
+                    <i className="fa fa-users"></i> 친구 목록
                 </ModalHeader>
                 <ModalBody>
                     <Form>
@@ -99,23 +92,7 @@ function AddGroupModal() {
                         <FormGroup>
                             <p>방 인원 목록</p>
                             <div className="avatar-group">
-                                <figure className="avatar" id="Tooltip-Avatar1">
-                                    <span className="avatar-title bg-success rounded-circle">T</span>
-                                </figure>
-                                <AvatarTooltip name="Tobit Spraging" id={1}/>
 
-                                <figure className="avatar" id="Tooltip-Avatar2">
-                                    <img src={WomenAvatar4} className="rounded-circle" alt="avatar"/>
-                                </figure>
-                                <AvatarTooltip name="Cloe Jeayes" id={2}/>
-
-                                <button onClick={addFriends} title="Add friends" id="Tooltip-Avatar6">
-                                    <figure className="avatar">
-                                        <span className="avatar-title bg-primary rounded-circle">+</span>
-                                    </figure>
-                                </button>
-
-                                <AvatarTooltip name="Add friends" id={6}/>
                             </div>
                         </FormGroup>
                         <FormGroup>
@@ -125,7 +102,7 @@ function AddGroupModal() {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={createRoom}>방 만들기</Button>
+                    <Button color="primary" onClick={inviteFriends}>방 만들기</Button>
                 </ModalFooter>
             </Modal>
         </div>
