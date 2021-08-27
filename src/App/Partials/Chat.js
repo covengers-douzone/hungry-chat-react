@@ -4,26 +4,20 @@ import ChatFooter from "./ChatFooter"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {useSelector} from "react-redux"
 import myFetch from "../Module/fetchApi";
-import io from "socket.io-client"
-import fetchApi from "../Module/fetchApi";
+
+
 function Chat() {
-
-    const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
-
     const {selectedChat} = useSelector(state => state);
     const {messageLength} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {participantNo} = useSelector(state => state);
 
     const [inputMsg, setInputMsg] = useState('');
-
     const [scrollEl, setScrollEl] = useState();
 
 
-
-
     const handleSubmit = (newValue) => {
-        myFetch(null,null).send(roomNo,participantNo,newValue.text , );
+        myFetch(null,null).send(roomNo, participantNo, newValue.text, localStorage.getItem("Authorization"));
        setInputMsg("");
     };
 
@@ -31,8 +25,6 @@ function Chat() {
         setInputMsg(newValue);
 
     };
-
-
 
     useEffect(() => {
         if (scrollEl) {

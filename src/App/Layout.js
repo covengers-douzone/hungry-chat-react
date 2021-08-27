@@ -8,8 +8,7 @@ import DisconnectedModal from "./Modals/DisconnectedModal";
 import fetchApi from "./Module/fetchApi";
 
 
-function Layout() {
-
+function Layout({history}) {
     // pathVariable
     const {userNo} = useParams();
 
@@ -25,7 +24,7 @@ function Layout() {
         <div className="layout">
             <Navigation/>
             <div className="content">
-                <SidebarIndex userNo={userNo}/>
+                <SidebarIndex userNo={userNo} history={history}/>
                 <Chat/>
                 <Profile/>
                 <DisconnectedModal/>

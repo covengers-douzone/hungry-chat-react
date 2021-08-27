@@ -28,31 +28,37 @@ export default function (defaultState , setState) {
                 }
                 const json = await response.json();
                 if (json.result !== 'success') {
+
                     throw json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data;
             } catch (err) {
+                // Access Denied or System Error or Fetch Error(Cors ... )
                 console.error("Error From React-Fetch: "+err.message);
             }
         },
-        getChatList: async function (roomNo) {
+        getChatList: async function (roomNo,token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}`, {
                     method: 'get',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
+                    return null; // token error
+                    //throw new Error(`System Error : ${response.status} ${response.statusText}`);
                 }
-
                 const json = await response.json();
-                if (json.result !== 'success') {
-                    throw json.message;
+                if (json.result !== 'success') { // DB error
+                    return json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data
@@ -60,13 +66,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        send: async function (roomNo,participantNo,contents) {
+        send: async function (roomNo,participantNo,contents, token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/message/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         roomNo,
@@ -89,13 +99,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        create: async function (title , UserNo) { // 방 생성
+        create: async function (title , UserNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/create/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         title,
@@ -115,13 +129,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getStatus: async function (ParticipantNo) { // 방 생성
+        getStatus: async function (ParticipantNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getStatus/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         ParticipantNo
@@ -140,13 +158,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        setStatus: async function (ParticipantNo,status) { // 방 생성
+        setStatus: async function (ParticipantNo,status,token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         ParticipantNo,
@@ -154,11 +176,14 @@ export default function (defaultState , setState) {
                     }),
                 });
 
+                // System error(DB, Server etc...)
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
                 }
 
                 const json = await response.json();
+
+                // Authentication error, server error, DB error, logic error
                 if (json.result !== 'success') {
                     throw json.message;
                 }
@@ -166,13 +191,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getUserList: async function (UserNo , FriendNo) { // 방 생성
+        getUserList: async function (UserNo , FriendNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         UserNo,

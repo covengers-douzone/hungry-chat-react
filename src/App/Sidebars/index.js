@@ -15,18 +15,14 @@ import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
 import {userNoAction} from "../../Store/Actions/userNoAction";
 
 
-function Index({userNo}) {
+function Index({userNo, history}) {
 
     const dispatch = useDispatch;
-
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
-
     const userRoomList = [];
-
     const [roomList, setRoomList] = useState([]);
 
     useEffect(()=>{
-
         fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
     },[]);
 
@@ -51,7 +47,7 @@ function Index({userNo}) {
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList} userNo={userNo}/>
+                        return <ChatsIndex roomList={userRoomList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex/>
                     } else if (selectedSidebar === 'Favorites') {
