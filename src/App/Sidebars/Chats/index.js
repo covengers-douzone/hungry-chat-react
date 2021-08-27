@@ -15,7 +15,7 @@ import io from "socket.io-client"
 import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 
-function Index({roomList, userNo}) {
+function Index({roomList, userNo, history}) {
 
 
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
@@ -62,13 +62,13 @@ function Index({roomList, userNo}) {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         }
-        const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
+        const socket = io.connect("http://localhost:9999", {transports: ['websocket']});
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
         }, (response) => {
             console.log("join res ", response.status)
-            response.status === 'ok' && fetchApi(null, null).setStatus(selectedChat.participantNo, 1)
+            response.status === 'ok' && fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
         });
         socket.on('message', callback);
 
@@ -89,40 +89,53 @@ function Index({roomList, userNo}) {
 
 
     const chatSelectHandle = async (chat) => {
+        try{
+            const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id, localStorage.getItem("Authorization"))
+            if (chatlist === "System Error"){
+               throw chatlist;
+            }
+            let room;
+            if (chatlist.length !== 0) {
+                room = roomList.filter(room => room.id === chatlist[0].roomNo);
+            }
 
-        const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id)
-        let room;
-        if (chatlist.length !== 0) {
-            room = roomList.filter(room => room.id === chatlist[0].roomNo);
+            if (room && room.length) {
+                room[0].messages = chatlist.map(chat => {
+                    if (chat.Participant.no !== Number(userNo)) {
+                        return ({
+                            text: chat.contents,
+                            date: chat.createdAt
+                        })
+                    } else {
+                        return ({
+                            text: chat.contents,
+                            date: chat.createdAt,
+                            type: 'outgoing-message'
+                        })
+                    }
+                });
+
+            }
+            chat.unread_messages = 0;
+
+            dispatch(participantNoAction(chat.participantNo))
+            dispatch(roomNoAction(chat.id))
+            if (chat.messages) {
+                dispatch(messageLengthAction(chat.messages.length))
+            }
+
+            dispatch(selectedChatAction(chat));
+            dispatch(mobileSidebarAction(false));
+        } catch (e){
+            if(e === "System Error"){
+                history.push("/error/500") // 500 Page(DB error) // 수정 필요
+            } else {
+                // Token 문제 발생 시 -> return null -> length error -> catch
+                alert("Token invalid or Token expired. Please login again");
+                history.push("/sign-in");
+                console.log("Error : {}", e.message);
+            }
         }
-
-        if (room && room.length) {
-            room[0].messages = chatlist.map(chat => {
-                if (chat.Participant.no !== Number(userNo)) {
-                    return ({
-                        text: chat.contents,
-                        date: chat.createdAt
-                    })
-                } else {
-                    return ({
-                        text: chat.contents,
-                        date: chat.createdAt,
-                        type: 'outgoing-message'
-                    })
-                }
-            });
-
-        }
-        chat.unread_messages = 0;
-
-        dispatch(participantNoAction(chat.participantNo))
-        dispatch(roomNoAction(chat.id))
-        if (chat.messages) {
-            dispatch(messageLengthAction(chat.messages.length))
-        }
-
-        dispatch(selectedChatAction(chat));
-        dispatch(mobileSidebarAction(false));
     };
 
     const ChatListView = (props) => {

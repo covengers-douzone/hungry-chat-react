@@ -77,7 +77,7 @@ function Navigation() {
             <div className="nav-group">
                 <ul>
                     <li>
-                        <a href="/#/" className="logo">
+                        <a href={"/"+ localStorage.getItem("userNo")} className="logo">
                             <Logo/>
                         </a>
                     </li>
