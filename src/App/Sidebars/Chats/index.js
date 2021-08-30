@@ -14,6 +14,7 @@ import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
 import io from "socket.io-client"
 import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
+import * as config from  "../../../config/config"
 
 function Index({roomList, userNo}) {
 
@@ -62,7 +63,7 @@ function Index({roomList, userNo}) {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         }
-        const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
+        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
@@ -148,7 +149,7 @@ function Index({roomList, userNo}) {
                 <span>Chats</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddGroupModal/>
+                        <AddGroupModal userNo = {userNo}/>
                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"

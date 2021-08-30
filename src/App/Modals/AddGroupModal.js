@@ -17,14 +17,15 @@ import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
 import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
 import inviteModal from "./InviteModal";
 import fetchApi from "../Module/fetchApi";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import InviteModal from "./InviteModal";
+import {friendListAction} from "../../Store/Actions/friendListAction";
 
 
 
 
 
-function AddGroupModal() {
+function AddGroupModal({userNo}) {
 
     const [modal, setModal] = useState(false);
     const [title , setTitle] = useState("");
@@ -33,10 +34,17 @@ function AddGroupModal() {
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
-    const {UserNo} = useSelector(state => state)
+    const disfetch  = useDispatch
 
-    const openInviteModal  = () => {
-            setOpenInvite(!openInvite)
+
+
+    const openInviteModal  = async () => {
+        console.log("openInviteModal")
+
+        const list = await fetchApi(null,null).getFriendList(userNo)
+        disfetch(friendListAction(list))
+
+        setOpenInvite(!openInvite)
     }
 
     // Create Button Event
@@ -111,7 +119,7 @@ function AddGroupModal() {
                                 <AvatarTooltip name="Cloe Jeayes" id={2}/>
 
                                 <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
-                                    <InviteModal openValue = {openInvite}/>
+                                    <InviteModal userNo = {userNo} openValue = {openInvite} />
                                     <figure className="avatar">
                                         <span className="avatar-title bg-primary rounded-circle">+</span>
                                     </figure>

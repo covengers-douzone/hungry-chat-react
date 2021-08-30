@@ -10,6 +10,7 @@ import messageLengthReducer from "./Reducers/messageLengthReducer";
 import roomNoReducer from "./Reducers/roomNoReducer";
 import participantNoReducer from "./Reducers/participantNoReducer";
 import userNoReducer from "./Reducers/userNoReducer";
+import friendListReducer from "./Reducers/friendListReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -20,7 +21,8 @@ const reducers = combineReducers({
     messageLength : messageLengthReducer,
     roomNo : roomNoReducer,
     participantNo : participantNoReducer,
-    userNo : userNoReducer
+    userNo : userNoReducer,
+    friendList : friendListReducer
 });
 
 const store = createStore(reducers, composeWithDevTools());

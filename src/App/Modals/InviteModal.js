@@ -12,24 +12,31 @@ import {
     Input,
     InputGroup,
 } from 'reactstrap';
+import fetchApi from "../Module/fetchApi";
 
 import {useSelector} from "react-redux";
+import {friendLists} from "../Sidebars/Friends/Data";
+import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
+import friendListReducer from "../../Store/Reducers/friendListReducer";
 
-function InviteModal({openValue}) {
-    const friendsList = [{}]
+function InviteModal({userNo,openValue}) {
+
+    const {friendList} =  useSelector(state=>state)
 
     const [modal, setModal] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
-
     useEffect(() => {
+
 
         if(openValue === true){
             setModal(true)
+            console.log("friendList" , friendList)
         }else{
             setModal(!openValue);
         }
+
     },[openValue])
     useEffect(() => {
        setModal(false)
@@ -49,7 +56,8 @@ function InviteModal({openValue}) {
     }, [modal]);
 
     // Create Button Event
-    const modalToggle = () => {
+    const modalToggle =  async () => {
+        console.log()
         setModal(!modal);
     }
     const inviteFriends = () => {
@@ -83,22 +91,26 @@ function InviteModal({openValue}) {
                     <i className="fa fa-users"></i> 친구 목록
                 </ModalHeader>
                 <ModalBody>
-                    <Form>
-                        <FormGroup>
-                            <Label for="title">이름</Label>
+                    {
+//
+                        friendList.map((item, i) => {
+                                return <li key={i} className="list-group-item">
+                                    <div className="users-list-body">
+                                        <div>
+                                            <h5>{item.userNo}</h5>
+                                            <p>{item.friendNo}</p>
+                                        </div>
+                                        <div>
+                                            <input type="checkbox" style ={{
+                                                width : 20,
+                                                height : 20,
+                                            }}/>
+                                        </div>
+                                    </div>
+                                </li>
+                            })
 
-                        </FormGroup>
-                        <FormGroup>
-                            <p>방 인원 목록</p>
-                            <div className="avatar-group">
-
-                            </div>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="description">방 설명</Label>
-                            <Input type="textarea" name="description" id="description"/>
-                        </FormGroup>
-                    </Form>
+                    }
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onClick={inviteFriends}>방 만들기</Button>

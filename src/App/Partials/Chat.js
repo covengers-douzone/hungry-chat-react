@@ -8,19 +8,13 @@ import io from "socket.io-client"
 import fetchApi from "../Module/fetchApi";
 function Chat() {
 
-    const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
-
     const {selectedChat} = useSelector(state => state);
-    const {messageLength} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {participantNo} = useSelector(state => state);
 
     const [inputMsg, setInputMsg] = useState('');
 
     const [scrollEl, setScrollEl] = useState();
-
-
-
 
     const handleSubmit = (newValue) => {
         myFetch(null,null).send(roomNo,participantNo,newValue.text , );
@@ -33,7 +27,6 @@ function Chat() {
     };
 
 
-
     useEffect(() => {
         if (scrollEl) {
             setTimeout(() => {
@@ -43,9 +36,7 @@ function Chat() {
     });
 
     const MessagesView = (props) => {
-        //console.log("MessagesView")
         const {message} = props;
-
 
         if (message.type === 'divider') {
             return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
