@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
-import {useHistory} from "react-router-dom";
 
-function SignUp() {
+function SignUp({history}) {
     let [ color, setColor ] = useState("deeppink");
     let [ code, setCode ] = useState('');
     let [ disabledCode, setDisabledCode ] = useState(true);
     let [ disabledSendBtn, setDisabledSendBtn ] = useState(true);
     let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
-    let history = useHistory();
 
     // /*
     function getNumHandler(e){

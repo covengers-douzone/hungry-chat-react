@@ -15,20 +15,17 @@ import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
 import {userNoAction} from "../../Store/Actions/userNoAction";
 
 
-function Index({UserNo}) {
 
+function Index({userNo, history}) {
 
+    const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
-
     const userRoomList = [];
-
     const [roomList, setRoomList] = useState([]);
 
-    console.log("UserNo" , UserNo)
 
     useEffect(()=>{
-
-        fetchApi(roomList,setRoomList).getRoomList(UserNo, localStorage.getItem("Authorization"));
+        fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
     },[]);
 
     roomList.map((room) => {
@@ -51,7 +48,7 @@ function Index({UserNo}) {
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList} userNo={UserNo}/>
+                        return <ChatsIndex roomList={userRoomList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex/>
                     } else if (selectedSidebar === 'Favorites') {

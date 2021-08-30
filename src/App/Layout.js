@@ -10,10 +10,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {userNoAction} from "../Store/Actions/userNoAction";
 
 
-function Layout() {
-    const dispatch = useDispatch;
-
+function Layout({history}) {
     // pathVariable
+    const dispatch = useDispatch;
     const {UserNo} = useParams();
 
 
@@ -37,7 +36,7 @@ function Layout() {
         <div className="layout">
             <Navigation/>
             <div className="content">
-                <SidebarIndex UserNo={UserNo}/>
+                <SidebarIndex userNo={UserNo} history={history}/>
                 <Chat/>
                 <Profile/>
                 <DisconnectedModal/>

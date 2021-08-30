@@ -53,7 +53,7 @@ function AddGroupModal({userNo}) {
     }
 
     const createRoom = () => {
-        fetchApi(null,null).create(title,2);
+        fetchApi(null,null).create(title,2, localStorage.getItem("Authorization"));
         setModal(!modal);
     }
 
