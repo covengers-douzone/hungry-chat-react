@@ -35,16 +35,21 @@ function AddGroupModal({userNo}) {
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const disfetch  = useDispatch
-
+    let friendList;
 
 
     const openInviteModal  = async () => {
         console.log("openInviteModal")
-
-        const list = await fetchApi(null,null).getFriendList(userNo)
-        disfetch(friendListAction(list))
+         friendList = await fetchApi(null,null).getFriendList(userNo)
+        console.log(friendList)
 
         setOpenInvite(!openInvite)
+    }
+    const InviteModal2 = (props) => {
+        if (props) {
+            return <InviteModal userNo = {userNo} openValue = {openInvite} friendList = {friendList} />;
+        }
+        return null
     }
 
     // Create Button Event
@@ -119,7 +124,8 @@ function AddGroupModal({userNo}) {
                                 <AvatarTooltip name="Cloe Jeayes" id={2}/>
 
                                 <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
-                                    <InviteModal userNo = {userNo} openValue = {openInvite} />
+                                    {<InviteModal2 openInvite = {openInvite}/> }
+                                    {/*<InviteModal userNo = {userNo} openValue = {openInvite} friendList = {friendList} />*/}
                                     <figure className="avatar">
                                         <span className="avatar-title bg-primary rounded-circle">+</span>
                                     </figure>

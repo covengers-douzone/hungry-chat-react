@@ -10,13 +10,15 @@ function Chat() {
     const {selectedChat} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {participantNo} = useSelector(state => state);
+    const {headCount} = useSelector(state => state)
 
     const [inputMsg, setInputMsg] = useState('');
     const [scrollEl, setScrollEl] = useState();
 
 
     const handleSubmit = (newValue) => {
-        myFetch(null, null).send(roomNo, participantNo, newValue.text, localStorage.getItem("Authorization"));
+        console.log("handleSubmit", headCount)
+        myFetch(null, null).send(roomNo, participantNo, headCount , newValue.text, localStorage.getItem("Authorization"));
         setInputMsg("");
     };
 

@@ -19,9 +19,8 @@ import {friendLists} from "../Sidebars/Friends/Data";
 import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
 import friendListReducer from "../../Store/Reducers/friendListReducer";
 
-function InviteModal({userNo,openValue}) {
+function InviteModal({userNo,openValue , friendList}) {
 
-    const {friendList} =  useSelector(state=>state)
 
     const [modal, setModal] = useState(false);
 
@@ -88,12 +87,14 @@ function InviteModal({userNo,openValue}) {
         <div>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> 친구 목록
+                    <i className="fa fa-users"></i> 친구 목록 {modal}
                 </ModalHeader>
                 <ModalBody>
                     {
 //
-                        friendList.map((item, i) => {
+
+                        modal === true ?
+                        friendLists.map((item, i) => {
                                 return <li key={i} className="list-group-item">
                                     <div className="users-list-body">
                                         <div>
@@ -108,7 +109,7 @@ function InviteModal({userNo,openValue}) {
                                         </div>
                                     </div>
                                 </li>
-                            })
+                            }) : null
 
                     }
                 </ModalBody>

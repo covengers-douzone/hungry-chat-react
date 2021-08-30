@@ -15,6 +15,7 @@ import io from "socket.io-client"
 import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import * as config from  "../../../config/config"
+import {headCountAction} from "../../../Store/Actions/headCountAction";
 
 function Index({roomList, userNo, history}) {
 
@@ -31,6 +32,8 @@ function Index({roomList, userNo, history}) {
 
     const {roomNo} = useSelector(state => state);
 
+    let headCount;
+
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const [chatList, setChatList] = useState([]);
@@ -43,18 +46,24 @@ function Index({roomList, userNo, history}) {
         inputRef.current.focus();
     });
 
-    const callback = ({socketUserNo, text, data, notReadCount}) => {
+    const callback =  async ({socketUserNo, text, data, notReadCount , chatNo}) => {
         console.log('--->callback', selectedChat.messages.length); //[] -> {}
-
         socketUserNo === userNo && selectedChat.messages && selectedChat.messages.push({
             userNo, text, data, notReadCount, type: "outgoing-message"
         })
-
         socketUserNo !== userNo && selectedChat.messages && selectedChat.messages.push({
             userNo, text, data, notReadCount
         })
 
-        dispatch(messageLengthAction(selectedChat.messages.length))
+
+       fetchApi(null,null).updateSendNotReadCount(chatNo);
+
+        dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
+
+
+
+
+        
 
     }
 
@@ -69,9 +78,14 @@ function Index({roomList, userNo, history}) {
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
-        }, (response) => {
+        }, async (response) => {
             console.log("join res ", response.status)
-            response.status === 'ok' && fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+            response.status === 'ok' && await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+            dispatch(headCountAction(await fetchApi(null,null).getHeadCount(participantNo,localStorage.getItem("Authorization") )))
+            console.log("headCount" , headCount)
+
+
+
         });
         socket.on('message', callback);
 
@@ -119,6 +133,8 @@ function Index({roomList, userNo, history}) {
                 });
 
             }
+
+
             chat.unread_messages = 0;
 
             dispatch(participantNoAction(chat.participantNo))
@@ -129,6 +145,7 @@ function Index({roomList, userNo, history}) {
 
             dispatch(selectedChatAction(chat));
             dispatch(mobileSidebarAction(false));
+
         } catch (e){
             if(e === "System Error"){
                 history.push("/error/500") // 500 Page(DB error) // 수정 필요

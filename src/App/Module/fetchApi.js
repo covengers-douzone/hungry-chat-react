@@ -12,7 +12,7 @@ export default function (defaultState , setState) {
                     credentials: 'include',
                     headers: {
                         "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": "http://localhost:9999",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
@@ -40,7 +40,7 @@ export default function (defaultState , setState) {
                     method: 'get',
                     headers: {
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
@@ -62,7 +62,7 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        send: async function (roomNo,participantNo,contents, token) {
+        send: async function (roomNo,participantNo, headCount ,contents, token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/message/`, {
                     method: 'post',
@@ -70,13 +70,14 @@ export default function (defaultState , setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
                         roomNo,
                         participantNo,
+                        headCount,
                         contents
                     }),
                 });
@@ -95,6 +96,36 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        updateSendNotReadCount: async function (chatNo , token) {
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/updateSendNotReadCount/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        chatNo,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                console.log(json)
+            } catch (err) {
+                console.error(err);
+            }
+        },
         create: async function (title , UserNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/create/`, {
@@ -103,7 +134,7 @@ export default function (defaultState , setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -133,7 +164,7 @@ export default function (defaultState , setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -162,7 +193,7 @@ export default function (defaultState , setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -187,7 +218,7 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getUserList: async function (UserNo , FriendNo, token) { // 방 생성
+        getFriendList: async function (UserNo , FriendNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getFriendList/`, {
                     method: 'post',
@@ -195,7 +226,7 @@ export default function (defaultState , setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -217,6 +248,39 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        getHeadCount: async function (participantNo , token) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/getHeadCount/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        participantNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+
+
+
         joinRoom: async function (ParticipantNo) { // 채팅 메시지의 notReadCount를 모두 감소
             try {
                 const response = await fetch(`${domain}:${PORT}/api/joinRoom/`, {
