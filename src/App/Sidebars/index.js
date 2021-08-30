@@ -21,11 +21,14 @@ function Index({userNo, history}) {
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
     const userRoomList = [];
+    const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
+
 
 
     useEffect(()=>{
         fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+        fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
     },[]);
 
     roomList.map((room) => {
@@ -43,12 +46,13 @@ function Index({userNo, history}) {
         });
     })
 
+
     return (
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList} userNo={userNo} history={history}/>
+                        return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex/>
                     } else if (selectedSidebar === 'Favorites') {

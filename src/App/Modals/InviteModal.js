@@ -19,27 +19,55 @@ import {friendLists} from "../Sidebars/Friends/Data";
 import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
 import friendListReducer from "../../Store/Reducers/friendListReducer";
 
-function InviteModal({userNo,openValue , friendList}) {
+function InviteModal({
+                         userNo,
+                         openValue,
+                         friendList,
+                         callbackItem,
+                         callbackAddItem,
+                         callbackDeleteItem,
+                         callbackComplete
+                     }) {
 
 
     const [modal, setModal] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
+
+    const [bChecked, setChecked] = useState(false);
+
+
+    const checkHandler = (no, {target}) => {
+        setChecked(!bChecked);
+        checkedItemHandler(no, target.checked);
+        //   console.log("no" , no)
+
+    };
+
+    const checkedItemHandler = (no, isChecked) => {
+        if (isChecked) {
+            callbackAddItem(no);
+            //  callbackItem(no);
+        } else if (!isChecked) {
+            callbackDeleteItem(no);
+            //    callbackItem(no);
+        }
+
+    };
+
     useEffect(() => {
 
-
-        if(openValue === true){
+        if (openValue === true) {
             setModal(true)
-            console.log("friendList" , friendList)
-        }else{
+        } else {
             setModal(!openValue);
         }
 
-    },[openValue])
+    }, [openValue])
     useEffect(() => {
-       setModal(false)
-    },[])
+        setModal(false)
+    }, [])
 
     useEffect(() => {
         function handleTouchMove(event) {
@@ -47,6 +75,7 @@ function InviteModal({userNo,openValue , friendList}) {
                 event.preventDefault(); // 여기가 핵심
             }
         }
+
         window.addEventListener("touchmove", handleTouchMove, {
             passive: false
         });
@@ -55,16 +84,16 @@ function InviteModal({userNo,openValue , friendList}) {
     }, [modal]);
 
     // Create Button Event
-    const modalToggle =  async () => {
+    const modalToggle = async () => {
         console.log()
         setModal(!modal);
     }
     const inviteFriends = () => {
+        callbackComplete()
         setModal(!modal);
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
-
 
 
     const AvatarTooltip = (props) => {
@@ -91,21 +120,20 @@ function InviteModal({userNo,openValue , friendList}) {
                 </ModalHeader>
                 <ModalBody>
                     {
-//
-
                         modal === true ?
-                        friendLists.map((item, i) => {
+                            friendList.map((item, i) => {
                                 return <li key={i} className="list-group-item">
+                                    {item.avatar}
                                     <div className="users-list-body">
                                         <div>
-                                            <h5>{item.userNo}</h5>
-                                            <p>{item.friendNo}</p>
+                                            <h5>{item.name}</h5>
+                                            <p>{item.nickname}</p>
                                         </div>
                                         <div>
-                                            <input type="checkbox" style ={{
-                                                width : 20,
-                                                height : 20,
-                                            }}/>
+                                            <input type="checkbox" key={i} style={{
+                                                width: 20,
+                                                height: 20,
+                                            }} onChange={(e) => checkHandler(item.no, e)}/>
                                         </div>
                                     </div>
                                 </li>
@@ -114,7 +142,7 @@ function InviteModal({userNo,openValue , friendList}) {
                     }
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={inviteFriends}>방 만들기</Button>
+                    <Button color="primary" onClick={inviteFriends}>선택</Button>
                 </ModalFooter>
             </Modal>
         </div>

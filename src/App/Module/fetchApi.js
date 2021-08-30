@@ -126,9 +126,9 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        create: async function (title , UserNo, token) { // 방 생성
+        createRoom: async function (title, headCount,  type ,  password  , token) { // 방 생성
             try {
-                const response = await fetch(`${domain}:${PORT}/api/create/`, {
+                const response = await fetch(`${domain}:${PORT}/api/createRoom/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
@@ -140,7 +140,9 @@ export default function (defaultState , setState) {
                     },
                     body: JSON.stringify({
                         title,
-                        UserNo
+                        headCount,
+                        type,
+                        password ,
                     }),
                 });
 
@@ -152,6 +154,38 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        createParticipant: async function (UserNo , roomNo , role , token) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/createParticipant/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        UserNo,roomNo,role
+
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+
             } catch (err) {
                 console.error(err);
             }
@@ -218,7 +252,7 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getFriendList: async function (UserNo , FriendNo, token) { // 방 생성
+        getFriendList: async function (UserNo , token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getFriendList/`, {
                     method: 'post',
@@ -243,6 +277,7 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
+                json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data
             } catch (err) {
                 console.error(err);
@@ -278,19 +313,21 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-
-
-
-        joinRoom: async function (ParticipantNo) { // 채팅 메시지의 notReadCount를 모두 감소
+        updateRoomNotReadCount: async function (participantNo , roomNo , token) { // 채팅 메시지의 notReadCount를 모두 감소
             try {
-                const response = await fetch(`${domain}:${PORT}/api/joinRoom/`, {
+                const response = await fetch(`${domain}:${PORT}/api/updateRoomNotReadCount/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
-                        ParticipantNo
+                        participantNo,
+                        roomNo,
                     }),
                 });
 
@@ -307,38 +344,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        exitRoom: async function (ParticipantNo) { // 채팅 메시지의 notReadCount를 모두 감소
+        updateLastReadAt: async function (ParticipantNo, token) { // 마지막 읽은 시각을 찾는다
             try {
-                const response = await fetch(`${domain}:${PORT}/api/exitRoom/`, {
+                const response = await fetch(`${domain}:${PORT}/api/updateLastReadAt/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ParticipantNo
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
-                }
-
-                const json = await response.json();
-                if (json.result !== 'success') {
-                    throw json.message;
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        },
-        getLastReadAt: async function (ParticipantNo,roomNo,) { // 마지막 읽은 시각을 찾는다
-            try {
-                const response = await fetch(`${domain}:${PORT}/api/getFriendList/`, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         ParticipantNo

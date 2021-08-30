@@ -17,7 +17,7 @@ import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import * as config from  "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
 
-function Index({roomList, userNo, history}) {
+function Index({roomList, friendList ,  userNo, history , }) {
 
 
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
@@ -60,11 +60,6 @@ function Index({roomList, userNo, history}) {
 
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
 
-
-
-
-        
-
     }
 
 
@@ -79,11 +74,9 @@ function Index({roomList, userNo, history}) {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
         }, async (response) => {
-            console.log("join res ", response.status)
             response.status === 'ok' && await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+             await fetchApi(null,null).updateRoomNotReadCount(participantNo,roomNo, localStorage.getItem("Authorization"))
             dispatch(headCountAction(await fetchApi(null,null).getHeadCount(participantNo,localStorage.getItem("Authorization") )))
-            console.log("headCount" , headCount)
-
 
 
         });
@@ -93,6 +86,7 @@ function Index({roomList, userNo, history}) {
             if (roomNo) {
                 console.log("방 나가기")
                 fetchApi(null, null).setStatus(participantNo, 0);
+                fetchApi(null,null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
                 socket.disconnect();
             }
         }
@@ -181,7 +175,7 @@ function Index({roomList, userNo, history}) {
                 <span>Chats</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddGroupModal userNo = {userNo}/>
+                        <AddGroupModal userNo = {userNo} friendList = {friendList}/>
                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
