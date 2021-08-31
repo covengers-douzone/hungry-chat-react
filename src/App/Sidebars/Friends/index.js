@@ -5,9 +5,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddFriendsModal from "../../Modals/AddFriendModal"
 import FriendsDropdown from "./FriendsDropdown"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction"
-import {friendLists} from "./Data"
 
-function Index() {
+function Index({roomList, friendList ,  userNo, history }) {
 
     useEffect(() => {
         inputRef.current.focus();
@@ -53,7 +52,7 @@ function Index() {
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
-                        {friendLists.filter((item) => {
+                        {friendList.filter((item) => {
                             if(searchTerm == ""){
                                 return item
                             } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
