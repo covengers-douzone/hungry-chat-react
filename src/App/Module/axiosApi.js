@@ -5,6 +5,7 @@ import * as config from "../../config/config";
 const token = localStorage.getItem("Authorization");
 const userNo = localStorage.getItem("userNo");
 const username = localStorage.getItem("username");
+const URL = "http://localhost:9999"
 
 const header =  {
         'Content-Type': 'application/json',
@@ -17,19 +18,20 @@ const header =  {
 
 
 export const getNickname = async (data) => {
-    console.log(data);
+        console.log(data.get("Authorization"));
        await axios.post(
-        `${config.FETCH_API_IP}:${config.FETCH_API_PORT}/api/getNickname/`,
+        `${URL}/api/getNickname/`,
         data,
         {
             headers: header,
             mode: 'no-cors',
             withCredentials: true
         }).then(response => {
-        console.log(response.data);
+        console.log(response);
         // return response;
     }).catch(err => {
-        console.log(`${err.status} : ${err.message}`);
+        // console.log(`${err.status} : ${err.message}`);
+           console.log(err.response);
     })
 }
 

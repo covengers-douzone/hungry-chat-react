@@ -21,7 +21,6 @@ import classnames from 'classnames'
 
 function SettingsModal(props) {
 
-    const [ profileImage, setProfileImage ] = useState("http://simpleicon.com/wp-content/uploads/account.png");
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
         if (activeTab !== tab) setActiveTab(tab);
@@ -31,19 +30,26 @@ function SettingsModal(props) {
 
 
     // 변경한 데이터 저장하기
+    const [ profileImage, setProfileImage ] = useState("http://simpleicon.com/wp-content/uploads/account.png");
     const [ nickname, setNickname ] = useState(localStorage.getItem("name"));
     const [ password, setPassword ] = useState(null);
     const [ file, setFile ] = useState(null);
 
-    const send = event => {
-        const data = new FormData();
-        data.append("file", file);
-        data.append("nickname", nickname);
-        data.append("userNo", localStorage.getItem("userNo"));
-        if(password != null){
-            data.append("password", password.toString());
+    const send = async event => {
+        event.preventDefault();
+        try{
+            const data = new FormData();
+            data.append("file", file);
+            data.append("nickname", nickname);
+            data.append("userNo", localStorage.getItem("userNo"));
+            data.append("Authorization", localStorage.getItem("Authorization"));
+            if(password != null){
+                data.append("password", password.toString());
+            }
+            await getNickname(data);
+        }catch (err){
+            console.log(err.response);
         }
-        getNickname(data);
     }
 
     return (
