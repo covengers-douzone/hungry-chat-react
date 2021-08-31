@@ -38,7 +38,6 @@ function Chat() {
     });
 
     const MessagesView = (props) => {
-
         const {message} = props;
 
         if (message.type === 'divider') {

@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
-//import {useLocation} from "react-router";
 import {useHistory} from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 function ResetPassword({location}) {
-
+    const { register, handleSubmit, errors } = useForm();
     let history = useHistory();
     const foundUsername = location.username;
     console.log(foundUsername);
     useEffect(() => document.body.classList.add('form-membership'), []);
 
-    function handleSubmit(e) {
+    const onSubmit = function handleSubmit(errors, e) {
     e.preventDefault();
 
     fetch("http://localhost:8888/api/user/passwordupdate", {
@@ -40,12 +40,19 @@ function ResetPassword({location}) {
                 <Logo/>
             </div>
             <h5>Reset password</h5>
-            <form onSubmit = {handleSubmit}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
                 <div className="form-group">
                     <input id="username" name="username" className="form-control form-control-lg" type="hidden" value={foundUsername} />
                 </div>
                 <div className="form-group">
-                    <input id="password" name="password" type="password" className="form-control form-control-lg" placeholder="password" required autoFocus/>
+                    <input ref={register({
+                        required:"Required",
+                        pattern:{
+                            value: /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
+                            message: "문자,숫자,특수문자포함 8~15자리"
+                        }
+                    })} id="password" name="password" type="password" className="form-control form-control-lg" placeholder="문자,숫자,특수문자포함 8~15자리" required autoFocus/>
+                    <span >{errors.password && errors.password.message}</span>
                 </div>
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Submit</button>
 

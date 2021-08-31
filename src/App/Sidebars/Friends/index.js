@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {useDispatch} from "react-redux"
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -22,6 +22,8 @@ function Index() {
         document.body.classList.remove('navigation-open');
     };
 
+    const [searchTerm, setSearchTerm] = useState("");
+
     return (
         <div className="sidebar active">
             <header>
@@ -38,13 +40,26 @@ function Index() {
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search friends" ref={inputRef}/>
+                <input
+                    type="text" 
+                    className="form-control" 
+                    placeholder="Search friends" 
+                    ref={inputRef} 
+                    onChange={e=> {
+                        setSearchTerm(e.target.value)
+                        }}
+                />
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
-                        {
-                            friendLists.map((item, i) => {
+                        {friendLists.filter((item) => {
+                            if(searchTerm == ""){
+                                return item
+                            } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                                return item
+                            }
+                        }).map((item, i) => {
                                 return <li key={i} className="list-group-item">
                                     {item.avatar}
                                     <div className="users-list-body">

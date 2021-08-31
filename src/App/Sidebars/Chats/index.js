@@ -19,7 +19,6 @@ import {headCountAction} from "../../../Store/Actions/headCountAction";
 
 function Index({roomList, friendList, userNo, history,}) {
 
-
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
 
     const dispatch = useDispatch();
@@ -79,9 +78,6 @@ function Index({roomList, friendList, userNo, history,}) {
         console.log(message)
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
     }
-
-
-
 
     useEffect(() => {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
@@ -144,6 +140,7 @@ function Index({roomList, friendList, userNo, history,}) {
         try {
             chat.unread_messages = 1
             dispatch(participantNoAction(chat.participantNo))
+
             dispatch(roomNoAction(chat.id))
             if (chat.messages) {
                 dispatch(messageLengthAction(chat.messages.length))
@@ -177,7 +174,6 @@ function Index({roomList, friendList, userNo, history,}) {
                     <ChatsDropdown/>
                 </div>
             </div>
-
         </li>
     };
 
