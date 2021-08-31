@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 
+import {useHistory} from "react-router-dom";
+import { useForm } from "react-hook-form";
+
 function SignUp({history}) {
     let [ color, setColor ] = useState("deeppink");
     let [ code, setCode ] = useState('');
@@ -8,7 +11,8 @@ function SignUp({history}) {
     let [ disabledSendBtn, setDisabledSendBtn ] = useState(true);
     let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
 
-    // /*
+    const { register, handleSubmit, errors } = useForm();
+
     function getNumHandler(e){
         e.preventDefault();
         if(e.target.value.length === 11){
@@ -67,7 +71,7 @@ function SignUp({history}) {
      // */
 
 
-    function handleSubmit(e){
+    const onSubmit = function handleSubmit(errors, e){
         e.preventDefault();
         fetch("http://localhost:8888/api/user/join", {
             method: "POST",
@@ -107,14 +111,13 @@ function SignUp({history}) {
 
     useEffect(() => document.body.classList.add('form-membership'), []);
 
-
     return (
         <div className="form-wrapper">
             <div className="logo">
                 <Logo/>
             </div>
             <h5>Create account</h5>
-            <form onSubmit={ handleSubmit }>
+            <form onSubmit={ handleSubmit(onSubmit) }>
                 <div className="form-group">
                     <input name="name" type="text" className="form-control form-control-lg" placeholder="Name" required autoFocus/>
                 </div>
@@ -122,7 +125,14 @@ function SignUp({history}) {
                     <input name="email" type="email" className="form-control form-control-lg" placeholder="Email" required/>
                 </div>
                 <div className="form-group">
-                    <input name="password" type="password" className="form-control form-control-lg" placeholder="Password" required/>
+                    <input ref={register({
+                        required:"Required",
+                        pattern:{
+                            value: /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
+                            message: "문자,숫자,특수문자포함 8~15자리"
+                        }
+                    })} name="password" type="password" className="form-control form-control-lg" placeholder="문자,숫자,특수문자포함 8~15자리"  required/>
+                    <span >{errors.password && errors.password.message}</span>
                 </div>
                 <div className="form-group">
                     <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
