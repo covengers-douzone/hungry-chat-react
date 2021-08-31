@@ -62,6 +62,33 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        getChat: async function (chatNo,token) {
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/getChat/${chatNo}`, {
+                    method: 'get',
+                    headers: {
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
+                    }
+                });
+
+                if (!response.ok) {
+                    return null; // token error
+                    //throw new Error(`System Error : ${response.status} ${response.statusText}`);
+                }
+                const json = await response.json();
+                if (json.result !== 'success') { // DB error
+                    return json.message;
+                }
+                return json.data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
         send: async function (roomNo,participantNo, headCount ,contents, token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/message/`, {

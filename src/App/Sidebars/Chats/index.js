@@ -14,10 +14,10 @@ import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
 import io from "socket.io-client"
 import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
-import * as config from  "../../../config/config"
+import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
 
-function Index({roomList, friendList ,  userNo, history , }) {
+function Index({roomList, friendList, userNo, history,}) {
 
 
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
@@ -32,11 +32,29 @@ function Index({roomList, friendList ,  userNo, history , }) {
 
     const {roomNo} = useSelector(state => state);
 
-    let headCount;
-
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const [chatList, setChatList] = useState([]);
+
+    const [roomOk , setRoomOk] = useState(false);
+
+    const chatForm = (chat) => {
+        if (chat.Participant.no !== Number(participantNo)) {
+            return ({
+                text: chat.contents,
+                date: chat.createdAt,
+                notReadCount: chat.notReadCount,
+            })
+        } else {
+            return ({
+                text: chat.contents,
+                date: chat.createdAt,
+                notReadCount: chat.notReadCount,
+                type: 'outgoing-message'
+            })
+        }
+    }
+
 
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
@@ -46,18 +64,23 @@ function Index({roomList, friendList ,  userNo, history , }) {
         inputRef.current.focus();
     });
 
-    const callback =  async ({socketUserNo, text, data, notReadCount , chatNo}) => {
-        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && selectedChat.messages.push({
-            userNo, text, data, notReadCount, type: "outgoing-message"
-        })
-        Number(socketUserNo) !== Number(participantNo) && selectedChat.messages && selectedChat.messages.push({
-            userNo, text, data, notReadCount
-        })
-       fetchApi(null,null).updateSendNotReadCount(chatNo);
+    const callback = async ({socketUserNo, chatNo}) => {
+        await fetchApi(null, null).updateSendNotReadCount(chatNo);
 
+        const chat = await fetchApi(null,null).getChat(chatNo,localStorage.getItem("Authorization"));
+
+        const message ={
+            userNo , text: chat.contents ,date: chat.createdAt , notReadCount: chat.notReadCount
+        }
+        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
+
+        selectedChat.messages && selectedChat.messages.push(message);
+
+        console.log(message)
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
-
     }
+
+
 
 
     useEffect(() => {
@@ -67,24 +90,44 @@ function Index({roomList, friendList ,  userNo, history , }) {
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
+        socket.on('roomUsers',async ({room,users})=>{
+            setTimeout(async () => {
+                // 새로운 유저 왔을 때
+                if(users[users.length -1].id !== socket.id){
+                    // chat list update
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, localStorage.getItem("Authorization"))
+                    const chats = chatlist.map(chatForm);
+                    selectedChat.messages = chats;
+                    dispatch(messageLengthAction(selectedChat.messages.length - 1))
+                }
+            } , 1000)
+
+        })
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
         }, async (response) => {
-            response.status === 'ok' && await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
-             await fetchApi(null,null).updateRoomNotReadCount(participantNo,roomNo, localStorage.getItem("Authorization"))
-            dispatch(headCountAction(await fetchApi(null,null).getHeadCount(participantNo,localStorage.getItem("Authorization") )))
-
-
+            if(response.status === 'ok'){
+                // update status
+                await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+                // update notReadCount
+                await fetchApi(null, null).updateRoomNotReadCount(participantNo, roomNo, localStorage.getItem("Authorization"))
+                // set headCount(입장한 방)
+                dispatch(headCountAction(await fetchApi(null, null).getHeadCount(participantNo, localStorage.getItem("Authorization"))))
+                // chat list 불러오기
+                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, localStorage.getItem("Authorization"))
+                const chats = chatlist.map(chatForm);
+                selectedChat.messages = chats;
+                dispatch(messageLengthAction(selectedChat.messages.length - 1))
+            }
         });
         socket.on('message', callback);
 
-        return async () => {
+        return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
-                console.log("방 나가기" , participantNo)
-
-                await fetchApi(null, null).setStatus(participantNo, 0 , localStorage.getItem("Authorization"));
-                await fetchApi(null,null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
+                console.log("방나가기")
+                await fetchApi(null, null).setStatus(participantNo, 0, localStorage.getItem("Authorization"));
+                await fetchApi(null, null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
                 socket.disconnect();
             }
         }
@@ -98,58 +141,18 @@ function Index({roomList, friendList ,  userNo, history , }) {
 
 
     const chatSelectHandle = async (chat) => {
-        try{
-
-            const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id, localStorage.getItem("Authorization"))
-            if (chatlist === "System Error"){
-               throw chatlist;
-            }
-
-            console.log("chatSelectHandle", chatlist)
-            let room;
-            if (chatlist.length !== 0) { // 쳇 리스트가 0이 되면 Error
-                room = roomList.filter(room => room.id === chatlist[0].roomNo);
-            }
-
-            const participantNo = chat.participantNo; // 현재 자신의 participantNo 와  chat의  participantNo 와 비교하여 메세지를 왼쪽 / 오른쪽을 구분 한다.
-            if (room && room.length) {
-                room[0].messages = chatlist.map(chat => {
-                    if (chat.Participant.no !== Number(participantNo)) {
-                        return ({
-                            text: chat.contents,
-                            date: chat.createdAt,
-                            notReadCount : chat.notReadCount,
-
-
-                        })
-                    } else {
-                        return ({
-                            text: chat.contents,
-                            date: chat.createdAt,
-                            notReadCount : chat.notReadCount,
-
-                            type: 'outgoing-message'
-                        })
-                    }
-
-                });
-            }
-
-
-
-          chat.unread_messages =1
-
-            dispatch(participantNoAction(participantNo))
+        try {
+            chat.unread_messages = 1
+            dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
             if (chat.messages) {
                 dispatch(messageLengthAction(chat.messages.length))
             }
-
             dispatch(selectedChatAction(chat));
             dispatch(mobileSidebarAction(false));
 
-        } catch (e){
-            if(e === "System Error"){
+        } catch (e) {
+            if (e === "System Error") {
                 history.push("/error/500") // 500 Page(DB error) // 수정 필요
             } else {
                 // Token 문제 발생 시 -> return null -> length error -> catch
@@ -184,7 +187,7 @@ function Index({roomList, friendList ,  userNo, history , }) {
                 <span>Chats</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddGroupModal userNo = {userNo} friendList = {friendList}/>
+                        <AddGroupModal userNo={userNo} friendList={friendList}/>
                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
