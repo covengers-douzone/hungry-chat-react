@@ -47,15 +47,12 @@ function Index({roomList, friendList ,  userNo, history , }) {
     });
 
     const callback =  async ({socketUserNo, text, data, notReadCount , chatNo}) => {
-        console.log('--->callback', selectedChat.messages.length); //[] -> {}
-        socketUserNo === userNo && selectedChat.messages && selectedChat.messages.push({
+        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && selectedChat.messages.push({
             userNo, text, data, notReadCount, type: "outgoing-message"
         })
-        socketUserNo !== userNo && selectedChat.messages && selectedChat.messages.push({
+        Number(socketUserNo) !== Number(participantNo) && selectedChat.messages && selectedChat.messages.push({
             userNo, text, data, notReadCount
         })
-
-
        fetchApi(null,null).updateSendNotReadCount(chatNo);
 
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
@@ -82,11 +79,12 @@ function Index({roomList, friendList ,  userNo, history , }) {
         });
         socket.on('message', callback);
 
-        return () => {
+        return async () => {
             if (roomNo) {
-                console.log("방 나가기")
-                fetchApi(null, null).setStatus(participantNo, 0);
-                fetchApi(null,null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
+                console.log("방 나가기" , participantNo)
+
+                await fetchApi(null, null).setStatus(participantNo, 0 , localStorage.getItem("Authorization"));
+                await fetchApi(null,null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
                 socket.disconnect();
             }
         }
@@ -101,37 +99,47 @@ function Index({roomList, friendList ,  userNo, history , }) {
 
     const chatSelectHandle = async (chat) => {
         try{
+
             const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id, localStorage.getItem("Authorization"))
             if (chatlist === "System Error"){
                throw chatlist;
             }
+
+            console.log("chatSelectHandle", chatlist)
             let room;
-            if (chatlist.length !== 0) {
+            if (chatlist.length !== 0) { // 쳇 리스트가 0이 되면 Error
                 room = roomList.filter(room => room.id === chatlist[0].roomNo);
             }
 
+            const participantNo = chat.participantNo; // 현재 자신의 participantNo 와  chat의  participantNo 와 비교하여 메세지를 왼쪽 / 오른쪽을 구분 한다.
             if (room && room.length) {
                 room[0].messages = chatlist.map(chat => {
-                    if (chat.Participant.no !== Number(userNo)) {
+                    if (chat.Participant.no !== Number(participantNo)) {
                         return ({
                             text: chat.contents,
-                            date: chat.createdAt
+                            date: chat.createdAt,
+                            notReadCount : chat.notReadCount,
+
+
                         })
                     } else {
                         return ({
                             text: chat.contents,
                             date: chat.createdAt,
+                            notReadCount : chat.notReadCount,
+
                             type: 'outgoing-message'
                         })
                     }
-                });
 
+                });
             }
 
 
-            chat.unread_messages = 0;
 
-            dispatch(participantNoAction(chat.participantNo))
+          chat.unread_messages =1
+
+            dispatch(participantNoAction(participantNo))
             dispatch(roomNoAction(chat.id))
             if (chat.messages) {
                 dispatch(messageLengthAction(chat.messages.length))
@@ -166,6 +174,7 @@ function Index({roomList, friendList ,  userNo, history , }) {
                     <ChatsDropdown/>
                 </div>
             </div>
+
         </li>
     };
 

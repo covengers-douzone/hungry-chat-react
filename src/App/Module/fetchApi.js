@@ -344,7 +344,7 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        updateLastReadAt: async function (ParticipantNo, token) { // 마지막 읽은 시각을 찾는다
+        updateLastReadAt: async function (participantNo, token) { // 마지막 읽은 시각을 찾는다
             try {
                 const response = await fetch(`${domain}:${PORT}/api/updateLastReadAt/`, {
                     method: 'post',
@@ -357,7 +357,7 @@ export default function (defaultState , setState) {
                         Authorization: token
                     },
                     body: JSON.stringify({
-                        ParticipantNo
+                        participantNo
                     }),
                 });
 

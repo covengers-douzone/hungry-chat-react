@@ -37,6 +37,7 @@ function Chat() {
     });
 
     const MessagesView = (props) => {
+
         const {message} = props;
 
         if (message.type === 'divider') {
@@ -50,6 +51,12 @@ function Chat() {
                     <div className="message-action">
                         {message.date}
                         {message.type ? <i className="ti-double-check text-info"></i> : null}
+                    </div>
+                    <div>
+                        {message.date}
+                    </div>
+                    <div >
+                        {message.notReadCount}
                     </div>
                 </div>);
         }
