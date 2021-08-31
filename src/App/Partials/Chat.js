@@ -4,34 +4,28 @@ import ChatFooter from "./ChatFooter"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {useSelector} from "react-redux"
 import myFetch from "../Module/fetchApi";
-import io from "socket.io-client"
-import fetchApi from "../Module/fetchApi";
+
+
 function Chat() {
-
-    const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
-
     const {selectedChat} = useSelector(state => state);
-    const {messageLength} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {participantNo} = useSelector(state => state);
+    const {headCount} = useSelector(state => state)
 
     const [inputMsg, setInputMsg] = useState('');
-
     const [scrollEl, setScrollEl] = useState();
 
 
-
-
     const handleSubmit = (newValue) => {
-        myFetch(null,null).send(roomNo,participantNo,newValue.text , );
-       setInputMsg("");
+        console.log("handleSubmit", headCount)
+        myFetch(null, null).send(roomNo, participantNo, headCount , newValue.text, localStorage.getItem("Authorization"));
+        setInputMsg("");
     };
 
     const handleChange = (newValue) => {
         setInputMsg(newValue);
 
     };
-
 
 
     useEffect(() => {
@@ -43,9 +37,8 @@ function Chat() {
     });
 
     const MessagesView = (props) => {
-        //console.log("MessagesView")
-        const {message} = props;
 
+        const {message} = props;
 
         if (message.type === 'divider') {
             return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
@@ -58,6 +51,12 @@ function Chat() {
                     <div className="message-action">
                         {message.date}
                         {message.type ? <i className="ti-double-check text-info"></i> : null}
+                    </div>
+                    <div>
+                        {message.date}
+                    </div>
+                    <div >
+                        {message.notReadCount}
                     </div>
                 </div>);
         }

@@ -14,8 +14,10 @@ import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
 import io from "socket.io-client"
 import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
+import * as config from  "../../../config/config"
+import {headCountAction} from "../../../Store/Actions/headCountAction";
 
-function Index({roomList, userNo}) {
+function Index({roomList, friendList ,  userNo, history , }) {
 
 
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
@@ -30,6 +32,8 @@ function Index({roomList, userNo}) {
 
     const {roomNo} = useSelector(state => state);
 
+    let headCount;
+
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const [chatList, setChatList] = useState([]);
@@ -42,18 +46,16 @@ function Index({roomList, userNo}) {
         inputRef.current.focus();
     });
 
-    const callback = ({socketUserNo, text, data, notReadCount}) => {
-        console.log('--->callback', selectedChat.messages.length); //[] -> {}
-
-        socketUserNo === userNo && selectedChat.messages && selectedChat.messages.push({
+    const callback =  async ({socketUserNo, text, data, notReadCount , chatNo}) => {
+        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && selectedChat.messages.push({
             userNo, text, data, notReadCount, type: "outgoing-message"
         })
-
-        socketUserNo !== userNo && selectedChat.messages && selectedChat.messages.push({
+        Number(socketUserNo) !== Number(participantNo) && selectedChat.messages && selectedChat.messages.push({
             userNo, text, data, notReadCount
         })
+       fetchApi(null,null).updateSendNotReadCount(chatNo);
 
-        dispatch(messageLengthAction(selectedChat.messages.length))
+        dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
 
     }
 
@@ -62,20 +64,27 @@ function Index({roomList, userNo}) {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         }
-        const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
+
+        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
-        }, (response) => {
-            console.log("join res ", response.status)
-            response.status === 'ok' && fetchApi(null, null).setStatus(selectedChat.participantNo, 1)
+        }, async (response) => {
+            response.status === 'ok' && await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+             await fetchApi(null,null).updateRoomNotReadCount(participantNo,roomNo, localStorage.getItem("Authorization"))
+            dispatch(headCountAction(await fetchApi(null,null).getHeadCount(participantNo,localStorage.getItem("Authorization") )))
+
+
         });
         socket.on('message', callback);
 
-        return () => {
+        return async () => {
             if (roomNo) {
-                console.log("방 나가기")
-                fetchApi(null, null).setStatus(participantNo, 0);
+                console.log("방 나가기" , participantNo)
+
+                await fetchApi(null, null).setStatus(participantNo, 0 , localStorage.getItem("Authorization"));
+                await fetchApi(null,null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
                 socket.disconnect();
             }
         }
@@ -89,40 +98,66 @@ function Index({roomList, userNo}) {
 
 
     const chatSelectHandle = async (chat) => {
+        try{
 
-        const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id)
-        let room;
-        if (chatlist.length !== 0) {
-            room = roomList.filter(room => room.id === chatlist[0].roomNo);
+            const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id, localStorage.getItem("Authorization"))
+            if (chatlist === "System Error"){
+               throw chatlist;
+            }
+
+            console.log("chatSelectHandle", chatlist)
+            let room;
+            if (chatlist.length !== 0) { // 쳇 리스트가 0이 되면 Error
+                room = roomList.filter(room => room.id === chatlist[0].roomNo);
+            }
+
+            const participantNo = chat.participantNo; // 현재 자신의 participantNo 와  chat의  participantNo 와 비교하여 메세지를 왼쪽 / 오른쪽을 구분 한다.
+            if (room && room.length) {
+                room[0].messages = chatlist.map(chat => {
+                    if (chat.Participant.no !== Number(participantNo)) {
+                        return ({
+                            text: chat.contents,
+                            date: chat.createdAt,
+                            notReadCount : chat.notReadCount,
+
+
+                        })
+                    } else {
+                        return ({
+                            text: chat.contents,
+                            date: chat.createdAt,
+                            notReadCount : chat.notReadCount,
+
+                            type: 'outgoing-message'
+                        })
+                    }
+
+                });
+            }
+
+
+
+          chat.unread_messages =1
+
+            dispatch(participantNoAction(participantNo))
+            dispatch(roomNoAction(chat.id))
+            if (chat.messages) {
+                dispatch(messageLengthAction(chat.messages.length))
+            }
+
+            dispatch(selectedChatAction(chat));
+            dispatch(mobileSidebarAction(false));
+
+        } catch (e){
+            if(e === "System Error"){
+                history.push("/error/500") // 500 Page(DB error) // 수정 필요
+            } else {
+                // Token 문제 발생 시 -> return null -> length error -> catch
+                alert("Token invalid or Token expired. Please login again");
+                history.push("/sign-in");
+                console.log("Error : {}", e.message);
+            }
         }
-
-        if (room && room.length) {
-            room[0].messages = chatlist.map(chat => {
-                if (chat.Participant.no !== Number(userNo)) {
-                    return ({
-                        text: chat.contents,
-                        date: chat.createdAt
-                    })
-                } else {
-                    return ({
-                        text: chat.contents,
-                        date: chat.createdAt,
-                        type: 'outgoing-message'
-                    })
-                }
-            });
-
-        }
-        chat.unread_messages = 0;
-
-        dispatch(participantNoAction(chat.participantNo))
-        dispatch(roomNoAction(chat.id))
-        if (chat.messages) {
-            dispatch(messageLengthAction(chat.messages.length))
-        }
-
-        dispatch(selectedChatAction(chat));
-        dispatch(mobileSidebarAction(false));
     };
 
     const ChatListView = (props) => {
@@ -139,6 +174,7 @@ function Index({roomList, userNo}) {
                     <ChatsDropdown/>
                 </div>
             </div>
+
         </li>
     };
 
@@ -148,7 +184,7 @@ function Index({roomList, userNo}) {
                 <span>Chats</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddGroupModal/>
+                        <AddGroupModal userNo = {userNo} friendList = {friendList}/>
                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"

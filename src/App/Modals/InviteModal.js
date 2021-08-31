@@ -12,28 +12,62 @@ import {
     Input,
     InputGroup,
 } from 'reactstrap';
+import fetchApi from "../Module/fetchApi";
 
 import {useSelector} from "react-redux";
+import {friendLists} from "../Sidebars/Friends/Data";
+import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
+import friendListReducer from "../../Store/Reducers/friendListReducer";
 
-function InviteModal({openValue}) {
-    const friendsList = [{}]
+function InviteModal({
+                         userNo,
+                         openValue,
+                         friendList,
+                         callbackItem,
+                         callbackAddItem,
+                         callbackDeleteItem,
+                         callbackComplete
+                     }) {
+
 
     const [modal, setModal] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
 
+    const [bChecked, setChecked] = useState(false);
+
+
+    const checkHandler = (no, {target}) => {
+        setChecked(!bChecked);
+        checkedItemHandler(no, target.checked);
+        //   console.log("no" , no)
+
+    };
+
+    const checkedItemHandler = (no, isChecked) => {
+        if (isChecked) {
+            callbackAddItem(no);
+            //  callbackItem(no);
+        } else if (!isChecked) {
+            callbackDeleteItem(no);
+            //    callbackItem(no);
+        }
+
+    };
+
     useEffect(() => {
 
-        if(openValue === true){
+        if (openValue === true) {
             setModal(true)
-        }else{
+        } else {
             setModal(!openValue);
         }
-    },[openValue])
+
+    }, [openValue])
     useEffect(() => {
-       setModal(false)
-    },[])
+        setModal(false)
+    }, [])
 
     useEffect(() => {
         function handleTouchMove(event) {
@@ -41,6 +75,7 @@ function InviteModal({openValue}) {
                 event.preventDefault(); // 여기가 핵심
             }
         }
+
         window.addEventListener("touchmove", handleTouchMove, {
             passive: false
         });
@@ -49,15 +84,16 @@ function InviteModal({openValue}) {
     }, [modal]);
 
     // Create Button Event
-    const modalToggle = () => {
+    const modalToggle = async () => {
+        console.log()
         setModal(!modal);
     }
     const inviteFriends = () => {
+        callbackComplete()
         setModal(!modal);
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
-
 
 
     const AvatarTooltip = (props) => {
@@ -80,28 +116,33 @@ function InviteModal({openValue}) {
         <div>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> 친구 목록
+                    <i className="fa fa-users"></i> 친구 목록 {modal}
                 </ModalHeader>
                 <ModalBody>
-                    <Form>
-                        <FormGroup>
-                            <Label for="title">이름</Label>
+                    {
+                        modal === true ?
+                            friendList.map((item, i) => {
+                                return <li key={i} className="list-group-item">
+                                    {item.avatar}
+                                    <div className="users-list-body">
+                                        <div>
+                                            <h5>{item.name}</h5>
+                                            <p>{item.nickname}</p>
+                                        </div>
+                                        <div>
+                                            <input type="checkbox" key={i} style={{
+                                                width: 20,
+                                                height: 20,
+                                            }} onChange={(e) => checkHandler(item.no, e)}/>
+                                        </div>
+                                    </div>
+                                </li>
+                            }) : null
 
-                        </FormGroup>
-                        <FormGroup>
-                            <p>방 인원 목록</p>
-                            <div className="avatar-group">
-
-                            </div>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="description">방 설명</Label>
-                            <Input type="textarea" name="description" id="description"/>
-                        </FormGroup>
-                    </Form>
+                    }
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={inviteFriends}>방 만들기</Button>
+                    <Button color="primary" onClick={inviteFriends}>선택</Button>
                 </ModalFooter>
             </Modal>
         </div>

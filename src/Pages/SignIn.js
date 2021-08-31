@@ -1,10 +1,8 @@
 import React, {useEffect} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
-import {useHistory} from "react-router-dom";
 
 
-function SignIn() {
-    let history = useHistory();
+function SignIn({history}) {
     function loginHandler(e){
         e.preventDefault();
         if(e.target.email.value !== '' || e.target.password.value !== ''){
@@ -25,6 +23,7 @@ function SignIn() {
                 console.log(response.status);
                 if(response.status === 401){
                     alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
+                    console.log("중복된 데이터가 있는지 확인할것.")
                     history.push("/sign-in");
                 }else if (response.status === 500){
                     history.push("/sign-in");
@@ -38,6 +37,8 @@ function SignIn() {
                 .then(response => {
                     localStorage.setItem("Authorization", response.Authorization);
                     localStorage.setItem("username", response.username);
+                    localStorage.setItem("userNo", response.no.toString());
+
                     console.log(response.username);
                     console.log(response.Authorization);
                     console.log(response.no);

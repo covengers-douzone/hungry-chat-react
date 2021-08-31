@@ -15,23 +15,23 @@ import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
 import {userNoAction} from "../../Store/Actions/userNoAction";
 
 
-function Index({userNo}) {
+
+function Index({userNo, history}) {
 
     const dispatch = useDispatch;
-
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
-
     const userRoomList = [];
-
+    const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
 
-    useEffect(()=>{
 
+
+    useEffect(()=>{
         fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+        fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
     },[]);
 
     roomList.map((room) => {
-        dispatch(userNoAction((userNo)))
         userRoomList.push({
             id: room.no,
             name: room.title,
@@ -46,12 +46,13 @@ function Index({userNo}) {
         });
     })
 
+
     return (
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList} userNo={userNo}/>
+                        return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex/>
                     } else if (selectedSidebar === 'Favorites') {

@@ -3,6 +3,7 @@ const messageLengthReducer = (state = false, action) => {
         case 'MESSAGE_LENGTH':
             return action.length
         default:
+
             return state
     }
 };

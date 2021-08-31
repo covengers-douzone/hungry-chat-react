@@ -1,23 +1,19 @@
 // 비동기 통신
 import {func} from "prop-types";
-
+import * as config from "../../config/config"
 export default function (defaultState , setState) {
-    const PORT = 9999;
-    const domain = `http://localhost`;
+    const PORT = config.FETCH_API_PORT;
+    const domain = config.FETCH_API_IP;
     return {
-        ipAddress : {
-            PORT,
-            domain,
-        },
-        getRoomList: async function (userNo,token) {
+        getRoomList: async function (userNo, token) { // 방 목록을 보여준다.
             try {
                 const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
                     method: 'get',
                     credentials: 'include',
                     headers: {
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":"http://localhost:9999",
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
@@ -28,31 +24,37 @@ export default function (defaultState , setState) {
                 }
                 const json = await response.json();
                 if (json.result !== 'success') {
+
                     throw json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data;
             } catch (err) {
+                // Access Denied or System Error or Fetch Error(Cors ... )
                 console.error("Error From React-Fetch: "+err.message);
             }
         },
-        getChatList: async function (roomNo) {
+        getChatList: async function (roomNo,token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}`, {
                     method: 'get',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'applcation/json'
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
+                    return null; // token error
+                    //throw new Error(`System Error : ${response.status} ${response.statusText}`);
                 }
-
                 const json = await response.json();
-                if (json.result !== 'success') {
-                    throw json.message;
+                if (json.result !== 'success') { // DB error
+                    return json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
                 return json.data
@@ -60,17 +62,22 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        send: async function (roomNo,participantNo,contents) {
+        send: async function (roomNo,participantNo, headCount ,contents, token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/message/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         roomNo,
                         participantNo,
+                        headCount,
                         contents
                     }),
                 });
@@ -89,17 +96,20 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        create: async function (title , UserNo) { // 방 생성
+        updateSendNotReadCount: async function (chatNo , token) {
             try {
-                const response = await fetch(`${domain}:${PORT}/api/create/`, {
+                const response = await fetch(`${domain}:${PORT}/api/updateSendNotReadCount/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
-                        title,
-                        UserNo
+                        chatNo,
                     }),
                 });
 
@@ -111,17 +121,86 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
+                console.log(json)
             } catch (err) {
                 console.error(err);
             }
         },
-        getStatus: async function (ParticipantNo) { // 방 생성
+        createRoom: async function (title, headCount,  type ,  password  , token) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/createRoom/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        title,
+                        headCount,
+                        type,
+                        password ,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        createParticipant: async function (UserNo , roomNo , role , token) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/createParticipant/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        UserNo,roomNo,role
+
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getStatus: async function (ParticipantNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getStatus/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         ParticipantNo
@@ -140,13 +219,17 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        setStatus: async function (ParticipantNo,status) { // 방 생성
+        setStatus: async function (ParticipantNo,status,token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
                         ParticipantNo,
@@ -154,6 +237,38 @@ export default function (defaultState , setState) {
                     }),
                 });
 
+                // System error(DB, Server etc...)
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+
+                // Authentication error, server error, DB error, logic error
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getFriendList: async function (UserNo , token) { // 방 생성
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/getFriendList/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        UserNo
+                    }),
+                });
+
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
                 }
@@ -162,21 +277,87 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
+                json.data.length > 0 && setState([...defaultState, ...json.data]);
+                return json.data
             } catch (err) {
                 console.error(err);
             }
         },
-        getUserList: async function (UserNo , FriendNo) { // 방 생성
+        getHeadCount: async function (participantNo , token) { // 방 생성
             try {
-                const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
+                const response = await fetch(`${domain}:${PORT}/api/getHeadCount/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
                     },
                     body: JSON.stringify({
-                        UserNo,
-                        FriendNo
+                        participantNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        updateRoomNotReadCount: async function (participantNo , roomNo , token) { // 채팅 메시지의 notReadCount를 모두 감소
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/updateRoomNotReadCount/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        participantNo,
+                        roomNo,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        updateLastReadAt: async function (participantNo, token) { // 마지막 읽은 시각을 찾는다
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/updateLastReadAt/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        participantNo
                     }),
                 });
 
@@ -192,7 +373,5 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-
-
     }
 }

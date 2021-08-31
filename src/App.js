@@ -13,10 +13,13 @@ import PhoneCode from "./Pages/PhoneCode"
 import Layout from "./App/Layout"
 import UserInfoSearch from "./Pages/UserInfoSearch"
 import UserId from "./Pages/UserId"
+import Error500 from "./Pages/Error500"
+
 
 function App() {
     return (
         <Router>
+                <Route path="/error/500" component={Error500}/>
             <Switch>
                 <Route path="/sign-in" component={SignIn}/>
                 <Route path="/sign-up" component={SignUp}/>
@@ -25,7 +28,7 @@ function App() {
                 <Route path="/phone-code" component={PhoneCode}/>
                 <Route path="/userinfo" component={UserInfoSearch}/>
                 <Route path="/userId" component={UserId}/>
-                <Route path="/:userNo" component={Layout}/>
+                <Route path="/:UserNo" component={Layout}/>
             </Switch>
         </Router>
     )

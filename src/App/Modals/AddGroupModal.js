@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Button,
     Modal,
@@ -17,35 +17,67 @@ import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
 import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
 import inviteModal from "./InviteModal";
 import fetchApi from "../Module/fetchApi";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import InviteModal from "./InviteModal";
+import {friendListAction} from "../../Store/Actions/friendListAction";
 
 
-
-
-
-function AddGroupModal() {
+function AddGroupModal({userNo, friendList}) {
 
     const [modal, setModal] = useState(false);
-    const [title , setTitle] = useState("");
+    const [title, setTitle] = useState("");
 
-    const [openInvite , setOpenInvite] = useState(false);
+    const [openInvite, setOpenInvite] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
-    const {UserNo} = useSelector(state => state)
+    const [checkedItems, setCheckedItems] = useState(new Set());
 
-    const openInviteModal  = () => {
-            setOpenInvite(!openInvite)
+    const disfetch = useDispatch
+
+    const [completeInvite , setCompleteInvite] = useState(false)
+
+    const callbackSetItem = (checkItems) => {
+        setCheckedItems(checkItems)
+        console.log("callbackSetItem", checkItems)
     }
+
+    const callbackComplete = () => {
+        setCompleteInvite(!completeInvite)
+    }
+    const callbackAddItem = (value) => {
+        checkedItems.add(value)
+        console.log("callbackAddItem", checkedItems)
+    }
+    const callbackDeleteItem = (value) => {
+        checkedItems.delete(value)
+        console.log("callbackDeleteItem", checkedItems)
+    }
+
+
+    const openInviteModal = async () => {
+        setOpenInvite(!openInvite)
+    }
+
 
     // Create Button Event
     const modalToggle = () => {
         setModal(!modal);
     }
 
-    const createRoom = () => {
-        fetchApi(null,null).create(title,2);
+    const createRoom = async () => {
+        const headcount = checkedItems.size + 1
+        const roomNo = await fetchApi(null, null).createRoom(title,headcount ,"private", null , localStorage.getItem("Authorization"));
+
+        console.log("roomNo" , roomNo)
+
+        await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
+
+
+
+        Array.from(checkedItems).map(async (item, index) => (
+            await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+        ))
         setModal(!modal);
     }
 
@@ -56,9 +88,6 @@ function AddGroupModal() {
         setTitle(e.target.value);
     }
 
-    const addFriends  = (e) =>{
-
-    }
     const AvatarTooltip = (props) => {
 
         const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -94,7 +123,7 @@ function AddGroupModal() {
                         <FormGroup>
                             <Label for="title">방 제목</Label>
                             <InputGroup>
-                                <Input type="text" name="title" id="title" onChange = {titleEvent}/>
+                                <Input type="text" name="title" id="title" onChange={titleEvent}/>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
@@ -105,13 +134,25 @@ function AddGroupModal() {
                                 </figure>
                                 <AvatarTooltip name="Tobit Spraging" id={1}/>
 
+                                {
+                                    Array.from(checkedItems).map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))
+                                }
                                 <figure className="avatar" id="Tooltip-Avatar2">
                                     <img src={WomenAvatar4} className="rounded-circle" alt="avatar"/>
                                 </figure>
                                 <AvatarTooltip name="Cloe Jeayes" id={2}/>
 
                                 <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
-                                    <InviteModal openValue = {openInvite}/>
+
+                                    <InviteModal userNo={userNo} openValue={openInvite}
+                                                 friendList={friendList} callbackItem={callbackSetItem}
+                                                 callbackAddItem={callbackAddItem}
+                                                 callbackDeleteItem={callbackDeleteItem}
+                                                 callbackComplete ={callbackComplete}
+                                    />
+
                                     <figure className="avatar">
                                         <span className="avatar-title bg-primary rounded-circle">+</span>
                                     </figure>
