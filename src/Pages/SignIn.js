@@ -73,12 +73,8 @@ function SignIn({history}) {
                     <input type="password" name="password" className="form-control" placeholder="Password"/>
                 </div>
                 <div className="form-group d-flex justify-content-between">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" defaultChecked id="customCheck1"/>
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                    </div>
                     <a href="/userinfo" className="btn btn-outline-light btn-sm">ID/PW 찾기</a>
-                    <a href="/reset-password">Reset password</a>
+                    <a href="/unknown-user" className="btn btn-outline-light btn-sm">비회원 로그인</a>
                 </div>
                 <button type="submit" className="btn btn-primary btn-block btn-lg">Sign in</button>
                 <hr/>

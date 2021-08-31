@@ -51,6 +51,12 @@ function Chat() {
                         {message.date}
                         {message.type ? <i className="ti-double-check text-info"></i> : null}
                     </div>
+                    <div>
+                        {message.date}
+                    </div>
+                    <div >
+                        {message.notReadCount}
+                    </div>
                 </div>);
         }
     };

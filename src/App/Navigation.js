@@ -6,8 +6,6 @@ import {sidebarAction} from '../Store/Actions/sidebarAction'
 import EditProfileModal from './Modals/EditProfileModal'
 import SettingsModal from "./Modals/SettingsModal"
 import {mobileSidebarAction} from "../Store/Actions/mobileSidebarAction"
-import {getNickname} from "./Module/axiosApi";
-
 
 function Navigation() {
 
@@ -93,11 +91,9 @@ function Navigation() {
                         </a>
                     </li>
                     <li>
-                        <button onClick={settingsModalToggle}>
-                        {/*<a href="/#/" onClick={settingsModalToggle}>*/}
+                        <a href="/#/" onClick={settingsModalToggle}>
                             <i className="ti ti-settings"></i>
-                        {/*</a>*/}
-                        </button>
+                        </a>
                     </li>
                     <li>
                         <a href="/sign-in" onClick={() => {

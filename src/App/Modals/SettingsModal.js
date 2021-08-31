@@ -51,7 +51,6 @@ function SettingsModal(props) {
             console.log(err.response);
         }
     }
-
     return (
         <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
             <ModalHeader toggle={props.toggle}>
