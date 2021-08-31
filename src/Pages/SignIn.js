@@ -35,11 +35,12 @@ function SignIn({history}) {
                 }
             })
                 .then(response => {
-                    localStorage.setItem("Authorization", response.Authorization);
-                    localStorage.setItem("username", response.username);
-                    localStorage.setItem("userNo", response.no.toString());
-                    localStorage.setItem("name", response.name);
+                    window.localStorage.setItem("Authorization", response.Authorization);
+                    window.localStorage.setItem("username", response.username);
+                    window.localStorage.setItem("userNo", response.no.toString());
+                    window.localStorage.setItem("name", response.name);
 
+                    console.log(localStorage.getItem("name"));
                     console.log(response.name);
                     console.log(response.username);
                     console.log(response.Authorization);

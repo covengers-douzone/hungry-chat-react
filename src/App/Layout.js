@@ -25,11 +25,6 @@ function Layout({history}) {
         });
     }, []);
 
-    // useEffect(()=>{
-    //     console.log(localStorage.getItem("userNo"))
-    //     console.log(userNo);
-    //     console.log(UserNo);
-    // })
 
     return (
 
