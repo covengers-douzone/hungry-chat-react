@@ -19,7 +19,6 @@ import {headCountAction} from "../../../Store/Actions/headCountAction";
 
 function Index({roomList, friendList ,  userNo, history , }) {
 
-
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
 
     const dispatch = useDispatch();
@@ -59,7 +58,6 @@ function Index({roomList, friendList ,  userNo, history , }) {
 
     }
 
-
     useEffect(() => {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
@@ -74,8 +72,6 @@ function Index({roomList, friendList ,  userNo, history , }) {
             response.status === 'ok' && await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
              await fetchApi(null,null).updateRoomNotReadCount(participantNo,roomNo, localStorage.getItem("Authorization"))
             dispatch(headCountAction(await fetchApi(null,null).getHeadCount(participantNo,localStorage.getItem("Authorization") )))
-
-
         });
         socket.on('message', callback);
 
@@ -99,12 +95,10 @@ function Index({roomList, friendList ,  userNo, history , }) {
 
     const chatSelectHandle = async (chat) => {
         try{
-
             const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id, localStorage.getItem("Authorization"))
             if (chatlist === "System Error"){
                throw chatlist;
             }
-
             console.log("chatSelectHandle", chatlist)
             let room;
             if (chatlist.length !== 0) { // 쳇 리스트가 0이 되면 Error
@@ -119,8 +113,6 @@ function Index({roomList, friendList ,  userNo, history , }) {
                             text: chat.contents,
                             date: chat.createdAt,
                             notReadCount : chat.notReadCount,
-
-
                         })
                     } else {
                         return ({
@@ -174,7 +166,6 @@ function Index({roomList, friendList ,  userNo, history , }) {
                     <ChatsDropdown/>
                 </div>
             </div>
-
         </li>
     };
 

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
-
 import {useHistory} from "react-router-dom";
 import { useForm } from "react-hook-form";
 

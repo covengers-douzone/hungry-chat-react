@@ -38,7 +38,9 @@ function SignIn({history}) {
                     localStorage.setItem("Authorization", response.Authorization);
                     localStorage.setItem("username", response.username);
                     localStorage.setItem("userNo", response.no.toString());
+                    localStorage.setItem("name", response.name);
 
+                    console.log(response.name);
                     console.log(response.username);
                     console.log(response.Authorization);
                     console.log(response.no);

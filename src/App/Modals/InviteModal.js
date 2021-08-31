@@ -29,11 +29,9 @@ function InviteModal({
                          callbackComplete
                      }) {
 
-
     const [modal, setModal] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
-
 
     const [bChecked, setChecked] = useState(false);
 
@@ -75,7 +73,6 @@ function InviteModal({
                 event.preventDefault(); // 여기가 핵심
             }
         }
-
         window.addEventListener("touchmove", handleTouchMove, {
             passive: false
         });
@@ -94,7 +91,6 @@ function InviteModal({
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
-
 
     const AvatarTooltip = (props) => {
 

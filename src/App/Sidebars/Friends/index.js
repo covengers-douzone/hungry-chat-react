@@ -40,7 +40,7 @@ function Index() {
                 </ul>
             </header>
             <form>
-                <input 
+                <input
                     type="text" 
                     className="form-control" 
                     placeholder="Search friends" 

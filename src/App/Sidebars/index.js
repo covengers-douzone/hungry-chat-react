@@ -45,8 +45,6 @@ function Index({userNo, history}) {
             messages: []
         });
     })
-
-
     return (
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {

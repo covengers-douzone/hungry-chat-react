@@ -21,7 +21,6 @@ import {useDispatch, useSelector} from "react-redux";
 import InviteModal from "./InviteModal";
 import {friendListAction} from "../../Store/Actions/friendListAction";
 
-
 function AddGroupModal({userNo, friendList}) {
 
     const [modal, setModal] = useState(false);
@@ -59,7 +58,6 @@ function AddGroupModal({userNo, friendList}) {
         setOpenInvite(!openInvite)
     }
 
-
     // Create Button Event
     const modalToggle = () => {
         setModal(!modal);
@@ -87,7 +85,6 @@ function AddGroupModal({userNo, friendList}) {
     const titleEvent = (e) => {
         setTitle(e.target.value);
     }
-
     const AvatarTooltip = (props) => {
 
         const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -133,7 +130,6 @@ function AddGroupModal({userNo, friendList}) {
                                     <span className="avatar-title bg-success rounded-circle">T</span>
                                 </figure>
                                 <AvatarTooltip name="Tobit Spraging" id={1}/>
-
                                 {
                                     Array.from(checkedItems).map((item, index) => (
                                         <li key={index}>{item}</li>
@@ -145,14 +141,12 @@ function AddGroupModal({userNo, friendList}) {
                                 <AvatarTooltip name="Cloe Jeayes" id={2}/>
 
                                 <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
-
                                     <InviteModal userNo={userNo} openValue={openInvite}
                                                  friendList={friendList} callbackItem={callbackSetItem}
                                                  callbackAddItem={callbackAddItem}
                                                  callbackDeleteItem={callbackDeleteItem}
                                                  callbackComplete ={callbackComplete}
                                     />
-
                                     <figure className="avatar">
                                         <span className="avatar-title bg-primary rounded-circle">+</span>
                                     </figure>
