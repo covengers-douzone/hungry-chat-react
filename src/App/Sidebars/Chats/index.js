@@ -37,6 +37,8 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const [roomOk , setRoomOk] = useState(false);
 
+    let socket;
+
     const chatForm = (chat) => {
         if (chat.Participant.no !== Number(participantNo)) {
             return ({
@@ -84,7 +86,7 @@ function Index({roomList, friendList, userNo, history,}) {
             return;
         }
 
-        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+         socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
         socket.on('roomUsers',async ({room,users})=>{
             setTimeout(async () => {
@@ -134,6 +136,19 @@ function Index({roomList, friendList, userNo, history,}) {
         dispatch(mobileSidebarAction(false));
         document.body.classList.remove('navigation-open');
     };
+
+    window.addEventListener('beforeunload',  (event) => {
+        console.log("window 종료")
+          fetchApi(null, null).setStatus(participantNo, 0, localStorage.getItem("Authorization"));
+          fetchApi(null, null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
+          socket.disconnect();
+        // 표준에 따라 기본 동작 방지
+         event.preventDefault();
+        // Chrome에서는 returnValue 설정이 필요함
+         event.returnValue = '';
+
+
+    });
 
 
     const chatSelectHandle = async (chat) => {
