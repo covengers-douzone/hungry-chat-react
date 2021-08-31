@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from "axios";
 import {
     Modal,
     ModalBody,
@@ -17,19 +18,80 @@ import {
     Collapse
 } from 'reactstrap'
 import classnames from 'classnames'
+import * as config from "../../config/config";
 
 function SettingsModal(props) {
 
     const [activeTab, setActiveTab] = useState('1');
-
     const toggle = tab => {
         if (activeTab !== tab) setActiveTab(tab);
     };
-
     const [isOpenDiv, setIsOpenDiv] = useState(false);
-
     const toggleDiv = () => setIsOpenDiv(!isOpenDiv);
+    const [ profileImage, setProfileImage ] = useState();
+    const [ nickname, setNickname ] = useState();
 
+    useEffect( () => {
+        console.log(localStorage.getItem("userNo"));
+        try{
+            fetch(`${config.URL}/api/getUserByNo/${localStorage.getItem("userNo")}`, {
+                method: 'get',
+                credentials: 'include',
+                headers: {
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    'Content-Type': 'text/plain',
+                    'Accept': 'application/json',
+                    Authorization: localStorage.getItem("Authorization")
+                },
+            }).then(res => {
+                return res.json();
+
+            }).then(res => {
+                setProfileImage(res.data.profileImageUrl);
+                setNickname(res.data.nickname);
+            })
+                .catch(err => {
+                console.log(err);
+            })
+        }catch (err){
+            console.log(err);
+        }
+    }, [])
+
+    // 변경한 데이터 저장하기
+    const [ password, setPassword ] = useState(null);
+    const [ file, setFile ] = useState(null);
+
+    const send = async event => {
+        event.preventDefault();
+        console.log(localStorage.getItem("userNo"));
+        try{
+            console.log(file);
+            console.log(nickname);
+            console.log(password);
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("Authorization", localStorage.getItem("Authorization"));
+            formData.append("userNo", localStorage.getItem("userNo"));
+            formData.append("nickname", nickname);
+            formData.append("password", password);
+            console.log(formData);
+
+            await axios.post(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/api/updateSettings`, formData)
+                .then( res => {
+                    console.log(res.data.data);
+                    // document.getElementsByClassName("preview-img").src = `${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`
+                    setProfileImage(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`);
+                })
+                .catch(err => {console.log(err)})
+
+        }catch (err){
+            console.log(err.response + err.message);
+        }
+    }
     return (
         <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
             <ModalHeader toggle={props.toggle}>
@@ -54,7 +116,7 @@ function SettingsModal(props) {
                                 toggle('2');
                             }}
                         >
-                            Notification
+                            Chat
                         </NavLink>
                     </NavItem>
                     <NavItem>
@@ -64,7 +126,7 @@ function SettingsModal(props) {
                                 toggle('3');
                             }}
                         >
-                            Security
+                            Profile
                         </NavLink>
                     </NavItem>
                 </Nav>
@@ -73,71 +135,49 @@ function SettingsModal(props) {
                         <TabPane tabId="1">
                             <FormGroup>
                                 <CustomInput type="switch" id="accountCustomSwitch1" name="customSwitch"
-                                             label="Allow connected contacts" defaultChecked/>
+                                             label="Set nickname using name" defaultChecked/>
                             </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="accountCustomSwitch2" name="customSwitch"
-                                             label="Allow connected contacts" defaultChecked/>
-                            </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="accountCustomSwitch3" name="customSwitch"
-                                             label="Profile privacy" defaultChecked/>
-                            </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="accountCustomSwitch4" name="customSwitch"
-                                             label="Developer mode options"/>
-                            </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="accountCustomSwitch5" name="customSwitch"
-                                             label="Two-step security verification" defaultChecked/>
-                            </FormGroup>
+                            <div className="preview text-center">
+                                <img className="preview-img" src={profileImage}
+                                     alt="Preview Image" width="200" height="200"/>
+                                <div className="browse-button">
+                                    <i className="fa fa-pencil-alt"/>
+                                    <input className="browse-input" type="file" name="UploadedFile"
+                                           id="UploadedFile" onChange={(event) => {
+                                               const file = event.target.files[0];
+                                               setFile(file);
+                                    }}/>
+                                </div>
+                                <span className="Error"/>
+                            </div>
+                            <br/>
+                            <br/>
+                             <div className="setting-account">
+                                 <label htmlFor="name"> Nickname </label>
+                                <input type="text" name="nickname" placeholder={nickname} onChange={ (event) => {
+                                    const { value } = event.target;
+                                    setNickname(value);
+                                }}/>
+                            </div>
+                             <div className="setting-account">
+                                 <label htmlFor="password"> Password </label>
+                                 <input type="password" name="password" onChange={ (event) => {
+                                     const { value } = event.target;
+                                     setPassword(value);
+                                 }}/>
+                             </div>
                         </TabPane>
                         <TabPane tabId="2">
-                            <FormGroup>
-                                <CustomInput type="switch" id="notificationCustomSwitch1" name="customSwitch"
-                                             label="Allow mobile notifications" defaultChecked/>
-                            </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="notificationCustomSwitch2" name="customSwitch"
-                                             label="Notifications from your friends"/>
-                            </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="notificationCustomSwitch3" name="customSwitch"
-                                             label="Send notifications by email"/>
-                            </FormGroup>
-                        </TabPane>
-                        <TabPane tabId="3">
-                            <FormGroup>
-                                <CustomInput type="switch" id="securityCustomSwitch1" name="customSwitch"
-                                             label="Suggest changing passwords every month."/>
-                            </FormGroup>
-                            <FormGroup>
-                                <CustomInput type="switch" id="securityCustomSwitch2" name="customSwitch"
-                                             label="Let me know about suspicious entries to your account" defaultChecked/>
-                            </FormGroup>
-                            <a href="#/" className="mb-4 d-flex align-items-center" onClick={toggleDiv}>
-                                <i className="ti ti-plus mr-2"></i> Security Questions
-                            </a>
-                            <Collapse isOpen={isOpenDiv}>
-                                <FormGroup>
-                                    <Input type="text" name="question1" id="question1" placeholder="Question 1"/>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Input type="text" name="question1" id="answer1" placeholder="Answer 1"/>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Input type="text" name="question2" id="question2" placeholder="Question 2"/>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Input type="text" name="question2" id="answer2" placeholder="Answer 2"/>
-                                </FormGroup>
-                            </Collapse>
+                             <div className="setting-account">
+                                 <label htmlFor="name"> Background </label>
+                                 <input type="file" name="backgroundImageUrl" />
+                             </div>
                         </TabPane>
                     </TabContent>
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button color="primary">Save</Button>
+                <Button color="primary" onClick={send}>Save</Button>
             </ModalFooter>
         </Modal>
     )

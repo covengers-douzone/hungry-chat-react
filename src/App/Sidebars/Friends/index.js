@@ -39,7 +39,7 @@ function Index({roomList, friendList ,  userNo, history }) {
                 </ul>
             </header>
             <form>
-                <input 
+                <input
                     type="text" 
                     className="form-control" 
                     placeholder="Search friends" 

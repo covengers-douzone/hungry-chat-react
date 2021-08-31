@@ -17,8 +17,9 @@ function Chat() {
 
 
     const handleSubmit = (newValue) => {
-        console.log("handleSubmit", headCount)
+
         myFetch(null, null).send(roomNo, participantNo, headCount , newValue.text, localStorage.getItem("Authorization"));
+        console.log("send insert")
         setInputMsg("");
     };
 
@@ -37,7 +38,6 @@ function Chat() {
     });
 
     const MessagesView = (props) => {
-
         const {message} = props;
 
         if (message.type === 'divider') {
