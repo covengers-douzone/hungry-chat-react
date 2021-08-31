@@ -127,7 +127,6 @@ function Index({roomList, friendList ,  userNo, history , }) {
                             text: chat.contents,
                             date: chat.createdAt,
                             notReadCount : chat.notReadCount,
-
                             type: 'outgoing-message'
                         })
                     }
