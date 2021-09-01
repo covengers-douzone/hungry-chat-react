@@ -55,7 +55,6 @@ function Index({roomList, friendList, userNo, history,}) {
     }
 
 
-
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
 
@@ -140,7 +139,6 @@ function Index({roomList, friendList, userNo, history,}) {
         try {
             chat.unread_messages = 1
             dispatch(participantNoAction(chat.participantNo))
-
             dispatch(roomNoAction(chat.id))
             if (chat.messages) {
                 dispatch(messageLengthAction(chat.messages.length))
