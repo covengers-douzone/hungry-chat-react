@@ -24,7 +24,6 @@ export default function (defaultState , setState) {
                 }
                 const json = await response.json();
                 if (json.result !== 'success') {
-
                     throw json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);

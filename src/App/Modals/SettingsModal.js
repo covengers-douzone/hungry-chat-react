@@ -82,6 +82,9 @@ function SettingsModal(props) {
 
             await axios.post(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/api/updateSettings`, formData)
                 .then( res => {
+                    if(res.status !== 200){
+                        throw Error;
+                    }
                     console.log(res.data.data);
                     // document.getElementsByClassName("preview-img").src = `${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`
                     setProfileImage(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`);

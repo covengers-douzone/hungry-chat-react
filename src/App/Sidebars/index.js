@@ -13,6 +13,7 @@ import WomenAvatar1 from "../../assets/img/women_avatar1.jpg"
 import WomenAvatar2 from "../../assets/img/women_avatar2.jpg"
 import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
 import {userNoAction} from "../../Store/Actions/userNoAction";
+import * as config from "../../config/config";
 
 
 
@@ -23,12 +24,38 @@ function Index({userNo, history}) {
     const userRoomList = [];
     const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
+    const [profileImage, setProfileImage] = useState();
 
 
 
     useEffect(()=>{
-        fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
-        fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+        try{
+            fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+            fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+            fetch(`${config.URL}/api/getUserByNo/${localStorage.getItem("userNo")}`, {
+                method: 'get',
+                credentials: 'include',
+                headers: {
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    'Content-Type': 'text/plain',
+                    'Accept': 'application/json',
+                    Authorization: localStorage.getItem("Authorization")
+                },
+            }).then(res => {
+                return res.json();
+
+            }).then(res => {
+                console.log(res.data.profileImageUrl);
+                setProfileImage(res.data.profileImageUrl);
+            })
+                .catch(err => {
+                    console.log(err);
+                })
+        }catch (err){
+            console.log(err);
+        }
     },[]);
 
     roomList.map((room) => {
@@ -37,7 +64,7 @@ function Index({userNo, history}) {
             name: room.title,
             participantNo : room.Participants[0].no,
             avatar: <figure className="avatar avatar-state-success">
-                <img src={ManAvatar1} className="rounded-circle" alt="avatar"/>
+                <img src={profileImage} className="rounded-circle" alt="avatar"/>
             </figure>,
             text: <p>What's up, how are you?</p>,
             date: '03:41 PM',
