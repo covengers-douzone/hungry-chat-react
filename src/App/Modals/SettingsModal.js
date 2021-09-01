@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {getNickname} from "../Module/axiosApi";
+import axios from "axios";
 import {
     Modal,
     ModalBody,
@@ -18,6 +18,7 @@ import {
     Collapse
 } from 'reactstrap'
 import classnames from 'classnames'
+import * as config from "../../config/config";
 
 function SettingsModal(props) {
 
@@ -27,28 +28,68 @@ function SettingsModal(props) {
     };
     const [isOpenDiv, setIsOpenDiv] = useState(false);
     const toggleDiv = () => setIsOpenDiv(!isOpenDiv);
+    const [ profileImage, setProfileImage ] = useState();
+    const [ nickname, setNickname ] = useState();
 
+    useEffect( () => {
+        console.log(localStorage.getItem("userNo"));
+        try{
+            fetch(`${config.URL}/api/getUserByNo/${localStorage.getItem("userNo")}`, {
+                method: 'get',
+                credentials: 'include',
+                headers: {
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    'Content-Type': 'text/plain',
+                    'Accept': 'application/json',
+                    Authorization: localStorage.getItem("Authorization")
+                },
+            }).then(res => {
+                return res.json();
+
+            }).then(res => {
+                setProfileImage(res.data.profileImageUrl);
+                setNickname(res.data.nickname);
+            })
+                .catch(err => {
+                console.log(err);
+            })
+        }catch (err){
+            console.log(err);
+        }
+    }, [])
 
     // 변경한 데이터 저장하기
-    const [ profileImage, setProfileImage ] = useState("http://simpleicon.com/wp-content/uploads/account.png");
-    const [ nickname, setNickname ] = useState(localStorage.getItem("name"));
     const [ password, setPassword ] = useState(null);
     const [ file, setFile ] = useState(null);
 
     const send = async event => {
         event.preventDefault();
+        console.log(localStorage.getItem("userNo"));
         try{
-            const data = new FormData();
-            data.append("file", file);
-            data.append("nickname", nickname);
-            data.append("userNo", localStorage.getItem("userNo"));
-            data.append("Authorization", localStorage.getItem("Authorization"));
-            if(password != null){
-                data.append("password", password.toString());
-            }
-            await getNickname(data);
+            console.log(file);
+            console.log(nickname);
+            console.log(password);
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("Authorization", localStorage.getItem("Authorization"));
+            formData.append("userNo", localStorage.getItem("userNo"));
+            formData.append("nickname", nickname);
+            formData.append("password", password);
+            console.log(formData);
+
+            await axios.post(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/api/updateSettings`, formData)
+                .then( res => {
+                    console.log(res.data.data);
+                    // document.getElementsByClassName("preview-img").src = `${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`
+                    setProfileImage(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`);
+                })
+                .catch(err => {console.log(err)})
+
         }catch (err){
-            console.log(err.response);
+            console.log(err.response + err.message);
         }
     }
     return (
@@ -97,7 +138,7 @@ function SettingsModal(props) {
                                              label="Set nickname using name" defaultChecked/>
                             </FormGroup>
                             <div className="preview text-center">
-                                <img className="preview-img" src={ profileImage }
+                                <img className="preview-img" src={profileImage}
                                      alt="Preview Image" width="200" height="200"/>
                                 <div className="browse-button">
                                     <i className="fa fa-pencil-alt"/>

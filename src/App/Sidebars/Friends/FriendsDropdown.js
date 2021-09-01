@@ -13,10 +13,14 @@ const FriendsDropdown = () => {
                 <i className="ti ti-more"></i>
             </DropdownToggle>
             <DropdownMenu>
-                <DropdownItem>New chat</DropdownItem>
-                <DropdownItem>Profile</DropdownItem>
+                <DropdownItem >
+                    <li>
+                    New chat
+                    </li>
+                </DropdownItem>
+                <DropdownItem >Profile</DropdownItem>
                 <DropdownItem divider/>
-                <DropdownItem>Block</DropdownItem>
+                <DropdownItem >Block</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

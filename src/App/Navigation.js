@@ -91,9 +91,9 @@ function Navigation() {
                         </a>
                     </li>
                     <li>
-                        <a href="/#/" onClick={settingsModalToggle}>
+                        <button onClick={settingsModalToggle}>
                             <i className="ti ti-settings"></i>
-                        </a>
+                        </button>
                     </li>
                     <li>
                         <a href="/sign-in" onClick={() => {
