@@ -64,7 +64,7 @@ function Index({roomList, friendList ,  userNo, history }) {
                                     <div className="users-list-body">
                                         <div>
                                             <h5>{item.name}</h5>
-                                            <p>{item.title}</p>
+                                            <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
                                             <FriendsDropdown/>

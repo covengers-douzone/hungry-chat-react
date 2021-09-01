@@ -48,6 +48,7 @@ function Index({userNo, history}) {
     friendList.map((friend, i) => {
         userFriendList.push({
             name: friend.name,
+            comments: friend.comments,
             avatar: <figure className="avatar">
                 <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
             </figure>
