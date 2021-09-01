@@ -12,8 +12,11 @@ import {
     Label,
     Input
 } from 'reactstrap';
+import * as config from "../../config/config";
+import axios from "axios";
 
-function AddFriendModal() {
+
+function AddFriendModal({ userNo }) {
     const [modal, setModal] = useState(false);
 
     const modalToggle = () => setModal(!modal);
@@ -21,6 +24,29 @@ function AddFriendModal() {
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
+
+    const [email, setEmail] = useState();
+
+    const send = async (event) => {
+        event.preventDefault();
+        try{
+            await axios.post(`${config.URL}/api/addFriend`, {
+                username: email,
+                Authorization:localStorage.getItem("Authorization"),
+                userNo:userNo
+            })
+                .then(res => {
+                    if(res.status !== 200){
+
+                    }
+                    console.log("hi");
+                })
+                .catch( err => { console.log(err.response + err.message) })
+        }catch (e) {
+            console.log(e);
+        }
+
+    }
 
     return (
         <div>
@@ -43,16 +69,22 @@ function AddFriendModal() {
                     <Form>
                         <FormGroup>
                             <Label for="email">Email addresses</Label>
-                            <Input type="text" name="email" id="email"/>
+                            <Input type="text" name="email" id="email" onChange={(event)=>{
+                                const { value } = event.target;
+                                console.log(value);
+                                setEmail(value);
+                            }}/>
                         </FormGroup>
-                        <FormGroup>
-                            <Label for="message">Invitation message</Label>
-                            <Input type="textarea" name="message" id="message"/>
-                        </FormGroup>
+                        {/*<FormGroup>*/}
+                        {/*    <Label for="message">Invitation message</Label>*/}
+                        {/*    <Input type="textarea" name="message" id="message"/>*/}
+                        {/*</FormGroup>*/}
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={modalToggle}>Submit</Button>
+                    {/*<Button color="primary" onClick={modalToggle}>Submit</Button>*/}
+                    <Button color="primary" onClick={send}>Submit</Button>
+
                 </ModalFooter>
             </Modal>
         </div>
