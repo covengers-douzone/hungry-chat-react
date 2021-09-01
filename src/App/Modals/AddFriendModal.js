@@ -36,12 +36,12 @@ function AddFriendModal({ userNo }) {
                 userNo:userNo
             })
                 .then(res => {
-                    if(res.status !== 200){
+                    console.log(res);
 
-                    }
-                    console.log("hi");
                 })
-                .catch( err => { console.log(err.response + err.message) })
+                .catch( err => {
+                    alert("일치하는 이메일이 존재하지 않습니다.");
+                    console.log(`${err.message}`) })
         }catch (e) {
             console.log(e);
         }

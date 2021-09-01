@@ -4,6 +4,7 @@ import ChatsIndex from "./Chats"
 import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import fetchApi from "../Module/fetchApi";
+import WomenAvatar5 from "../../assets/img/women_avatar5.jpg";
 
 
 function Index({userNo, history}) {
@@ -11,6 +12,7 @@ function Index({userNo, history}) {
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
     const userRoomList = [];
+    const userFriendList = [];
     const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
 
@@ -42,6 +44,18 @@ function Index({userNo, history}) {
             messages: []
         });
     })
+
+    friendList.map((friend, i) => {
+        userFriendList.push({
+            name: friend.name,
+            avatar: <figure className="avatar">
+                <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
+            </figure>
+        })
+
+    })
+
+
     return (
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
@@ -49,7 +63,7 @@ function Index({userNo, history}) {
                     if (selectedSidebar === 'Chats') {
                         return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Friends') {
-                        return <FriendsIndex roomList={userRoomList} friendList={friendList} userNo={userNo} history={history}/>
+                        return <FriendsIndex roomList={userRoomList} friendList={userFriendList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Favorites') {
                         return <FavoritesIndex/>
                     }
