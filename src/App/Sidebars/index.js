@@ -31,13 +31,18 @@ function Index({userNo, history}) {
         fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
     },[]);
 
-    roomList.map((room) => {
+    roomList.map((room,i) => {
+        const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
+        const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
+        console.log(i);
+        console.log(currentParticipant);
+        console.log(otherParticipant);
         userRoomList.push({
             id: room.no,
             name: room.title,
-            participantNo : room.Participants[0].no,
+            participantNo : currentParticipant.no,
             avatar: <figure className="avatar avatar-state-success">
-                <img src={ManAvatar1} className="rounded-circle" alt="avatar"/>
+                <img src={otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
             </figure>,
             text: <p>What's up, how are you?</p>,
             date: '03:41 PM',

@@ -19,6 +19,10 @@ import {headCountAction} from "../../../Store/Actions/headCountAction";
 
 function Index({roomList, friendList, userNo, history,}) {
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 554d3d2386a0794741b1a806df3cdfd3db702a58
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
 
     const dispatch = useDispatch();
@@ -55,7 +59,6 @@ function Index({roomList, friendList, userNo, history,}) {
     }
 
 
-
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
 
@@ -63,10 +66,19 @@ function Index({roomList, friendList, userNo, history,}) {
         inputRef.current.focus();
     });
 
+<<<<<<< HEAD
     const callback = async ({socketUserNo, chatNo}) => {
         await fetchApi(null, null).updateSendNotReadCount(chatNo);
 
         const chat = await fetchApi(null,null).getChat(chatNo,localStorage.getItem("Authorization"));
+=======
+    const callback = ({socketUserNo, text, data, notReadCount}) => {
+        console.log('--->callback', selectedChat.messages.length); //[] -> {}
+
+        socketUserNo === userNo && selectedChat.messages && selectedChat.messages.push({
+            userNo, text, data, notReadCount, type: "outgoing-message"
+        })
+>>>>>>> 554d3d2386a0794741b1a806df3cdfd3db702a58
 
         const message ={
             userNo , text: chat.contents ,date: chat.createdAt , notReadCount: chat.notReadCount
@@ -79,10 +91,15 @@ function Index({roomList, friendList, userNo, history,}) {
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 554d3d2386a0794741b1a806df3cdfd3db702a58
     useEffect(() => {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         }
+<<<<<<< HEAD
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
@@ -124,6 +141,22 @@ function Index({roomList, friendList, userNo, history,}) {
                 console.log("방나가기")
                 await fetchApi(null, null).setStatus(participantNo, 0, localStorage.getItem("Authorization"));
                 await fetchApi(null, null).updateLastReadAt(participantNo, localStorage.getItem("Authorization"))
+=======
+        const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
+        socket.emit("join", {
+            nickName: selectedChat.name,
+            roomNo: selectedChat.id,
+        }, (response) => {
+            console.log("join res ", response.status)
+            response.status === 'ok' && fetchApi(null, null).setStatus(selectedChat.participantNo, 1)
+        });
+        socket.on('message', callback);
+
+        return () => {
+            if (roomNo) {
+                console.log("방 나가기")
+                fetchApi(null, null).setStatus(participantNo, 0);
+>>>>>>> 554d3d2386a0794741b1a806df3cdfd3db702a58
                 socket.disconnect();
             }
         }
@@ -141,6 +174,7 @@ function Index({roomList, friendList, userNo, history,}) {
             chat.unread_messages = 1
             dispatch(participantNoAction(chat.participantNo))
 
+<<<<<<< HEAD
             dispatch(roomNoAction(chat.id))
             if (chat.messages) {
                 dispatch(messageLengthAction(chat.messages.length))
@@ -158,6 +192,41 @@ function Index({roomList, friendList, userNo, history,}) {
                 console.log("Error : {}", e.message);
             }
         }
+=======
+        const chatlist = await fetchApi(chatList, setChatList).getChatList(chat.id)
+        let room;
+        if (chatlist.length !== 0) {
+            room = roomList.filter(room => room.id === chatlist[0].roomNo);
+        }
+
+        if (room && room.length) {
+            room[0].messages = chatlist.map(chat => {
+                if (chat.Participant.no !== Number(userNo)) {
+                    return ({
+                        text: chat.contents,
+                        date: chat.createdAt
+                    })
+                } else {
+                    return ({
+                        text: chat.contents,
+                        date: chat.createdAt,
+                        type: 'outgoing-message'
+                    })
+                }
+            });
+
+        }
+        chat.unread_messages = 0;
+
+        dispatch(participantNoAction(chat.participantNo))
+        dispatch(roomNoAction(chat.id))
+        if (chat.messages) {
+            dispatch(messageLengthAction(chat.messages.length))
+        }
+
+        dispatch(selectedChatAction(chat));
+        dispatch(mobileSidebarAction(false));
+>>>>>>> 554d3d2386a0794741b1a806df3cdfd3db702a58
     };
 
     const ChatListView = (props) => {
