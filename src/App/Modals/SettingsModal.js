@@ -92,6 +92,7 @@ function SettingsModal(props) {
         }catch (err){
             console.log(err.response + err.message);
         }
+        props.toggle();
     }
     return (
         <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
