@@ -29,7 +29,7 @@ function Index({roomList, friendList ,  userNo, history }) {
                 <span>Friends</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddFriendsModal/>
+                        <AddFriendsModal userNo={userNo}/>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">

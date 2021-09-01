@@ -5,16 +5,6 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import fetchApi from "../Module/fetchApi";
 
-import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
-import ManAvatar2 from "../../assets/img/man_avatar2.jpg"
-import ManAvatar3 from "../../assets/img/man_avatar3.jpg"
-import ManAvatar4 from "../../assets/img/man_avatar4.jpg"
-import WomenAvatar1 from "../../assets/img/women_avatar1.jpg"
-import WomenAvatar2 from "../../assets/img/women_avatar2.jpg"
-import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
-import {userNoAction} from "../../Store/Actions/userNoAction";
-
-
 
 function Index({userNo, history}) {
 
@@ -24,11 +14,13 @@ function Index({userNo, history}) {
     const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
 
-
-
     useEffect(()=>{
-        fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
-        fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+        try{
+            fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+            fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+        }catch (err){
+            console.log(err);
+        }
     },[]);
 
     roomList.map((room,i) => {
