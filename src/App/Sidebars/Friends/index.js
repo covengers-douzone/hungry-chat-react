@@ -23,13 +23,17 @@ function Index({roomList, friendList ,  userNo, history }) {
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [addFriendsModalOpen, setAddFriendsModalOpen] = useState(false);
+
+    const addFriendsModalToggle = () => setAddFriendsModalOpen(!addFriendsModalOpen);
+
     return (
         <div className="sidebar active">
             <header>
                 <span>Friends</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddFriendsModal userNo={userNo}/>
+                        <AddFriendsModal modal={addFriendsModalOpen} toggle={addFriendsModalToggle} userNo={userNo}/>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">

@@ -16,7 +16,7 @@ import * as config from "../../config/config";
 import axios from "axios";
 
 
-function AddFriendModal({ userNo }) {
+function AddFriendModal( props ) {
     const [modal, setModal] = useState(false);
 
     const modalToggle = () => setModal(!modal);
@@ -27,17 +27,18 @@ function AddFriendModal({ userNo }) {
 
     const [email, setEmail] = useState();
 
+    const [alertOpen, setAlertOpen] = useState(false);
+
     const send = async (event) => {
         event.preventDefault();
         try{
             await axios.post(`${config.URL}/api/addFriend`, {
                 username: email,
                 Authorization:localStorage.getItem("Authorization"),
-                userNo:userNo
+                userNo: props.userNo
             })
                 .then(res => {
-                    console.log(res);
-
+                    setAlertOpen(!alertOpen);
                 })
                 .catch( err => {
                     alert("일치하는 이메일이 존재하지 않습니다.");
@@ -45,6 +46,7 @@ function AddFriendModal({ userNo }) {
         }catch (e) {
             console.log(e);
         }
+        // setModal(!modal);
 
     }
 
@@ -65,7 +67,7 @@ function AddFriendModal({ userNo }) {
                     <i className="ti ti-user mr-2"></i> Add Friends
                 </ModalHeader>
                 <ModalBody>
-                    <Alert color="info">Send invitations to friends.</Alert>
+                    <Alert isOpen={alertOpen} color="info">Successfully added new friend</Alert>
                     <Form>
                         <FormGroup>
                             <Label for="email">Email addresses</Label>
