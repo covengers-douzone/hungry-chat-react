@@ -24,7 +24,6 @@ export default function (defaultState , setState) {
                 }
                 const json = await response.json();
                 if (json.result !== 'success') {
-
                     throw json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
@@ -396,6 +395,36 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getLastReadNo: async function (participantNo, token) { // 마지막 읽은 시각을 찾는다
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/getLastReadNo/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        participantNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
             } catch (err) {
                 console.error(err);
             }
