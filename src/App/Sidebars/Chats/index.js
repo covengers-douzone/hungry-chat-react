@@ -78,6 +78,18 @@ function Index({roomList, friendList, userNo, history,}) {
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
     }
 
+    setTimeout(async () => {
+        if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
+            return;
+        } else {
+            console.log("", selectedChat.messages[selectedChat.messages.length - 1])
+            if (selectedChat.messages[selectedChat.messages.length - 1] === 0) { // 마지막 메시지가 0 이라면
+
+            }
+        }
+
+    }, 3000)
+
     useEffect(() => {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;

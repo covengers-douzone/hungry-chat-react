@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import ChatHeader from "./ChatHeader"
 import ChatFooter from "./ChatFooter"
 import PerfectScrollbar from "react-perfect-scrollbar"
@@ -15,6 +15,7 @@ function Chat() {
     const [inputMsg, setInputMsg] = useState('');
     const [scrollEl, setScrollEl] = useState();
 
+    const scrollRef = useRef(null);
 
     const handleSubmit = (newValue) => {
 
@@ -27,6 +28,23 @@ function Chat() {
         setInputMsg(newValue);
 
     };
+
+    const handleScrollStart = (e) => {
+
+        console.log("처음쪽 스크롤")
+
+    }
+    const handleScrollEnd = (e) => {
+        console.log("마지막 쪽 스크롤"
+        )
+    }
+
+    // const handleScroll = (e) => {
+    //     //  console.log("handleScroll" , e.scrollTop * 350)
+    //      // e.scrollTop = e.scrollTop * 100
+    //
+    // }
+
 
 
     useEffect(() => {
@@ -69,7 +87,9 @@ function Chat() {
                     ?
                     <React.Fragment>
                         <ChatHeader selectedChat={selectedChat}/>
-                        <PerfectScrollbar containerRef={ref => setScrollEl(ref)}>
+                        <PerfectScrollbar containerRef={ref => setScrollEl(ref)}  onYReachEnd ={handleScrollEnd} onYReachStart = {handleScrollStart}
+                                           ref = {scrollRef}
+                        >
                             <div className="chat-body">
                                 <div className="messages">
                                     {
