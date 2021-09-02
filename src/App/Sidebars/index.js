@@ -26,9 +26,6 @@ function Index({userNo, history}) {
     roomList.map((room,i) => {
         const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
         const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
-        console.log(i);
-        console.log(currentParticipant);
-        console.log(otherParticipant);
         userRoomList.push({
             id: room.no,
             name: room.title,
