@@ -309,6 +309,37 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        getFollowerList: async function (UserNo , token) { // 방 생성
+            try {
+                const response = await fetch(`${config.URL}/api/getFollowerList/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${URL}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        UserNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                json.data.length > 0 && setState([...defaultState, ...json.data]);
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
         getHeadCount: async function (participantNo , token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getHeadCount/`, {

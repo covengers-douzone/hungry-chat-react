@@ -6,8 +6,7 @@ import AddFriendsModal from "../../Modals/AddFriendModal"
 import FriendsDropdown from "./FriendsDropdown"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction"
 
-function Index({roomList, friendList ,  userNo, history }) {
-
+function Index({roomList, friendList, followerList, userNo, history }) {
     useEffect(() => {
         inputRef.current.focus();
     });
@@ -56,6 +55,10 @@ function Index({roomList, friendList ,  userNo, history }) {
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
+                        <p style={ {
+                            color:"coral",
+                            marginLeft:25,
+                        }}>친구 목록</p>
                         {friendList.filter((item) => {
                             if(searchTerm == ""){
                                 return item
@@ -78,6 +81,33 @@ function Index({roomList, friendList ,  userNo, history }) {
                             })
                         }
                     </ul>
+                        <ul className="list-group list-group-flush">
+                            <p style={ {
+                                color:"coral",
+                                marginLeft:25,
+                            }}>나를 친구 추가한 사람들</p>
+                            {followerList.filter((item) => {
+                                if(searchTerm == ""){
+                                    return item
+                                } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                                    return item
+                                }
+                            }).map((item, i) => {
+                                return <li key={i} className="list-group-item">
+                                    {item.avatar}
+                                    <div className="users-list-body">
+                                        <div>
+                                            <h5>{item.name}</h5>
+                                            <p>{item.comments}</p>
+                                        </div>
+                                        <div className="users-list-action action-toggle">
+                                            <FriendsDropdown/>
+                                        </div>
+                                    </div>
+                                </li>
+                            })
+                            }
+                        </ul>
                 </PerfectScrollbar>
             </div>
         </div>

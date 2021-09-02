@@ -31,6 +31,7 @@ function AddFriendModal( props ) {
 
     const send = async (event) => {
         event.preventDefault();
+
         try{
             await axios.post(`${config.URL}/api/addFriend`, {
                 username: email,
@@ -46,8 +47,7 @@ function AddFriendModal( props ) {
         }catch (e) {
             console.log(e);
         }
-        // setModal(!modal);
-
+        // setModal(!modal); // send 후 닫기
     }
 
     return (

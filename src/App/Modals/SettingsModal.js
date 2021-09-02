@@ -66,8 +66,6 @@ function SettingsModal(props) {
         }
     }, [])
 
-
-
     const send = async event => {
         event.preventDefault();
         try{
@@ -80,7 +78,7 @@ function SettingsModal(props) {
             formData.append("password", password);
             console.log(formData);
 
-            await axios.post(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/api/updateSettings`, formData)
+            await axios.post(`${config.URL}/api/updateSettings`, formData)
                 .then( res => {
                     if(res.status !== 200){
                         throw Error;
