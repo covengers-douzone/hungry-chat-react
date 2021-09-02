@@ -14,6 +14,9 @@ import {
 } from 'reactstrap';
 import * as config from "../../config/config";
 import axios from "axios";
+import {useDispatch, useSelector} from "react-redux";
+import {reloadAction} from "../../Store/Actions/reloadAction";
+
 
 
 function AddFriendModal( props ) {
@@ -28,6 +31,10 @@ function AddFriendModal( props ) {
     const [email, setEmail] = useState();
 
     const [alertOpen, setAlertOpen] = useState(false);
+
+    const dispatch = useDispatch();
+
+    const {reload} = useSelector(state => state);
 
     const send = async (event) => {
         event.preventDefault();
@@ -48,6 +55,7 @@ function AddFriendModal( props ) {
             console.log(e);
         }
         // setModal(!modal); // send 후 닫기
+        dispatch(reloadAction(!reload));
     }
 
     return (

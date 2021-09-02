@@ -17,7 +17,10 @@ function Index({userNo, history}) {
     const [roomList, setRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
 
+    const {reload} = useSelector(state => state);
+
     useEffect(()=>{
+        console.log('reload',reload);
         try{
             fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
             fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
@@ -25,9 +28,9 @@ function Index({userNo, history}) {
         }catch (err){
             console.log(err);
         }
-    },[]);
+    },[reload]);
 
-    roomList.map((room,i) => {
+        roomList.map((room,i) => {
         const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
         const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
         // console.log(i);
@@ -35,7 +38,7 @@ function Index({userNo, history}) {
         // console.log(otherParticipant);
         userRoomList.push({
             id: room.no,
-            name: room.title,
+            name: otherParticipant[0].User.name,
             participantNo : currentParticipant.no,
             avatar: <figure className="avatar avatar-state-success">
                 <img src={otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>

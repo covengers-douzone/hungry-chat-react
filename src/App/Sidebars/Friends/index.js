@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddFriendsModal from "../../Modals/AddFriendModal"
@@ -7,6 +7,8 @@ import FriendsDropdown from "./FriendsDropdown"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction"
 
 function Index({roomList, friendList, followerList, userNo, history }) {
+
+
     useEffect(() => {
         inputRef.current.focus();
     });
@@ -74,7 +76,7 @@ function Index({roomList, friendList, followerList, userNo, history }) {
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown/>
+                                            <FriendsDropdown friendName={item.name} friendNo={item.no}/>
                                         </div>
                                     </div>
                                 </li>
