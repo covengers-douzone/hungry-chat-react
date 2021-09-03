@@ -82,7 +82,7 @@ function Index({userNo, history}) {
                                 return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
                                                    history={history}/>
                             } else if (selectedSidebar === 'Friends') {
-                                return <FriendsIndex roomList={userRoomList} friendList={userFriendList}
+                                return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList} friendList={userFriendList}
                                                      followerList={userFollowerList} userNo={userNo} history={history}/>
                             } else if (selectedSidebar === 'Favorites') {
                                 return <FavoritesIndex/>
