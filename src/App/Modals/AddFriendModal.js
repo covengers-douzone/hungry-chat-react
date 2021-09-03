@@ -80,7 +80,6 @@ function AddFriendModal( props ) {
                             <Label for="email">Email addresses</Label>
                             <Input type="text" name="email" id="email" onChange={(event)=>{
                                 const { value } = event.target;
-                                console.log(value);
                                 setEmail(value);
                             }}/>
                         </FormGroup>

@@ -31,7 +31,8 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const {roomNo} = useSelector(state => state);
 
-    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const [tooltipOpen1, setTooltipOpen1] = useState(false);
+    const [tooltipOpen2, setTooltipOpen2] = useState(false);
 
     const [chatList, setChatList] = useState([]);
 
@@ -52,7 +53,8 @@ function Index({roomList, friendList, userNo, history,}) {
     }
 
 
-    const toggle = () => setTooltipOpen(!tooltipOpen);
+    const toggle1 = () => setTooltipOpen1(!tooltipOpen1);
+    const toggle2 = () => setTooltipOpen2(!tooltipOpen2);
 
 
     useEffect(() => {
@@ -191,13 +193,13 @@ function Index({roomList, friendList, userNo, history,}) {
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"
-                                id="Tooltip-New-Chat">
-                            <i className="ti ti-comment-alt"></i>
+                                id="Tooltip-New-Open-Chat">
+                            <i className="ti ti-themify-favicon"></i>
                         </button>
                         <Tooltip
-                            isOpen={tooltipOpen}
-                            target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
+                            isOpen={tooltipOpen1}
+                            target={"Tooltip-New-Open-Chat"}
+                            toggle={toggle1}>
                             Open chat
                         </Tooltip>
                     </li>
@@ -210,9 +212,9 @@ function Index({roomList, friendList, userNo, history,}) {
                             <i className="ti ti-comment-alt"></i>
                         </button>
                         <Tooltip
-                            isOpen={tooltipOpen}
+                            isOpen={tooltipOpen2}
                             target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
+                            toggle={toggle2}>
                             New chat
                         </Tooltip>
                     </li>
