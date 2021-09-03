@@ -1,12 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddFriendsModal from "../../Modals/AddFriendModal"
 import FriendsDropdown from "./FriendsDropdown"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction"
 
-function Index({roomList, friendList ,  userNo, history }) {
+function Index({roomList, friendList, followerList, userNo, history }) {
+
 
     useEffect(() => {
         inputRef.current.focus();
@@ -23,13 +24,17 @@ function Index({roomList, friendList ,  userNo, history }) {
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [addFriendsModalOpen, setAddFriendsModalOpen] = useState(false);
+
+    const addFriendsModalToggle = () => setAddFriendsModalOpen(!addFriendsModalOpen);
+
     return (
         <div className="sidebar active">
             <header>
                 <span>Friends</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddFriendsModal userNo={userNo}/>
+                        <AddFriendsModal modal={addFriendsModalOpen} toggle={addFriendsModalToggle} userNo={userNo}/>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">
@@ -52,6 +57,10 @@ function Index({roomList, friendList ,  userNo, history }) {
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
+                        <p style={ {
+                            color:"coral",
+                            marginLeft:25,
+                        }}>친구 목록</p>
                         {friendList.filter((item) => {
                             if(searchTerm == ""){
                                 return item
@@ -64,7 +73,34 @@ function Index({roomList, friendList ,  userNo, history }) {
                                     <div className="users-list-body">
                                         <div>
                                             <h5>{item.name}</h5>
-                                            <p>{item.title}</p>
+                                            <p>{item.comments}</p>
+                                        </div>
+                                        <div className="users-list-action action-toggle">
+                                            <FriendsDropdown friendName={item.name} friendNo={item.no}/>
+                                        </div>
+                                    </div>
+                                </li>
+                            })
+                        }
+                    </ul>
+                        <ul className="list-group list-group-flush">
+                            <p style={ {
+                                color:"coral",
+                                marginLeft:25,
+                            }}>나를 친구 추가한 사람들</p>
+                            {followerList.filter((item) => {
+                                if(searchTerm == ""){
+                                    return item
+                                } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                                    return item
+                                }
+                            }).map((item, i) => {
+                                return <li key={i} className="list-group-item">
+                                    {item.avatar}
+                                    <div className="users-list-body">
+                                        <div>
+                                            <h5>{item.name}</h5>
+                                            <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
                                             <FriendsDropdown/>
@@ -72,8 +108,8 @@ function Index({roomList, friendList ,  userNo, history }) {
                                     </div>
                                 </li>
                             })
-                        }
-                    </ul>
+                            }
+                        </ul>
                 </PerfectScrollbar>
             </div>
         </div>

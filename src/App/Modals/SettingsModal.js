@@ -28,8 +28,13 @@ function SettingsModal(props) {
     };
     const [isOpenDiv, setIsOpenDiv] = useState(false);
     const toggleDiv = () => setIsOpenDiv(!isOpenDiv);
+
+    // 변경한 데이터 저장하기
     const [ profileImage, setProfileImage ] = useState();
     const [ nickname, setNickname ] = useState();
+    const [ comments, setComments ] = useState();
+    const [ password, setPassword ] = useState(null);
+    const [ file, setFile ] = useState(null);
 
     useEffect( () => {
         console.log(localStorage.getItem("userNo"));
@@ -51,6 +56,7 @@ function SettingsModal(props) {
             }).then(res => {
                 setProfileImage(res.data.profileImageUrl);
                 setNickname(res.data.nickname);
+                setComments(res.data.comments);
             })
                 .catch(err => {
                 console.log(err);
@@ -60,40 +66,31 @@ function SettingsModal(props) {
         }
     }, [])
 
-    // 변경한 데이터 저장하기
-    const [ password, setPassword ] = useState(null);
-    const [ file, setFile ] = useState(null);
-
     const send = async event => {
         event.preventDefault();
-        console.log(localStorage.getItem("userNo"));
         try{
-            console.log(file);
-            console.log(nickname);
-            console.log(password);
-
             const formData = new FormData();
             formData.append("file", file);
             formData.append("Authorization", localStorage.getItem("Authorization"));
             formData.append("userNo", localStorage.getItem("userNo"));
+            formData.append("comments", comments);
             formData.append("nickname", nickname);
             formData.append("password", password);
             console.log(formData);
 
-            await axios.post(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/api/updateSettings`, formData)
+            await axios.post(`${config.URL}/api/updateSettings`, formData)
                 .then( res => {
                     if(res.status !== 200){
                         throw Error;
                     }
-                    console.log(res.data.data);
-                    // document.getElementsByClassName("preview-img").src = `${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`
-                    setProfileImage(`${config.FETCH_API_IP}:${config.FETCH_API_PORT}/assets/images/${res.data.data}`);
+                    setProfileImage(res.data.data);
                 })
                 .catch(err => {console.log(err)})
 
         }catch (err){
             console.log(err.response + err.message);
         }
+        props.toggle();
     }
     return (
         <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
@@ -109,7 +106,7 @@ function SettingsModal(props) {
                                 toggle('1');
                             }}
                         >
-                            Account
+                            Profile
                         </NavLink>
                     </NavItem>
                     <NavItem>
@@ -122,16 +119,16 @@ function SettingsModal(props) {
                             Chat
                         </NavLink>
                     </NavItem>
-                    <NavItem>
-                        <NavLink href="#/"
-                            className={classnames({active: activeTab === '3'})}
-                            onClick={() => {
-                                toggle('3');
-                            }}
-                        >
-                            Profile
-                        </NavLink>
-                    </NavItem>
+                    {/*<NavItem>*/}
+                    {/*    <NavLink href="#/"*/}
+                    {/*        className={classnames({active: activeTab === '3'})}*/}
+                    {/*        onClick={() => {*/}
+                    {/*            toggle('3');*/}
+                    {/*        }}*/}
+                    {/*    >*/}
+                    {/*        Profile*/}
+                    {/*    </NavLink>*/}
+                    {/*</NavItem>*/}
                 </Nav>
                 <Form>
                     <TabContent activeTab={activeTab}>
@@ -155,6 +152,13 @@ function SettingsModal(props) {
                             </div>
                             <br/>
                             <br/>
+                            <div className="setting-account">
+                                <label htmlFor="name" id="comments"> Comments </label>
+                                <input type="text" name="nickname" placeholder={comments} onChange={ (event) => {
+                                    const { value } = event.target;
+                                    setComments(value);
+                                }}/>
+                            </div>
                              <div className="setting-account">
                                  <label htmlFor="name"> Nickname </label>
                                 <input type="text" name="nickname" placeholder={nickname} onChange={ (event) => {
@@ -172,7 +176,7 @@ function SettingsModal(props) {
                         </TabPane>
                         <TabPane tabId="2">
                              <div className="setting-account">
-                                 <label htmlFor="name"> Background </label>
+                                 <label htmlFor="name" id="Background"> Background </label>
                                  <input type="file" name="backgroundImageUrl" />
                              </div>
                         </TabPane>
