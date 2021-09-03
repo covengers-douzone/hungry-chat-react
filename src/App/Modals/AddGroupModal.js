@@ -71,8 +71,6 @@ function AddGroupModal({userNo, friendList}) {
 
         await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
 
-
-
         Array.from(checkedItems).map(async (item, index) => (
             await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         ))

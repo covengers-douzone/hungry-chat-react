@@ -5,14 +5,32 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import fetchApi from "../Module/fetchApi";
 
+const Index = React.forwardRef(({userNo, history , ref ,  upOffset , downOffset }, scrollRef) => {
 
-function Index({userNo, history}) {
 
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
     const userRoomList = [];
     const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
+
+    // let scrollStart;
+    // let scrollEnd;
+
+    //  callBackScrollStart =  (handleScrollStart) => {
+    //      scrollStart = handleScrollStart
+    //
+    //       return handleScrollStart
+    // }
+    //
+    //
+    //  callBackScrollEnd =  (handleScrollEnd) => {
+    //      scrollEnd = handleScrollEnd
+    //     return handleScrollEnd
+    // }
+
+
+
 
     useEffect(()=>{
         try{
@@ -21,14 +39,15 @@ function Index({userNo, history}) {
         }catch (err){
             console.log(err);
         }
+
     },[]);
 
     roomList.map((room,i) => {
         const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
         const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
-        console.log(i);
-        console.log(currentParticipant);
-        console.log(otherParticipant);
+        // console.log(i);
+        // console.log(currentParticipant);
+        // console.log(otherParticipant);
         userRoomList.push({
             id: room.no,
             name: room.title,
@@ -47,7 +66,8 @@ function Index({userNo, history}) {
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo} history={history}/>
+                        return <ChatsIndex roomList={userRoomList} friendList={friendList}
+                                           userNo={userNo} history={history} ref = {scrollRef}  />
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex roomList={userRoomList} friendList={friendList} userNo={userNo} history={history}/>
                     } else if (selectedSidebar === 'Favorites') {
@@ -57,6 +77,6 @@ function Index({userNo, history}) {
             }
         </div>
     )
-}
+})
 
 export default Index
