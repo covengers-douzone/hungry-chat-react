@@ -38,16 +38,19 @@ function Index({roomList, friendList, userNo, history,}) {
     const [roomOk , setRoomOk] = useState(false);
 
     const chatForm = (chat) => {
-        const chatMessage = {
-            text: chat.contents,
-            date: chat.createdAt,
-            notReadCount: chat.notReadCount,
-        }
         if (chat.Participant.no !== Number(participantNo)) {
-            return chatMessage;
+            return ({
+                text: chat.contents,
+                date: chat.createdAt,
+                notReadCount: chat.notReadCount,
+            })
         } else {
-            chatMessage.type = 'outgoing-message'
-            return chatMessage;
+            return ({
+                text: chat.contents,
+                date: chat.createdAt,
+                notReadCount: chat.notReadCount,
+                type: 'outgoing-message'
+            })
         }
     }
 
@@ -146,7 +149,7 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const chatSelectHandle = async (chat) => {
         try {
-            chat.unread_messages = 0
+            chat.unread_messages = 1
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
             if (chat.messages) {

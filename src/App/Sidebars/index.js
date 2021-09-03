@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import ChatsIndex from "./Chats"
 import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
+import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
 
 
@@ -69,25 +70,26 @@ function Index({userNo, history}) {
                 </figure>
             })
     });
+            return (
+                <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
+                    {
+                        (() => {
+                            if (selectedSidebar === 'Chats') {
+                                return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
+                                                   history={history}/>
+                            } else if (selectedSidebar === 'Friends') {
+                                return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList} friendList={userFriendList}
+                                                     followerList={userFollowerList} userNo={userNo} history={history}/>
+                            } else if (selectedSidebar === 'Favorites') {
+                                return <FavoritesIndex/>
+                            } else if (selectedSidebar === 'Open-chat') {
+                                return <OpenChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
+                                                   history={history}/>
+                            }
+                        })()
+                    }
+                </div>
+            )
 
-
-        return (
-            <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
-                {
-                    (() => {
-                        if (selectedSidebar === 'Chats') {
-                            return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
-                                               history={history}/>
-                        } else if (selectedSidebar === 'Friends') {
-                            return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList} friendList={userFriendList}
-                                                 followerList={userFollowerList} userNo={userNo} history={history}/>
-                        } else if (selectedSidebar === 'Favorites') {
-                            return <FavoritesIndex/>
-                        }
-                    })()
-                }
-            </div>
-        )
-
-    }
+        }
 export default Index
