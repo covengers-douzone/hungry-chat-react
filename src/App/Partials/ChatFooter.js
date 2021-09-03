@@ -18,6 +18,8 @@ function ChatFooter(props) {
             file: file,
             text: props.inputMsg
         });
+
+        setPreviewUrl(null);
     };
 
     const handleChange = (e) => {
