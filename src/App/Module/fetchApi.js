@@ -34,9 +34,10 @@ export default function (defaultState , setState) {
                 console.error("Error From React-Fetch: "+err.message);
             }
         },
-        getChatList: async function (roomNo,token) {
+        getChatList: async function (roomNo, offset , limit , token) {
+            console.log("getChatList" , roomNo , offset , limit)
             try {
-                const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}`, {
+                const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}/${offset}/${limit}`, {
                     method: 'get',
                     headers: {
                         "Access-Control-Allow-Headers":"Content-Type",
@@ -57,6 +58,33 @@ export default function (defaultState , setState) {
                     return json.message;
                 }
                 json.data.length > 0 && setState([...defaultState, ...json.data]);
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getChatListCount: async function (roomNo, token) {
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/chatlistCount/${roomNo}/`, {
+                    method: 'get',
+                    headers: {
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
+                    }
+                });
+
+                if (!response.ok) {
+                    return null; // token error
+                    //throw new Error(`System Error : ${response.status} ${response.statusText}`);
+                }
+                const json = await response.json();
+                if (json.result !== 'success') { // DB error
+                    return json.message;
+                }
                 return json.data
             } catch (err) {
                 console.error(err);
