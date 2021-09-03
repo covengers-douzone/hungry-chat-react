@@ -34,9 +34,6 @@ function Index({userNo, history}) {
         roomList.map((room,i) => {
         const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
         const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
-        // console.log(i);
-        // console.log(currentParticipant);
-        // console.log(otherParticipant);
         userRoomList.push({
             id: room.no,
             name: otherParticipant[0].User.name,
@@ -52,29 +49,27 @@ function Index({userNo, history}) {
     })
 
 
-        friendList.map((friend, i) => {
-            userFriendList.push({
-                no: friend.no,
-                name: friend.name,
-                comments: friend.comments,
+    friendList.map((friend, i) => {
+        userFriendList.push({
+            no: friend.no,
+            name: friend.name,
+            comments: friend.comments,
+            avatar: <figure className="avatar">
+                <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
+            </figure>
+        })
+    });
+
+    followerList.map((follower, i) => {
+            userFollowerList.push({
+                no: follower.no,
+                name: follower.name,
+                comments: follower.comments,
                 avatar: <figure className="avatar">
-                    <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                    <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
                 </figure>
             })
-        });
-
-        followerList.map((follower, i) => {
-                userFollowerList.push({
-                    no: follower.no,
-                    name: follower.name,
-                    comments: follower.comments,
-                    avatar: <figure className="avatar">
-                        <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
-                    </figure>
-                })
-        });
-
-
+    });
             return (
                 <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
                     {

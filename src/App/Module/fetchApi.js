@@ -89,24 +89,14 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        send: async function (roomNo,participantNo, headCount ,contents, token) {
+        send: async function (formData) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/message/`, {
                     method: 'post',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
-                        Authorization: token
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify({
-                        roomNo,
-                        participantNo,
-                        headCount,
-                        contents
-                    }),
+                    body: formData
                 });
 
                 if (!response.ok) {
@@ -461,5 +451,28 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
+        uploadFile: async function (formData) {
+            try{
+                const response = await fetch(`${domain}:${PORT}/api/uploadFile/`, {
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch(e){
+                console.error(e);
+            }
+        }
     }
 }
