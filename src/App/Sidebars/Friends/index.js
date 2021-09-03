@@ -6,7 +6,7 @@ import AddFriendsModal from "../../Modals/AddFriendModal"
 import FriendsDropdown from "./FriendsDropdown"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction"
 
-function Index({roomList, friendList, followerList, userNo, history }) {
+function Index({roomList, friendList, followerList, userNo, history, mobileSidebar }) {
 
 
     useEffect(() => {
@@ -76,7 +76,7 @@ function Index({roomList, friendList, followerList, userNo, history }) {
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown friendName={item.name} friendNo={item.no}/>
+                                            <FriendsDropdown mobileSidebarClose={mobileSidebarClose} history={history} mobileSidebar={mobileSidebar} roomfriendName={item.name} friendNo={item.no}/>
                                         </div>
                                     </div>
                                 </li>
