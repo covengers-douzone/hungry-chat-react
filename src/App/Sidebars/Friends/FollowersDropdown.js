@@ -8,7 +8,7 @@ import axios from "axios";
 import * as config from "../../../config/config";
 
 
-const FriendsDropdown = ({friendNo, friendName}) => {
+const FollowersDropdown = ({friendNo, friendName, friendEmail, userNo}) => {
 
     const dispatch = useDispatch();
 
@@ -24,13 +24,29 @@ const FriendsDropdown = ({friendNo, friendName}) => {
 
     const joinRoomHandler = async (event) => {
         event.preventDefault();
-        const roomNo = await fetchApi(null, null).createRoom(friendName, 2 ,"private", null , localStorage.getItem("Authorization"));
+        const roomNo = await fetchApi(null, null).createRoom(`${friendName}`, 2 ,"private", null , localStorage.getItem("Authorization"));
         console.log("roomNo" , roomNo)
         await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
         await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         dispatch(reloadAction(!reload));
         dispatch(sidebarAction('Chats'));
     }
+
+    const AddFriendHandler = async (event) => {
+        event.preventDefault();
+        try{
+            await axios.post(`${config.URL}/api/addFriend`, {
+                username: friendEmail,
+                Authorization:localStorage.getItem("Authorization"),
+                userNo: userNo
+            }).catch( err => {
+                    console.log(`${err.message}`) })
+        }catch (e) {
+            console.log(e);
+        }
+        dispatch(reloadAction(!reload));
+    }
+
 
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
@@ -43,9 +59,16 @@ const FriendsDropdown = ({friendNo, friendName}) => {
                     New chat
                     </li>
                 </DropdownItem>
+                <DropdownItem divider/>
+                <DropdownItem >
+                    <li onClick={AddFriendHandler}>
+                        Add Friend
+                    </li>
+                </DropdownItem>
+                {/*<DropdownItem >Block</DropdownItem>*/}
             </DropdownMenu>
         </Dropdown>
     )
 };
 
-export default FriendsDropdown
+export default FollowersDropdown

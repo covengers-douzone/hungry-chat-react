@@ -17,7 +17,6 @@ function Index({userNo, history}) {
     const [friendList, setFriendList] = useState([]);
     const [roomList, setRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
-
     const {reload} = useSelector(state => state);
 
     useEffect(()=>{
@@ -63,6 +62,7 @@ function Index({userNo, history}) {
     followerList.map((follower, i) => {
             userFollowerList.push({
                 no: follower.no,
+                email:follower.username,
                 name: follower.name,
                 comments: follower.comments,
                 avatar: <figure className="avatar">

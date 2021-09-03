@@ -5,6 +5,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddFriendsModal from "../../Modals/AddFriendModal"
 import FriendsDropdown from "./FriendsDropdown"
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction"
+import FollowersDropdown from "./FollowersDropdown";
 
 function Index({roomList, friendList, followerList, userNo, history, mobileSidebar }) {
 
@@ -76,7 +77,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown mobileSidebarClose={mobileSidebarClose} history={history} mobileSidebar={mobileSidebar} roomfriendName={item.name} friendNo={item.no}/>
+                                            <FriendsDropdown friendName={item.name} friendNo={item.no}/>
                                         </div>
                                     </div>
                                 </li>
@@ -103,7 +104,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown/>
+                                            <FollowersDropdown friendName={item.name} friendNo={item.no} friendEmail={item.email} userNo={userNo}/>
                                         </div>
                                     </div>
                                 </li>
