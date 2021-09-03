@@ -1,11 +1,41 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
+import fetchApi from "../../Module/fetchApi";
+import {useDispatch, useSelector} from "react-redux";
+import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
+import {reloadAction} from "../../../Store/Actions/reloadAction";
+import {participantNoAction} from "../../../Store/Actions/participantNoAction";
+import {roomNoAction} from "../../../Store/Actions/roomNoAction";
+import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
+import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
+import {sidebarAction} from "../../../Store/Actions/sidebarAction";
 
-const FriendsDropdown = () => {
+
+const FriendsDropdown = ({friendNo, friendName, mobileSidebar, history, mobileSidebarClose}) => {
+
+    const dispatch = useDispatch();
+
+    const {reload} = useSelector(state => state);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
+
+    useEffect(()=> {
+
+    },[]);
+
+    const joinRoomHandler = async (event) => {
+        event.preventDefault();
+
+        const roomNo = await fetchApi(null, null).createRoom(friendName, 2 ,"private", null , localStorage.getItem("Authorization"));
+        console.log("roomNo" , roomNo)
+        await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
+        await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+        dispatch(reloadAction(!reload));
+        dispatch(sidebarAction('Chats'));
+    }
+
 
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
@@ -14,13 +44,13 @@ const FriendsDropdown = () => {
             </DropdownToggle>
             <DropdownMenu>
                 <DropdownItem >
-                    <li>
+                    <li onClick={joinRoomHandler}>
                     New chat
                     </li>
                 </DropdownItem>
-                <DropdownItem >Profile</DropdownItem>
                 <DropdownItem divider/>
-                <DropdownItem >Block</DropdownItem>
+                {/*<DropdownItem >Profile</DropdownItem>*/}
+                {/*<DropdownItem >Block</DropdownItem>*/}
             </DropdownMenu>
         </Dropdown>
     )

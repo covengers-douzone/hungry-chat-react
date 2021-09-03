@@ -26,7 +26,8 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState([...defaultState, ...json.data]);
+                json.data.length > 0 && setState(json.data);
+                // setState(json.data);
                 return json.data;
             } catch (err) {
                 // Access Denied or System Error or Fetch Error(Cors ... )
@@ -144,13 +145,13 @@ export default function (defaultState , setState) {
         },
         createRoom: async function (title, headCount,  type ,  password  , token) { // 방 생성
             try {
-                const response = await fetch(`${domain}:${PORT}/api/createRoom/`, {
+                const response = await fetch(`${config.URL}/api/createRoom/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Origin":`${config.URL}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -177,13 +178,13 @@ export default function (defaultState , setState) {
         },
         createParticipant: async function (UserNo , roomNo , role , token) { // 방 생성
             try {
-                const response = await fetch(`${domain}:${PORT}/api/createParticipant/`, {
+                const response = await fetch(`${config.URL}/api/createParticipant/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Origin":`${config.URL}`,
                         "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -293,7 +294,38 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState([...defaultState, ...json.data]);
+                json.data.length > 0 && setState(json.data);
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getFollowerList: async function (UserNo , token) { // 방 생성
+            try {
+                const response = await fetch(`${config.URL}/api/getFollowerList/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers":"Content-Type",
+                        "Access-Control-Allow-Origin":`${URL}`,
+                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        UserNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                json.data.length > 0 && setState(json.data);
                 return json.data
             } catch (err) {
                 console.error(err);

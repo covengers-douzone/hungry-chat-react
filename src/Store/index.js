@@ -12,6 +12,7 @@ import participantNoReducer from "./Reducers/participantNoReducer";
 import userNoReducer from "./Reducers/userNoReducer";
 import friendListReducer from "./Reducers/friendListReducer";
 import headCountReducer from "./Reducers/headCountReducer";
+import reloadReducer from "./Reducers/reloadReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -24,7 +25,8 @@ const reducers = combineReducers({
     participantNo : participantNoReducer,
     userNo : userNoReducer,
     friendList : friendListReducer,
-    headCount : headCountReducer
+    headCount : headCountReducer,
+    reload : reloadReducer
 });
 
 const store = createStore(reducers, composeWithDevTools());
