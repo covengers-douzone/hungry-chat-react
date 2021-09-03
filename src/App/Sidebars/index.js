@@ -6,7 +6,7 @@ import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
 
-const Index = React.forwardRef(({userNo, history, ref, upOffset, downOffset}, scrollRef) => {
+const Index = React.forwardRef(({userNo, history}, scrollRef) => {
 
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
@@ -39,10 +39,10 @@ const Index = React.forwardRef(({userNo, history, ref, upOffset, downOffset}, sc
         });
         userRoomList.push({
             id: room.no,
-            name: otherParticipant[0].User.name,
+            name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
             participantNo: currentParticipant.no,
             avatar: <figure className="avatar avatar-state-success">
-                <img src={otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                <img src={ otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
             </figure>,
             text: <p>What's up, how are you?</p>,
             date: '03:41 PM',
