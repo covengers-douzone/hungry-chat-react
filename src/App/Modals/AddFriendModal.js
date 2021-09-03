@@ -38,7 +38,6 @@ function AddFriendModal( props ) {
 
     const send = async (event) => {
         event.preventDefault();
-
         try{
             await axios.post(`${config.URL}/api/addFriend`, {
                 username: email,
@@ -49,7 +48,7 @@ function AddFriendModal( props ) {
                     setAlertOpen(!alertOpen);
                 })
                 .catch( err => {
-                    alert("일치하는 이메일이 존재하지 않습니다.");
+                    alert("이메일 혹은 친구목록을 다시 확인해주세요.");
                     console.log(`${err.message}`) })
         }catch (e) {
             console.log(e);
