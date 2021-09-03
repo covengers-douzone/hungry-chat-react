@@ -19,7 +19,15 @@ function Chat() {
 
     const handleSubmit = (newValue) => {
 
-        myFetch(null, null).send(roomNo, participantNo, headCount , newValue.text, localStorage.getItem("Authorization"));
+        const formData = new FormData();
+        formData.append("file", newValue.file);
+        formData.append("roomNo", roomNo);
+        formData.append("participantNo", participantNo);
+        formData.append("headCount", headCount);
+        formData.append("text", newValue.text);
+        formData.append("Authorization", localStorage.getItem("Authorization"));
+
+        myFetch(null,null).send(formData);
         console.log("send insert")
         setInputMsg("");
     };
@@ -37,6 +45,11 @@ function Chat() {
     const handleScrollEnd = (e) => {
         console.log("마지막 쪽 스크롤"
         )
+    }
+
+    const handleInputMsg = (msg) => {
+        setInputMsg(msg);
+        console.log(msg);
     }
 
     // const handleScroll = (e) => {
@@ -104,7 +117,7 @@ function Chat() {
                                 </div>
                             </div>
                         </PerfectScrollbar>
-                        <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}/>
+                        <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg} handleInputMsg={handleInputMsg}/>
                     </React.Fragment>
                     :
                     <div className="chat-body no-message">
