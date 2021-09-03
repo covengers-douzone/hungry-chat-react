@@ -190,7 +190,7 @@ function Index({roomList, friendList, userNo, history,}) {
     return (
         <div className="sidebar active">
             <header>
-                <span>Chats</span>
+                <span>채팅</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"
@@ -201,7 +201,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen}
                             target={"Tooltip-New-Chat"}
                             toggle={toggle}>
-                            Open chat
+                            오픈 채팅
                         </Tooltip>
                     </li>
                     <li className="list-inline-item">
@@ -216,7 +216,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen}
                             target={"Tooltip-New-Chat"}
                             toggle={toggle}>
-                            New chat
+                            채팅 생성
                         </Tooltip>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">

@@ -56,13 +56,13 @@ const FollowersDropdown = ({friendNo, friendName, friendEmail, userNo}) => {
             <DropdownMenu>
                 <DropdownItem >
                     <li onClick={joinRoomHandler}>
-                    New chat
+                    채팅 생성
                     </li>
                 </DropdownItem>
                 <DropdownItem divider/>
                 <DropdownItem >
                     <li onClick={AddFriendHandler}>
-                        Add Friend
+                        친구추가
                     </li>
                 </DropdownItem>
                 {/*<DropdownItem >Block</DropdownItem>*/}

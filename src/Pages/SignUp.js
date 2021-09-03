@@ -115,13 +115,13 @@ function SignUp({history}) {
             <div className="logo">
                 <Logo/>
             </div>
-            <h5>Create account</h5>
+            <h5>회원가입</h5>
             <form onSubmit={ handleSubmit(onSubmit) }>
                 <div className="form-group">
-                    <input name="name" type="text" className="form-control form-control-lg" placeholder="Name" required autoFocus/>
+                    <input name="name" type="text" className="form-control form-control-lg" placeholder="이름" required autoFocus/>
                 </div>
                 <div className="form-group">
-                    <input name="email" type="email" className="form-control form-control-lg" placeholder="Email" required/>
+                    <input name="email" type="email" className="form-control form-control-lg" placeholder="이메일" required/>
                 </div>
                 <div className="form-group">
                     <input ref={register({
@@ -135,16 +135,16 @@ function SignUp({history}) {
                 </div>
                 <div className="form-group">
                     <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
-                    <button onClick={ smsApiHandler } disabled={ disabledSendBtn } style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">Send Code</button>
+                    <button onClick={ smsApiHandler } disabled={ disabledSendBtn } style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">번호 전송</button>
                 </div>
                 <div className="form-group">
-                    <input disabled={ disabledCode } id="code" name="code" type="number" className="form-control form-control-lg" placeholder="Input your code" required/>
+                    <input disabled={ disabledCode } id="code" name="code" type="number" className="form-control form-control-lg" placeholder="인증번호 입력" required/>
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
-                <button type="submit" className="btn btn-primary btn-block btn-lg">Register</button>
+                <button type="submit" className="btn btn-primary btn-block btn-lg">회원가입</button>
                 <hr/>
-                <p className="text-muted">Already have an account?</p>
-                <a href="/sign-in" className="btn btn-outline-light btn-sm">Sign in!</a>
+                <p className="text-muted">이미 계정을 가지고 계신가요?</p>
+                <a href="/sign-in" className="btn btn-outline-light btn-sm">로그인</a>
             </form>
         </div>
     )

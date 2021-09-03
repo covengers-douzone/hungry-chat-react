@@ -123,7 +123,7 @@ function Chat() {
                     <div className="chat-body no-message">
                         <div className="no-message-container">
                             <i className="fa fa-comments-o"></i>
-                            <p>Select a chat to read messages</p>
+                            <p>메시지를 읽을 대화 선택</p>
                         </div>
                     </div>
             }
