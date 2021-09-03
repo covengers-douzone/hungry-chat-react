@@ -4,6 +4,8 @@ import fetchApi from "../../Module/fetchApi";
 import {useDispatch, useSelector} from "react-redux";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import {sidebarAction} from "../../../Store/Actions/sidebarAction";
+import {participantNoAction} from "../../../Store/Actions/participantNoAction";
+import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import axios from "axios";
 import * as config from "../../../config/config";
 
@@ -25,9 +27,10 @@ const FriendsDropdown = ({friendNo, friendName}) => {
     const joinRoomHandler = async (event) => {
         event.preventDefault();
         const roomNo = await fetchApi(null, null).createRoom(friendName, 2 ,"private", null , localStorage.getItem("Authorization"));
-        console.log("roomNo" , roomNo)
-        await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
+        const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
         await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+        dispatch(joinRoomAction(true));
+        dispatch(participantNoAction(participantNo));
         dispatch(reloadAction(!reload));
         dispatch(sidebarAction('Chats'));
     }

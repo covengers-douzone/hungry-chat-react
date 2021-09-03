@@ -202,7 +202,7 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-
+                return json.data;
             } catch (err) {
                 console.error(err);
             }

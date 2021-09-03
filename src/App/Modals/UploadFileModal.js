@@ -53,11 +53,6 @@ function UploadFileModal(props) {
     const handleSubmit = async event => {
         event.preventDefault();
 
-        //const formData = new FormData();
-        //formData.append("file", file);
-        //formData.append("Authorization", localStorage.getItem("Authorization"));
-
-        //await fetchApi(null,null).uploadFile(formData);
         props.handleFile(file,previewURL);
         props.toggle();
     }

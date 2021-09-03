@@ -13,6 +13,7 @@ import userNoReducer from "./Reducers/userNoReducer";
 import friendListReducer from "./Reducers/friendListReducer";
 import headCountReducer from "./Reducers/headCountReducer";
 import reloadReducer from "./Reducers/reloadReducer";
+import joinRoomReducer from "./Reducers/joinRoomReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -26,7 +27,8 @@ const reducers = combineReducers({
     userNo : userNoReducer,
     friendList : friendListReducer,
     headCount : headCountReducer,
-    reload : reloadReducer
+    reload : reloadReducer,
+    joinRoom : joinRoomReducer
 });
 
 const store = createStore(reducers, composeWithDevTools());

@@ -16,6 +16,7 @@ import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
+import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 
 function Index({roomList, friendList, userNo, history,}) {
 
@@ -28,6 +29,8 @@ function Index({roomList, friendList, userNo, history,}) {
     const {selectedChat} = useSelector(state => state);
 
     const {participantNo} = useSelector(state => state);
+
+    const {joinRoom} = useSelector(state => state);
 
     const {roomNo} = useSelector(state => state);
 
@@ -50,7 +53,6 @@ function Index({roomList, friendList, userNo, history,}) {
             return chatMessage;
         }
     }
-
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
@@ -171,7 +173,12 @@ function Index({roomList, friendList, userNo, history,}) {
         const {chat} = props;
 
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
-                   onClick={() => chatSelectHandle(chat)}>
+                   onClick={() => chatSelectHandle(chat)} id={chat.id}
+                   ref={ref => {
+                           joinRoom && chat.participantNo === participantNo
+                               && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
+                        }}
+                >
             {chat.avatar}
             <div className="users-list-body">
                 <h5>{chat.name}</h5>
