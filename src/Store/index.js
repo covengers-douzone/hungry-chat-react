@@ -13,6 +13,9 @@ import userNoReducer from "./Reducers/userNoReducer";
 import friendListReducer from "./Reducers/friendListReducer";
 import headCountReducer from "./Reducers/headCountReducer";
 import reloadReducer from "./Reducers/reloadReducer";
+import lastReadNoReducer from "./Reducers/lastReadNoReducer";
+import messageAllLengthReducer from "./Reducers/messageAllLengthReducer";
+import joinOkReducer from "./Reducers/joinOkReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -21,12 +24,15 @@ const reducers = combineReducers({
     mobileProfileSidebar: mobileProfileSidebarReducer,
     selectedChat: selectedChatReducer,
     messageLength : messageLengthReducer,
+    messageAllLength : messageAllLengthReducer,
     roomNo : roomNoReducer,
     participantNo : participantNoReducer,
     userNo : userNoReducer,
     friendList : friendListReducer,
     headCount : headCountReducer,
-    reload : reloadReducer
+    reload : reloadReducer,
+    lastReadNo : lastReadNoReducer,
+    joinOk  : joinOkReducer
 });
 
 const store = createStore(reducers, composeWithDevTools());

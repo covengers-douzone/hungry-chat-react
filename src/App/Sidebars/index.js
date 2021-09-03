@@ -6,8 +6,7 @@ import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
 
-
-function Index({userNo, history}) {
+const Index = React.forwardRef(({userNo, history, ref, upOffset, downOffset}, scrollRef) => {
 
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
@@ -19,24 +18,29 @@ function Index({userNo, history}) {
     const [followerList, setFollowerList] = useState([]);
     const {reload} = useSelector(state => state);
 
-    useEffect(()=>{
-        console.log('reload',reload);
-        try{
-            fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
-            fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+
+    useEffect(() => {
+        console.log('reload', reload);
+        try {
+            fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+            fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
             fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
-        }catch (err){
+        } catch (err) {
             console.log(err);
         }
-    },[reload]);
+    }, [reload]);
 
-        roomList.map((room,i) => {
-        const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
-        const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
+    roomList.map((room, i) => {
+        const currentParticipant = room.Participants.filter(participant => {
+            return Number(participant.userNo) === Number(userNo)
+        })[0];
+        const otherParticipant = room.Participants.filter(participant => {
+            return Number(participant.userNo) !== Number(userNo)
+        });
         userRoomList.push({
             id: room.no,
             name: otherParticipant[0].User.name,
-            participantNo : currentParticipant.no,
+            participantNo: currentParticipant.no,
             avatar: <figure className="avatar avatar-state-success">
                 <img src={otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
             </figure>,
@@ -60,36 +64,37 @@ function Index({userNo, history}) {
     });
 
     followerList.map((follower, i) => {
-            userFollowerList.push({
-                no: follower.no,
-                email:follower.username,
-                name: follower.name,
-                comments: follower.comments,
-                avatar: <figure className="avatar">
-                    <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
-                </figure>
-            })
+        userFollowerList.push({
+            no: follower.no,
+            email: follower.username,
+            name: follower.name,
+            comments: follower.comments,
+            avatar: <figure className="avatar">
+                <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
+            </figure>
+        })
     });
-            return (
-                <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
-                    {
-                        (() => {
-                            if (selectedSidebar === 'Chats') {
-                                return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
-                                                   history={history}/>
-                            } else if (selectedSidebar === 'Friends') {
-                                return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList} friendList={userFriendList}
-                                                     followerList={userFollowerList} userNo={userNo} history={history}/>
-                            } else if (selectedSidebar === 'Favorites') {
-                                return <FavoritesIndex/>
-                            } else if (selectedSidebar === 'Open-chat') {
-                                return <OpenChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
-                                                   history={history}/>
-                            }
-                        })()
-                    }
-                </div>
-            )
 
-        }
+    return (
+        <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
+            {
+                (() => {
+                    if (selectedSidebar === 'Chats') {
+                        return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
+                                           history={history} ref={scrollRef}/>
+                    } else if (selectedSidebar === 'Friends') {
+                        return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList}
+                                             friendList={userFriendList}
+                                             followerList={userFollowerList} userNo={userNo} history={history}/>
+                    } else if (selectedSidebar === 'Favorites') {
+                        return <FavoritesIndex/>
+                    } else if (selectedSidebar === 'Open-chat') {
+                        return <OpenChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
+                                               history={history}/>
+                    }
+                })()
+            }
+        </div>
+    )
+})
 export default Index
