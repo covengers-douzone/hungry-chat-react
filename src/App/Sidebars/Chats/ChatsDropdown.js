@@ -23,8 +23,8 @@ const ChatsDropdown = () => {
                 <i className="ti ti-more"></i>
             </DropdownToggle>
             <DropdownMenu>
-                <DropdownItem onClick={profileActions}>Profile</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
+                <DropdownItem onClick={profileActions}>프로필</DropdownItem>
+                <DropdownItem>삭제하기</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

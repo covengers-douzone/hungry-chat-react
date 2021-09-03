@@ -213,7 +213,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen}
                             target={"Tooltip-New-Chat"}
                             toggle={toggle}>
-                            New chat
+                            채팅방 만들기
                         </Tooltip>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">

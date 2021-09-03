@@ -13,12 +13,12 @@ function DisconnectedModal() {
                className="modal-dialog-zoom">
             <ModalBody>
                 <div className="connection-error">
-                    <h4 className="text-center">Application disconnected...</h4>
+                    <h4 className="text-center">연결이 끊겼습니다..</h4>
                     <DisconnectedSvg/>
                 </div>
             </ModalBody>
             <ModalFooter className="justify-content-center">
-                <Button color="primary" size="lg" onClick={toggle}>Reconnect</Button>
+                <Button color="primary" size="lg" onClick={toggle}>재연결</Button>
             </ModalFooter>
         </Modal>
     )

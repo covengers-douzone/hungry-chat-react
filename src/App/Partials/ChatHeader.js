@@ -28,7 +28,7 @@ function ChatHeader(props) {
                 <div>
                     <h5>{props.selectedChat.name}</h5>
                     <small className="text-muted">
-                        <i>Online</i>
+                        <i>온라인</i>
                     </small>
                 </div>
             </div>
@@ -52,7 +52,7 @@ function ChatHeader(props) {
                                 </button>
                             </DropdownToggle>
                             <DropdownMenu right>
-                                <DropdownItem onClick={profileActions}>Profile</DropdownItem>
+                                <DropdownItem onClick={profileActions}>프로필</DropdownItem>
                                 <DropdownItem>Add to archive</DropdownItem>
                                 <DropdownItem>Delete</DropdownItem>
                                 <DropdownItem divider/>

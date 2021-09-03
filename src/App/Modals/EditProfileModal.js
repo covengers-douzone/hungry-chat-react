@@ -34,7 +34,7 @@ function EditProfileModal(props) {
         <div>
             <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
                 <ModalHeader toggle={props.toggle}>
-                    <i className="ti ti-pencil"></i> Profile Edit
+                    <i className="ti ti-pencil"></i> 프로필 수정
                 </ModalHeader>
                 <ModalBody>
                     <Nav tabs>

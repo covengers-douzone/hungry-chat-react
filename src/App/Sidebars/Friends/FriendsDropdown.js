@@ -40,7 +40,7 @@ const FriendsDropdown = ({friendNo, friendName}) => {
             <DropdownMenu>
                 <DropdownItem >
                     <li onClick={joinRoomHandler}>
-                    New chat
+                    채팅생성
                     </li>
                 </DropdownItem>
             </DropdownMenu>
