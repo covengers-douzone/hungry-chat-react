@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux"
 import myFetch from "../Module/fetchApi";
 import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
+import {chatForm,chatMessageForm} from "../Module/chatForm";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -63,24 +64,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
     };
 
 
-    const chatForm = (chat) => {
-        if (chat.Participant.no !== Number(participantNo)) {
-            return ({
-                text: chat.contents,
-                date: chat.createdAt,
-                notReadCount: chat.notReadCount,
-            })
-        } else {
-            return ({
-                text: chat.contents,
-                date: chat.createdAt,
-                notReadCount: chat.notReadCount,
-                type: 'outgoing-message'
-            })
-        }
-    }
-
-
     const handleInputMsg = (msg) => {
         setInputMsg(msg);
     }
@@ -105,11 +88,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             if (lastPage && lastPage >= 0) {
                 if (lastPage < config.CHAT_LIMIT) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map(chatForm);
+                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
                     selectedChat.messages = chats;
                 } else {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, messageAllLength.count, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map(chatForm);
+                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
                     selectedChat.messages = chats;
                 }
 
