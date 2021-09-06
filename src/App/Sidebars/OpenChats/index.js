@@ -17,6 +17,7 @@ import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import AddOpenChatModal from "../../Modals/AddOpenChatModal";
+import AddGroupModal from "../../Modals/AddGroupModal";
 
 function Index({roomList, friendList, userNo, history,}) {
 
@@ -192,11 +193,24 @@ function Index({roomList, friendList, userNo, history,}) {
     return (
         <div className="sidebar active" style={{backgroundColor:"lightpink"}}>
             <header>
-                <span>Open-Chats</span>
+                <span>오픈 채팅</span>
                 <ul className="list-inline">
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"*/}
+                    {/*            id="Tooltip-New-Chat">*/}
+                    {/*        <i className="ti ti-comment-alt"></i>*/}
+                    {/*    </button>*/}
+                    {/*    <Tooltip*/}
+                    {/*        isOpen={tooltipOpen}*/}
+                    {/*        target={"Tooltip-New-Chat"}*/}
+                    {/*        toggle={toggle}>*/}
+                    {/*        오픈 채팅*/}
+                    {/*    </Tooltip>*/}
+                    {/*</li>*/}
                     <li className="list-inline-item">
                         <AddOpenChatModal userNo={userNo}/>
-                    </li>
+                        {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
+                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
                                 id="Tooltip-New-Chat">
@@ -206,7 +220,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen}
                             target={"Tooltip-New-Chat"}
                             toggle={toggle}>
-                            New chat
+                            친구 초대
                         </Tooltip>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">

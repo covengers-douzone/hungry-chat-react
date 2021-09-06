@@ -71,8 +71,6 @@ function AddGroupModal({userNo, friendList}) {
 
         await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
 
-
-
         Array.from(checkedItems).map(async (item, index) => (
             await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         ))
@@ -109,11 +107,11 @@ function AddGroupModal({userNo, friendList}) {
                 isOpen={tooltipOpen}
                 target={"Tooltip-Add-Group"}
                 toggle={tooltipToggle}>
-                New Group
+                신규 그룹
             </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> New Group
+                    <i className="fa fa-users"></i> 신규 그룹
                 </ModalHeader>
                 <ModalBody>
                     <Form>

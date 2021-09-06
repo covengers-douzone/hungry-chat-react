@@ -6,8 +6,7 @@ import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
 
-
-function Index({userNo, history}) {
+const Index = React.forwardRef(({userNo, history}, scrollRef) => {
 
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
@@ -31,7 +30,7 @@ function Index({userNo, history}) {
         }catch (err){
             console.log(err);
         }
-    },[reload]);
+    }, [reload]);
 
 
     // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
@@ -101,36 +100,37 @@ function Index({userNo, history}) {
     });
 
     followerList.map((follower, i) => {
-            userFollowerList.push({
-                no: follower.no,
-                email:follower.username,
-                name: follower.name,
-                comments: follower.comments,
-                avatar: <figure className="avatar">
-                    <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
-                </figure>
-            })
+        userFollowerList.push({
+            no: follower.no,
+            email: follower.username,
+            name: follower.name,
+            comments: follower.comments,
+            avatar: <figure className="avatar">
+                <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
+            </figure>
+        })
     });
-            return (
-                <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
-                    {
-                        (() => {
-                            if (selectedSidebar === 'Chats') {
-                                return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
-                                                   history={history}/>
-                            } else if (selectedSidebar === 'Friends') {
-                                return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList} friendList={userFriendList}
-                                                     followerList={userFollowerList} userNo={userNo} history={history}/>
-                            } else if (selectedSidebar === 'Favorites') {
-                                return <FavoritesIndex/>
-                            } else if (selectedSidebar === 'Open-chat') {
-                                return <OpenChatsIndex roomList={userOpenRoomList} friendList={friendList} userNo={userNo}
-                                                   history={history}/>
-                            }
-                        })()
-                    }
-                </div>
-            )
 
-        }
+    return (
+        <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
+            {
+                (() => {
+                    if (selectedSidebar === 'Chats') {
+                        return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
+                                           history={history} ref={scrollRef}/>
+                    } else if (selectedSidebar === 'Friends') {
+                        return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList}
+                                             friendList={userFriendList}
+                                             followerList={userFollowerList} userNo={userNo} history={history}/>
+                    } else if (selectedSidebar === 'Favorites') {
+                        return <FavoritesIndex/>
+                    } else if (selectedSidebar === 'Open-chat') {
+                        return <OpenChatsIndex roomList={userOpenRoomList} friendList={friendList} userNo={userNo}
+                                               history={history}/>
+                    }
+                })()
+            }
+        </div>
+    )
+})
 export default Index

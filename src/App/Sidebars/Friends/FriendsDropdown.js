@@ -45,6 +45,13 @@ const FriendsDropdown = ({friendNo, friendName}) => {
             {/*        </li>*/}
             {/*    </DropdownItem>*/}
             {/*</DropdownMenu>*/}
+            <DropdownMenu>
+                <DropdownItem >
+                    <li onClick={joinRoomHandler}>
+                    채팅생성
+                    </li>
+                </DropdownItem>
+            </DropdownMenu>
         </Dropdown>
     )
 };

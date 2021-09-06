@@ -60,24 +60,24 @@ function AddFriendModal( props ) {
     return (
         <div>
             <button className="btn btn-light d-flex align-items-center" onClick={modalToggle} id="Tooltip-Add-Friend">
-                <i className="ti ti-plus btn-icon"></i> Add Friends
+                <i className="ti ti-plus btn-icon"></i> 친구 추가
             </button>
             <Tooltip
                 placement="bottom"
                 isOpen={tooltipOpen}
                 target={"Tooltip-Add-Friend"}
                 toggle={tooltipToggle}>
-                Add Friend
+                친구 추가
             </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="ti ti-user mr-2"></i> Add Friends
+                    <i className="ti ti-user mr-2"></i> 친구 추가
                 </ModalHeader>
                 <ModalBody>
-                    <Alert isOpen={alertOpen} color="info">Successfully added new friend</Alert>
+                    <Alert isOpen={alertOpen} color="info">성공적으로 친구추가 되었습니다!</Alert>
                     <Form>
                         <FormGroup>
-                            <Label for="email">Email addresses</Label>
+                            <Label for="email">이메일</Label>
                             <Input type="text" name="email" id="email" onChange={(event)=>{
                                 const { value } = event.target;
                                 setEmail(value);
@@ -91,7 +91,7 @@ function AddFriendModal( props ) {
                 </ModalBody>
                 <ModalFooter>
                     {/*<Button color="primary" onClick={modalToggle}>Submit</Button>*/}
-                    <Button color="primary" onClick={send}>Submit</Button>
+                    <Button color="primary" onClick={send}>제출하기</Button>
 
                 </ModalFooter>
             </Modal>

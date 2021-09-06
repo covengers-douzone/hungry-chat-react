@@ -65,40 +65,28 @@ function SignIn({history}) {
             <div className="logo">
                 <Logo/>
             </div>
-            <h5>Sign in</h5>
+            <h5>로그인</h5>
             <form onSubmit={ loginHandler }>
                 <div className="form-group input-group-lg">
-                    <input type="text" name="email" className="form-control" placeholder="Email"/>
+                    <input type="text" name="email" className="form-control" placeholder="이메일"/>
                 </div>
                 <div className="form-group input-group-lg">
-                    <input type="password" name="password" className="form-control" placeholder="Password"/>
+                    <input type="password" name="password" className="form-control" placeholder="비밀번호"/>
                 </div>
+                <button type="submit" className="btn btn-primary btn-block btn-lg">로그인</button>
+                
+                <hr/>
                 <div className="form-group d-flex justify-content-between">
                     <a href="/userinfo" className="btn btn-outline-light btn-sm">ID/PW 찾기</a>
                     <a href="/unknown-user" className="btn btn-outline-light btn-sm">비회원 로그인</a>
+                    <a href="/sign-up" className="btn btn-outline-light btn-sm">회원가입</a>
                 </div>
-                <button type="submit" className="btn btn-primary btn-block btn-lg">Sign in</button>
                 <hr/>
-                <p className="text-muted">Login with your social media account.</p>
+                <p className="text-muted">SNS 로그인</p>
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <a href="/" className="btn btn-floating btn-facebook">
                             <i className="fa fa-facebook"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-twitter">
-                            <i className="fa fa-twitter"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-dribbble">
-                            <i className="fa fa-dribbble"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-linkedin">
-                            <i className="fa fa-linkedin"></i>
                         </a>
                     </li>
                     <li className="list-inline-item">
@@ -107,20 +95,11 @@ function SignIn({history}) {
                         </a>
                     </li>
                     <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-behance">
-                            <i className="fa fa-behance"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
                         <a href="/" className="btn btn-floating btn-instagram">
                             <i className="fa fa-instagram"></i>
                         </a>
                     </li>
                 </ul>
-                <hr/>
-                <p className="text-muted">Don't have an account?</p>
-                
-                <a href="/sign-up" className="btn btn-outline-light btn-sm">Register now!</a>
             </form>
         </div>
     )

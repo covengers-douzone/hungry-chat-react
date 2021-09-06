@@ -16,8 +16,18 @@ import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
+import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
+import {func} from "prop-types";
+import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
+import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 
-function Index({roomList, friendList, userNo, history,}) {
+const Index = React.forwardRef(({
+                                    roomList,
+                                    friendList,
+                                    userNo,
+                                    history
+                                }, scrollRef) => {
+
 
     // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
 
@@ -36,8 +46,9 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const [chatList, setChatList] = useState([]);
 
-    const [roomOk , setRoomOk] = useState(false);
+    const [joinOk  , setJoinOk] = useState(true)
 
+    let lastPage = 0
     const chatForm = (chat) => {
         const chatMessage = {
             text: chat.contents,
@@ -57,17 +68,16 @@ function Index({roomList, friendList, userNo, history,}) {
     const toggle2 = () => setTooltipOpen2(!tooltipOpen2);
 
 
-    useEffect(() => {
-        inputRef.current.focus();
-    });
+
+
 
     const callback = async ({socketUserNo, chatNo}) => {
         await fetchApi(null, null).updateSendNotReadCount(chatNo);
 
-        const chat = await fetchApi(null,null).getChat(chatNo,localStorage.getItem("Authorization"));
+        const chat = await fetchApi(null, null).getChat(chatNo, localStorage.getItem("Authorization"));
 
-        const message ={
-            userNo , text: chat.contents ,date: chat.createdAt , notReadCount: chat.notReadCount
+        const message = {
+            userNo, text: chat.contents, date: chat.createdAt, notReadCount: chat.notReadCount
         }
         Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
 
@@ -81,7 +91,6 @@ function Index({roomList, friendList, userNo, history,}) {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         } else {
-            console.log("", selectedChat.messages[selectedChat.messages.length - 1])
             if (selectedChat.messages[selectedChat.messages.length - 1] === 0) { // 마지막 메시지가 0 이라면
 
             }
@@ -89,42 +98,69 @@ function Index({roomList, friendList, userNo, history,}) {
 
     }, 3000)
 
+
+    const handleCheck = (e) => {
+
+    }
+
+
     useEffect(() => {
+
+
+
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         }
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
-        socket.on('roomUsers',async ({room,users})=>{
+        socket.on('roomUsers', async ({room, users}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
-                if(users[users.length -1].id !== socket.id){
+                if (users[users.length - 1].id !== socket.id) {
                     // chat list update
-                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, localStorage.getItem("Authorization"))
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                     const chats = chatlist.map(chatForm);
                     selectedChat.messages = chats;
                     dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 }
-            } , 1000)
+            }, 1000)
 
         })
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
         }, async (response) => {
-            if(response.status === 'ok'){
+            if (response.status === 'ok') {
                 // update status
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+
+                const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
+                dispatch(lastReadNoAction(lastReadNo))
+
                 // update notReadCount
                 await fetchApi(null, null).updateRoomNotReadCount(participantNo, roomNo, localStorage.getItem("Authorization"))
                 // set headCount(입장한 방)
                 dispatch(headCountAction(await fetchApi(null, null).getHeadCount(participantNo, localStorage.getItem("Authorization"))))
-                // chat list 불러오기
-                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, localStorage.getItem("Authorization"))
+
+                //쳇 리스트 갯수 구하기
+                const chatListCount =  await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+
+                // lastPage가 -로 들어 갈때 처리 해주는 조건문
+                if(chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0){
+                    lastPage = 0;
+                }else{
+                    lastPage = chatListCount.count - config.CHAT_LIMIT
+                }
+                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                 const chats = chatlist.map(chatForm);
+
                 selectedChat.messages = chats;
+                setJoinOk(!joinOk)
+                dispatch(joinOKAction(joinOk))
+                dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
+
             }
         });
         socket.on('message', callback);
@@ -188,7 +224,7 @@ function Index({roomList, friendList, userNo, history,}) {
     return (
         <div className="sidebar active">
             <header>
-                <span>Chats</span>
+                <span>채팅</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"
@@ -199,7 +235,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen1}
                             target={"Tooltip-New-Open-Chat"}
                             toggle={toggle1}>
-                            Open chat
+                            오픈 채팅
                         </Tooltip>
                     </li>
                     <li className="list-inline-item">
@@ -214,7 +250,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen2}
                             target={"Tooltip-New-Chat"}
                             toggle={toggle2}>
-                            New chat
+                            채팅방 만들기
                         </Tooltip>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">
@@ -237,6 +273,6 @@ function Index({roomList, friendList, userNo, history,}) {
             </div>
         </div>
     )
-}
+})
 
 export default Index

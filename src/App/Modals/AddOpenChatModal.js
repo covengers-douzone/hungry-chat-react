@@ -71,11 +71,11 @@ function AddOpenChatModal({userNo}) {
                 isOpen={tooltipOpen}
                 target={"Tooltip-Add-Group"}
                 toggle={tooltipToggle}>
-                New Group
+                방 만들기
             </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> New Group
+                    <i className="fa fa-users"></i> 방 만들기
                 </ModalHeader>
                 <ModalBody>
                     <Form>
