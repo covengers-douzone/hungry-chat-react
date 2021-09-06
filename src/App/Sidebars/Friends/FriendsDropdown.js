@@ -10,7 +10,7 @@ import axios from "axios";
 import * as config from "../../../config/config";
 
 
-const FriendsDropdown = ({friendNo, friendName}) => {
+const FriendsDropdown = ({roomList, friendNo, friendName}) => {
 
     const dispatch = useDispatch();
 
@@ -24,33 +24,42 @@ const FriendsDropdown = ({friendNo, friendName}) => {
 
     },[]);
 
-    const joinRoomHandler = async (event) => {
+    const createRoomHandler = async (event) => {
         event.preventDefault();
-        const roomNo = await fetchApi(null, null).createRoom(friendName, 2 ,"private", null , localStorage.getItem("Authorization"));
-        const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
-        await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
-        dispatch(joinRoomAction(true));
-        dispatch(participantNoAction(participantNo));
-        dispatch(reloadAction(!reload));
-        dispatch(sidebarAction('Chats'));
+
+        // friendsDropdown 은 type 이 모두 private 이다.(개인톡)
+        try{
+              const result = roomList && roomList.filter(room => {
+                    return room.type === "private" && room.otherParticipantNo === friendNo
+                })
+
+            if(result.length === 0){
+                const roomNo = await fetchApi(null, null).createRoom(friendName, 2 ,"private", null , localStorage.getItem("Authorization"));
+                const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
+                await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+                dispatch(joinRoomAction(true));
+                dispatch(participantNoAction(participantNo));
+                dispatch(reloadAction(!reload));
+                dispatch(sidebarAction('Chats'));
+            } else {
+                dispatch(joinRoomAction(true));
+                dispatch(participantNoAction(result[0].participantNo));
+                dispatch(sidebarAction('Chats'));
+            }
+        }catch (e) {
+            console.log(e.message)
+        }
     }
 
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle tag="span">
-                <i onClick={joinRoomHandler} className="ti ti-comments-smiley"></i>
-                {/*<i className="ti ti-more"></i>*/}
+                {/*<i onClick={joinRoomHandler} className="ti ti-comments-smiley"></i>*/}
+                <i className="ti ti-more"></i>
             </DropdownToggle>
-            {/*<DropdownMenu>*/}
-            {/*    <DropdownItem >*/}
-            {/*        <li onClick={joinRoomHandler}>*/}
-            {/*        New chat*/}
-            {/*        </li>*/}
-            {/*    </DropdownItem>*/}
-            {/*</DropdownMenu>*/}
             <DropdownMenu>
                 <DropdownItem >
-                    <li onClick={joinRoomHandler}>
+                    <li onClick={createRoomHandler}>
                     채팅생성
                     </li>
                 </DropdownItem>

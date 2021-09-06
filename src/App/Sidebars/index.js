@@ -5,6 +5,7 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
+import {logDOM} from "@testing-library/react";
 
 const Index = React.forwardRef(({userNo, history}, scrollRef) => {
 
@@ -61,7 +62,8 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     id: room.no,
                     type: room.type,
                     name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
-                    participantNo : currentParticipant.no,
+                    participantNo : currentParticipant.no, // 이 채팅방의 '나'
+                    otherParticipantNo : otherParticipant[0].User.no, // 이 채팅방의 '너'
                     avatar: <figure className="avatar avatar-state-success">
                         <img src={ otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
                     </figure>,
