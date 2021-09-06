@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux"
 import myFetch from "../Module/fetchApi";
 import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
+import {chatForm,chatMessageForm} from "../Module/chatForm";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -17,7 +18,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
     const {participantNo} = useSelector(state => state);
     const {headCount} = useSelector(state => state)
     const {messageAllLength} = useSelector(state => state)
-    const {joinOk} = useSelector(state =>state)
+    const {joinOk} = useSelector(state => state)
+    const {lastReadNo} = useSelector(state => state)
 
     const [inputMsg, setInputMsg] = useState('');
 
@@ -27,21 +29,27 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     const messageRef = useRef(null);
 
-
     const [lastPage, setLastPage] = useState(0)
 
-    const [sendOk , setSendOk] = useState(true)
+    const [sendOk, setSendOk] = useState(true)
 
+    const [testOk, setTestOk] = useState(0)
+
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const inputRef = useRef();
 
     useEffect(() => {
 
-        if (messageAllLength.count < config.CHAT_LIMIT || messageAllLength >= 0) {
-            setLastPage(0)
-        } else {
-            setLastPage(messageAllLength.count - config.CHAT_LIMIT)
+        //
+        if (scrollEl) {
+            scrollEl.scrollTop = scrollEl.scrollHeight
         }
-    }, [joinOk])
+        setTestOk(0)
+        setLastPage(messageAllLength.count - config.CHAT_LIMIT)
 
+
+    }, [joinOk])
 
 
     const handleSubmit = (newValue) => {
@@ -52,29 +60,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
         formData.append("headCount", headCount);
         formData.append("text", newValue.text);
         formData.append("Authorization", localStorage.getItem("Authorization"));
-        myFetch(null,null).send(formData);
+        myFetch(null, null).send(formData);
         setInputMsg("");
         setSendOk(!sendOk)
     };
-
-
-
-    const chatForm = (chat) => {
-        if (chat.Participant.no !== Number(participantNo)) {
-            return ({
-                text: chat.contents,
-                date: chat.createdAt,
-                notReadCount: chat.notReadCount,
-            })
-        } else {
-            return ({
-                text: chat.contents,
-                date: chat.createdAt,
-                notReadCount: chat.notReadCount,
-                type: 'outgoing-message'
-            })
-        }
-    }
 
 
     const handleInputMsg = (msg) => {
@@ -92,20 +81,20 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 scrollEl.scrollTop = scrollEl.scrollHeight;
             }, 100)
         }
-    } , [sendOk])
+    }, [sendOk])
 
     useEffect(() => {
         const getChatListUp = async () => {
             //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
 
             if (lastPage && lastPage >= 0) {
-                if(lastPage < config.CHAT_LIMIT){
-                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0 , messageAllLength.count, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map(chatForm);
+                if (lastPage < config.CHAT_LIMIT) {
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
+                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
                     selectedChat.messages = chats;
-                }else{
-                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage , messageAllLength.count, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map(chatForm);
+                } else {
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, messageAllLength.count, localStorage.getItem("Authorization"))
+                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
                     selectedChat.messages = chats;
                 }
 
@@ -116,29 +105,33 @@ const Chat = React.forwardRef((props, scrollRef) => {
     }, [lastPage])
 
 
+    // const handlePaging = async (a) => {
+    //
+    //     console.log("handlePaging")
+    //     setLastPage(lastPage - config.CHAT_LIMIT)
+    //
+    //
+    // }
+
     const handleScrollStart = async (e) => {
 
-        if (scrollRef) {
+
+        if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop !== scrollEl.scrollHeight)) {
             setTimeout(() => {
-                console.log(lastPage)
+                setTestOk(testOk + 1)
+                console.log("페이징 횟수 ", testOk)
+                console.log("lastPage", lastPage)
+
                 scrollEl.scrollTop = scrollEl.scrollTop + 10
+
                 setLastPage(lastPage - config.CHAT_LIMIT)
             }, 500)
+        } else {
+
         }
-    }
-    const handleScrollEnd = (e) => {
 
 
     }
-
-
-    // useEffect(() => {
-    //     if (messageRef && messageRef.current && scrollEl) {
-    //         console.log("messageRef", messageRef.current.clientHeight)
-    //         scrollEl.scrollTop = messageRef.current.clientHeight * 10
-    //     }
-    // }, [lastReadNo]);
-
 
     const MessagesView = (props) => {
         const {message} = props;
@@ -162,6 +155,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
     };
 
+    const [isOpen, setMenu] = useState(false);  // 메뉴의 초기값을 false로 설정
+  
+    const toggleMenu = () => {
+          setMenu(isOpen => !isOpen); // on,off 개념 boolean
+      }
+
     return (
         <div className="chat">
             {
@@ -169,10 +168,26 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     ?
                     <React.Fragment>
                         <ChatHeader selectedChat={selectedChat}/>
+                        
+                        <form>
+                        <div onClick = {toggleMenu}>
+                            <i className="ti-search">채팅검색</i>    
+                        </div>                        
+                        
+                        <input 
+                        type="text" 
+                        className={isOpen ? "show-menu" : "hide-menu"}
+                        placeholder="채팅검색" 
+                        ref={inputRef}
+                        onChange={e => {
+                        setSearchTerm(e.target.value)
+                        }}/>
+                        
+                        </form>
+                        
                         <PerfectScrollbar
-                            containerRef={ref => setScrollEl(ref)}
-                                          onYReachEnd={handleScrollEnd} onYReachStart={handleScrollStart}
-                                          ref={scrollRef}
+                            containerRef={ref => setScrollEl(ref)} onYReachStart={handleScrollStart}
+                            ref={scrollRef}
 
                         >
                             <div className="chat-body">
@@ -180,16 +195,25 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     {
                                         selectedChat.messages
                                             ?
-                                            selectedChat.messages.map((message, i) => {
+                                            (selectedChat.messages.filter((message) => {
+                                                if(searchTerm == ""){
+                                                    return message
+                                                } else if( message.text?.toLowerCase().includes(searchTerm.toLowerCase())){
+                                                    return message
+                                                }
+                                            }).map((message, i) => {
                                                 return <MessagesView message={message} key={i}/>
-                                            })
+                                            }))
                                             :
                                             null
+                                            
                                     }
                                 </div>
                             </div>
                         </PerfectScrollbar>
-                        <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg} handleInputMsg={handleInputMsg}/>
+                 
+                        <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                                    handleInputMsg={handleInputMsg}/>
                     </React.Fragment>
                     :
                     <div className="chat-body no-message">

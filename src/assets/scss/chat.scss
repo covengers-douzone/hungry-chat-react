@@ -37,6 +37,17 @@
 			}
 		}
 	}
+	.show-menu{
+		
+	}
+		
+	.hide-menu{
+		width: 376px;
+		height: 500px;
+		position: absolute;
+		left: -376px;
+		transition: 1s;
+	}
 
 	.chat-body {
 		flex: 1;
