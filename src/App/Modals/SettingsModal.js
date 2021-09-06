@@ -95,7 +95,7 @@ function SettingsModal(props) {
     return (
         <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
             <ModalHeader toggle={props.toggle}>
-                <i className="ti ti-settings"></i> Settings
+                <i className="ti ti-settings"></i> 설정
             </ModalHeader>
             <ModalBody>
                 <Nav tabs>
@@ -106,7 +106,7 @@ function SettingsModal(props) {
                                 toggle('1');
                             }}
                         >
-                            Profile
+                            프로필
                         </NavLink>
                     </NavItem>
                     <NavItem>
@@ -116,7 +116,7 @@ function SettingsModal(props) {
                                 toggle('2');
                             }}
                         >
-                            Chat
+                            채팅
                         </NavLink>
                     </NavItem>
                     {/*<NavItem>*/}
@@ -135,11 +135,11 @@ function SettingsModal(props) {
                         <TabPane tabId="1">
                             <FormGroup>
                                 <CustomInput type="switch" id="accountCustomSwitch1" name="customSwitch"
-                                             label="Set nickname using name" defaultChecked/>
+                                             label="이름을 닉네임으로 사용하시겠습니까?" defaultChecked/>
                             </FormGroup>
                             <div className="preview text-center">
                                 <img className="preview-img" src={profileImage}
-                                     alt="Preview Image" width="200" height="200"/>
+                                     alt="프로필 이미지" width="200" height="200"/>
                                 <div className="browse-button">
                                     <i className="fa fa-pencil-alt"/>
                                     <input className="browse-input" type="file" name="UploadedFile"
@@ -153,21 +153,21 @@ function SettingsModal(props) {
                             <br/>
                             <br/>
                             <div className="setting-account">
-                                <label htmlFor="name" id="comments"> Comments </label>
+                                <label htmlFor="name" id="comments"> 닉네임 </label>
                                 <input type="text" name="nickname" placeholder={comments} onChange={ (event) => {
                                     const { value } = event.target;
                                     setComments(value);
                                 }}/>
                             </div>
                              <div className="setting-account">
-                                 <label htmlFor="name"> Nickname </label>
+                                 <label htmlFor="name" id="name"> 이름 </label>
                                 <input type="text" name="nickname" placeholder={nickname} onChange={ (event) => {
                                     const { value } = event.target;
                                     setNickname(value);
                                 }}/>
                             </div>
                              <div className="setting-account">
-                                 <label htmlFor="password"> Password </label>
+                                 <label htmlFor="password" id="password"> 비밀번호 </label>
                                  <input type="password" name="password" onChange={ (event) => {
                                      const { value } = event.target;
                                      setPassword(value);
@@ -176,7 +176,7 @@ function SettingsModal(props) {
                         </TabPane>
                         <TabPane tabId="2">
                              <div className="setting-account">
-                                 <label htmlFor="name" id="Background"> Background </label>
+                                 <label htmlFor="name" id="Background"> 배경화면 </label>
                                  <input type="file" name="backgroundImageUrl" />
                              </div>
                         </TabPane>
@@ -184,7 +184,7 @@ function SettingsModal(props) {
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={send}>Save</Button>
+                <Button color="primary" onClick={send}>저장하기</Button>
             </ModalFooter>
         </Modal>
     )

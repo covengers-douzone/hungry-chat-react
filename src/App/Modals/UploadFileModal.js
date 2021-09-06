@@ -66,7 +66,7 @@ function UploadFileModal(props) {
                 <ModalBody>
                     <Form>
                         <FormGroup>
-                            <Label for="avatar">File</Label>
+                            <Label for="avatar">파일</Label>
                             <div className="align-items-center">
                                 <CustomInput type="file" id="exampleCustomFileBrowser" name="customFile"
                                      onChange={onloadFile}
@@ -92,7 +92,7 @@ function UploadFileModal(props) {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={handleSubmit}>Save</Button>
+                    <Button color="primary" onClick={handleSubmit}>저장하기</Button>
                 </ModalFooter>
             </Modal>
         </div>
