@@ -211,18 +211,18 @@ function Index({roomList, friendList, userNo, history,}) {
                         <AddOpenChatModal userNo={userNo}/>
                         {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
                      </li>
-                    <li className="list-inline-item">
-                        <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
-                                id="Tooltip-New-Chat">
-                            <i className="ti ti-comment-alt"></i>
-                        </button>
-                        <Tooltip
-                            isOpen={tooltipOpen}
-                            target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
-                            친구 초대
-                        </Tooltip>
-                    </li>
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"*/}
+                    {/*            id="Tooltip-New-Chat">*/}
+                    {/*        <i className="ti ti-comment-alt"></i>*/}
+                    {/*    </button>*/}
+                    {/*    <Tooltip*/}
+                    {/*        isOpen={tooltipOpen}*/}
+                    {/*        target={"Tooltip-New-Chat"}*/}
+                    {/*        toggle={toggle}>*/}
+                    {/*        친구 초대*/}
+                    {/*    </Tooltip>*/}
+                    {/*</li>*/}
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">
                             <i className="ti ti-close"></i>
