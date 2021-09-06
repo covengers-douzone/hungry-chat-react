@@ -67,7 +67,7 @@ function AddFriendModal( props ) {
                 isOpen={tooltipOpen}
                 target={"Tooltip-Add-Friend"}
                 toggle={tooltipToggle}>
-                Add Friend
+                친구 추가
             </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
@@ -80,7 +80,6 @@ function AddFriendModal( props ) {
                             <Label for="email">이메일</Label>
                             <Input type="text" name="email" id="email" onChange={(event)=>{
                                 const { value } = event.target;
-                                console.log(value);
                                 setEmail(value);
                             }}/>
                         </FormGroup>

@@ -41,7 +41,8 @@ const Index = React.forwardRef(({
 
     const {roomNo} = useSelector(state => state);
 
-    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const [tooltipOpen1, setTooltipOpen1] = useState(false);
+    const [tooltipOpen2, setTooltipOpen2] = useState(false);
 
     const [chatList, setChatList] = useState([]);
 
@@ -63,7 +64,8 @@ const Index = React.forwardRef(({
     }
 
 
-    const toggle = () => setTooltipOpen(!tooltipOpen);
+    const toggle1 = () => setTooltipOpen1(!tooltipOpen1);
+    const toggle2 = () => setTooltipOpen2(!tooltipOpen2);
 
 
 
@@ -205,36 +207,35 @@ const Index = React.forwardRef(({
 
     const ChatListView = (props) => {
         const {chat} = props;
-
-        return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
-                   onClick={() => chatSelectHandle(chat)}>
-            {chat.avatar}
-            <div className="users-list-body">
-                <h5>{chat.name}</h5>
-                {chat.text}
-                <div className="users-list-action action-toggle">
-                    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}
-                    <ChatsDropdown/>
+            return( <li style={ chat.type === "public" ? {backgroundColor:"lightgoldenrodyellow" } : {backgroundColor:null }} className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
+                       onClick={() => chatSelectHandle(chat)}>
+                {chat.avatar}
+                <div className="users-list-body">
+                    <h5>{chat.name}</h5>
+                    {chat.text}
+                    {/*<div className="users-list-action action-toggle">*/}
+                    {/*    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    {/*    <ChatsDropdown/>*/}
+                    {/*</div>*/}
                 </div>
-            </div>
-        </li>
+            </li>)
     };
 
     return (
         <div className="sidebar active">
             <header>
-                <span>Chats</span>
+                <span>채팅</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"
-                                id="Tooltip-New-Chat">
-                            <i className="ti ti-comment-alt"></i>
+                                id="Tooltip-New-Open-Chat">
+                            <i className="ti ti-themify-favicon"></i>
                         </button>
                         <Tooltip
-                            isOpen={tooltipOpen}
-                            target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
-                            Open chat
+                            isOpen={tooltipOpen1}
+                            target={"Tooltip-New-Open-Chat"}
+                            toggle={toggle1}>
+                            오픈 채팅
                         </Tooltip>
                     </li>
                     <li className="list-inline-item">
@@ -246,9 +247,9 @@ const Index = React.forwardRef(({
                             <i className="ti ti-comment-alt"></i>
                         </button>
                         <Tooltip
-                            isOpen={tooltipOpen}
+                            isOpen={tooltipOpen2}
                             target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
+                            toggle={toggle2}>
                             채팅방 만들기
                         </Tooltip>
                     </li>

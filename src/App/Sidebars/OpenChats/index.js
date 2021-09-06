@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from "react-redux"
 import {Tooltip} from 'reactstrap'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
 //import {chatLists} from "./Data";
@@ -16,6 +15,9 @@ import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
+import {reloadAction} from "../../../Store/Actions/reloadAction";
+import AddOpenChatModal from "../../Modals/AddOpenChatModal";
+import AddGroupModal from "../../Modals/AddGroupModal";
 
 function Index({roomList, friendList, userNo, history,}) {
 
@@ -36,6 +38,8 @@ function Index({roomList, friendList, userNo, history,}) {
     const [chatList, setChatList] = useState([]);
 
     const [roomOk , setRoomOk] = useState(false);
+
+    const {reload} = useSelector(state => state);
 
     const chatForm = (chat) => {
         if (chat.Participant.no !== Number(participantNo)) {
@@ -172,41 +176,41 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const ChatListView = (props) => {
         const {chat} = props;
-
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>
             {chat.avatar}
             <div className="users-list-body">
                 <h5>{chat.name}</h5>
                 {chat.text}
-                <div className="users-list-action action-toggle">
-                    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}
-                    <ChatsDropdown/>
-                </div>
+                {/*<div className="users-list-action action-toggle">*/}
+                    {/*{chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    {/*<ChatsDropdown/>*/}
+                {/*</div>*/}
             </div>
         </li>
     };
 
     return (
-        <div className="sidebar active">
+        <div className="sidebar active" style={{backgroundColor:"lightpink"}}>
             <header>
-                <span>채팅</span>
+                <span>오픈 채팅</span>
                 <ul className="list-inline">
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"*/}
+                    {/*            id="Tooltip-New-Chat">*/}
+                    {/*        <i className="ti ti-comment-alt"></i>*/}
+                    {/*    </button>*/}
+                    {/*    <Tooltip*/}
+                    {/*        isOpen={tooltipOpen}*/}
+                    {/*        target={"Tooltip-New-Chat"}*/}
+                    {/*        toggle={toggle}>*/}
+                    {/*        오픈 채팅*/}
+                    {/*    </Tooltip>*/}
+                    {/*</li>*/}
                     <li className="list-inline-item">
-                        <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"
-                                id="Tooltip-New-Chat">
-                            <i className="ti ti-comment-alt"></i>
-                        </button>
-                        <Tooltip
-                            isOpen={tooltipOpen}
-                            target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
-                            오픈 채팅
-                        </Tooltip>
-                    </li>
-                    <li className="list-inline-item">
-                        <AddGroupModal userNo={userNo} friendList={friendList}/>
-                    </li>
+                        <AddOpenChatModal userNo={userNo}/>
+                        {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
+                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
                                 id="Tooltip-New-Chat">
@@ -216,7 +220,7 @@ function Index({roomList, friendList, userNo, history,}) {
                             isOpen={tooltipOpen}
                             target={"Tooltip-New-Chat"}
                             toggle={toggle}>
-                            채팅 생성
+                            친구 초대
                         </Tooltip>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">

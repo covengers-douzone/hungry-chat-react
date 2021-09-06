@@ -35,8 +35,16 @@ const FriendsDropdown = ({friendNo, friendName}) => {
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle tag="span">
-                <i className="ti ti-more"></i>
+                <i onClick={joinRoomHandler} className="ti ti-comments-smiley"></i>
+                {/*<i className="ti ti-more"></i>*/}
             </DropdownToggle>
+            {/*<DropdownMenu>*/}
+            {/*    <DropdownItem >*/}
+            {/*        <li onClick={joinRoomHandler}>*/}
+            {/*        New chat*/}
+            {/*        </li>*/}
+            {/*    </DropdownItem>*/}
+            {/*</DropdownMenu>*/}
             <DropdownMenu>
                 <DropdownItem >
                     <li onClick={joinRoomHandler}>

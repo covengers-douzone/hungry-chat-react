@@ -24,7 +24,7 @@ function Index() {
     return (
         <div className="sidebar active">
             <header>
-                <span>Favorites</span>
+                <span>즐겨 찾기</span>
                 <ul className="list-inline">
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">
