@@ -22,7 +22,7 @@ import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
 import {func} from "prop-types";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
-import {chatForm,chatMessageForm} from "../../Module/chatForm";
+import {chatForm, chatMessageForm} from "../../Module/chatForm";
 
 const Index = React.forwardRef(({
                                     roomList,
@@ -46,12 +46,15 @@ const Index = React.forwardRef(({
 
     const {roomNo} = useSelector(state => state);
 
+
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
     const [tooltipOpen2, setTooltipOpen2] = useState(false);
 
     const [chatList, setChatList] = useState([]);
 
-    const [joinOk  , setJoinOk] = useState(true)
+    const [joinOk, setJoinOk] = useState(true)
+
+    const [searchTerm, setSearchTerm] = useState("");
 
     let lastPage = 0
 
@@ -64,8 +67,10 @@ const Index = React.forwardRef(({
 
         await fetchApi(null, null).updateSendNotReadCount(chatNo);
 
+        // 챗 no값을 통해 리스트를 불러 온다
         const chat = await fetchApi(null, null).getChat(chatNo, localStorage.getItem("Authorization"));
 
+        // message {} 에   chat에 대한 정보를 입력한다 , 단 chat.Participant.no를 사용 할 수 없다. 그래서 chat.participantNo 값을 통해 데이터를 Insert한다.
         const message = chatMessageForm(chat);
         message.userNo = userNo;
 
@@ -107,7 +112,7 @@ const Index = React.forwardRef(({
                 if (users[users.length - 1].id !== socket.id) {
                     // chat list update
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
+                    const chats = chatlist.map((chat) => chatForm(chat, participantNo));
                     selectedChat.messages = chats;
                     dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 }
@@ -176,13 +181,13 @@ const Index = React.forwardRef(({
     const ChatListView = (props) => {
         const {chat} = props;
 
-        return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
+        return <li style={ chat.type === "public" ? {backgroundColor:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)} id={chat.id}
                    ref={ref => {
-                           joinRoom && chat.participantNo === participantNo
-                               && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
-                        }}
-                >
+                       joinRoom && chat.participantNo === participantNo
+                       && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
+                   }}
+        >
             {chat.avatar}
             <div className="users-list-body">
                 <h5>{chat.name}</h5>
@@ -190,8 +195,8 @@ const Index = React.forwardRef(({
                 {/*<div className="users-list-action action-toggle">*/}
                 {/*    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
                 {/*    <ChatsDropdown/>*/}
-                </div>
-            </li>
+            </div>
+        </li>
     };
 
     return (
@@ -234,12 +239,31 @@ const Index = React.forwardRef(({
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef}/>
+
+                <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="채팅검색" 
+                    ref={inputRef}
+                    onChange={e => {
+                        setSearchTerm(e.target.value)
+                    }}
+                    />
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">{
-                        roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                    <ul className="list-group list-group-flush">
+                    <p style={ {
+                            color:"coral",
+                            marginLeft:25,
+                        }}>채팅 목록</p>
+                        {roomList.filter((chat) => {
+                            if(searchTerm == ""){
+                                return chat
+                            } else if( chat.name?.toLowerCase().includes(searchTerm.toLowerCase())){
+                                return chat
+                            }
+                        }).map((chat, i) => {return <ChatListView chat={chat} key={i}/> })
                     }
                     </ul>
                 </PerfectScrollbar>

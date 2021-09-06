@@ -201,7 +201,7 @@ export default function (defaultState, setState) {
                 console.error(err);
             }
         },
-        createRoom: async function (title, headCount, type, password, token) { // 방 생성
+        createRoom: async function (title, content, headCount, type, password, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/createRoom/`, {
                     method: 'post',
@@ -215,6 +215,7 @@ export default function (defaultState, setState) {
                     },
                     body: JSON.stringify({
                         title,
+                        content,
                         headCount,
                         type,
                         password,
@@ -547,6 +548,36 @@ export default function (defaultState, setState) {
                         'Accept': 'application/json',
                     },
                     body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        deleteChatNo: async function (chatNo, token) {
+            try {
+
+                const response = await fetch(`${domain}:${PORT}/api/deleteChatNo/${chatNo}`, {
+                    method: 'post',
+                    credentials: 'include',
+                    headers: {
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
+                    },
+
                 });
 
                 if (!response.ok) {

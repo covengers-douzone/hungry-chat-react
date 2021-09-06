@@ -40,7 +40,7 @@ function ChatHeader(props) {
                     <li className="list-inline-item">
                         <VideoCallModal/>
                     </li>
-                    <li className="list-inline-item" data-toggle="tooltip" title="Video call">
+                    <li className="list-inline-item" data-toggle="tooltip">
                         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                             <DropdownToggle
                                 tag="span"
@@ -52,7 +52,7 @@ function ChatHeader(props) {
                                 </button>
                             </DropdownToggle>
                             <DropdownMenu right>
-                                <DropdownItem onClick={profileActions}>프로필</DropdownItem>
+                                <DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>
                                 <DropdownItem>Add to archive</DropdownItem>
                                 <DropdownItem>Delete</DropdownItem>
                                 <DropdownItem divider/>

@@ -5,6 +5,7 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
+import {logDOM} from "@testing-library/react";
 
 const Index = React.forwardRef(({userNo, history}, scrollRef) => {
 
@@ -18,6 +19,9 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
     const [roomList, setRoomList] = useState([]);
     const [openRoomList, setOpenRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
+    // const [title, setTitle] = useState('');
+    // const [content, setContent] = useState('');
+
     const {reload} = useSelector(state => state);
 
     useEffect( ()=>{
@@ -32,6 +36,14 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
         }
     }, [reload]);
 
+    // const openChatTitleHandler = (keyword) => {
+    //     setTitle(keyword);
+    // }
+    // const openChatContentHandler = (keyword) => {
+    //     setContent(keyword);
+    //     console.log(content);
+    // }
+
 
     // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
          openRoomList.map((room,i) => {
@@ -39,12 +51,13 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
              // console.log(room.Participants && room.Participants[0].role === "ROLE_HOST" && room.Participants[0].User.name);
              userOpenRoomList.push({
                  id: room.no,
-                 name: openChatHost && openChatHost.User.name,
+                 // name: openChatHost && openChatHost.User.name,
+                 name : room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
                  participantNo : openChatHost && openChatHost.no,
                  avatar: <figure className="avatar avatar-state-success">
                      <img src={ openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
                  </figure>,
-                 text: <p>What's up, how are you?</p>,
+                 text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
                  date: '03:41 PM',
                  unread_messages: 1,
                  messages: []
@@ -61,11 +74,12 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     id: room.no,
                     type: room.type,
                     name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
-                    participantNo : currentParticipant.no,
+                    participantNo : currentParticipant.no, // 이 채팅방의 '나'
+                    otherParticipantNo : otherParticipant[0].User.no, // 이 채팅방의 '너'
                     avatar: <figure className="avatar avatar-state-success">
                         <img src={ otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
                     </figure>,
-                    text: <p>What's up, how are you?</p>,
+                    text: <p>{room.content === "Private Chat" ? 'Private Chat' : room.content}</p>,
                     date: '03:41 PM',
                     unread_messages: 1,
                     messages: []
@@ -74,12 +88,12 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                 userRoomList.push({
                     id: room.no,
                     type: room.type,
-                    name: openChatHost && openChatHost.User.name,
+                    name: room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
                     participantNo : openChatHost && openChatHost.no,
                     avatar: <figure className="avatar avatar-state-success">
                         <img  src={ openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
                     </figure>,
-                    text: <p>What's up, how are you?</p>,
+                    text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
                     date: '03:41 PM',
                     unread_messages: 1,
                     messages: []

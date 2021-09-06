@@ -48,7 +48,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                 <input
                     type="text" 
                     className="form-control" 
-                    placeholder="Search friends" 
+                    placeholder="친구검색" 
                     ref={inputRef} 
                     onChange={e=> {
                         setSearchTerm(e.target.value)
@@ -77,7 +77,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown friendName={item.name} friendNo={item.no}/>
+                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no}/>
                                         </div>
                                     </div>
                                 </li>
