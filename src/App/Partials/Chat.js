@@ -34,13 +34,15 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     const messageRef = useRef(null);
 
-
     const [lastPage, setLastPage] = useState(0)
 
     const [sendOk, setSendOk] = useState(true)
 
     const [testOk, setTestOk] = useState(0)
 
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const inputRef = useRef();
 
     useEffect(() => {
         console.log("lastReadNo", lastReadNo)
@@ -54,10 +56,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         setTestOk(0)
         setLastPage(messageAllLength.count - config.CHAT_LIMIT)
-
-
     }, [joinOk])
-
 
     const handleSubmit = (newValue) => {
         const formData = new FormData();
@@ -200,6 +199,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
     };
 
+    const [isOpen, setMenu] = useState(false);  // 메뉴의 초기값을 false로 설정
+  
+    const toggleMenu = () => {
+          setMenu(isOpen => !isOpen); // on,off 개념 boolean
+      }
+
     return (
         <div className="chat">
             {
@@ -207,6 +212,23 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     ?
                     <React.Fragment>
                         <ChatHeader selectedChat={selectedChat}/>
+                        
+                        <form>
+                        <div onClick = {toggleMenu}>
+                            <i className="ti-search">채팅검색</i>    
+                        </div>                        
+                        
+                        <input 
+                        type="text" 
+                        className={isOpen ? "show-menu" : "hide-menu"}
+                        placeholder="채팅검색" 
+                        ref={inputRef}
+                        onChange={e => {
+                        setSearchTerm(e.target.value)
+                        }}/>
+                        
+                        </form>
+                        
                         <PerfectScrollbar
                             onUpdateSize={(ref) => {
                                 ref.updateScroll();
@@ -221,15 +243,23 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     {
                                         selectedChat.messages
                                             ?
-                                            selectedChat.messages.map((message, i) => {
+                                            (selectedChat.messages.filter((message) => {
+                                                if(searchTerm == ""){
+                                                    return message
+                                                } else if( message.text?.toLowerCase().includes(searchTerm.toLowerCase())){
+                                                    return message
+                                                }
+                                            }).map((message, i) => {
                                                 return <MessagesView message={message} key={i}/>
-                                            })
+                                            }))
                                             :
                                             null
+                                            
                                     }
                                 </div>
                             </div>
                         </PerfectScrollbar>
+
                         <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                     handleInputMsg={handleInputMsg}/>
                     </React.Fragment>

@@ -48,7 +48,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                 <input
                     type="text" 
                     className="form-control" 
-                    placeholder="Search friends" 
+                    placeholder="친구검색" 
                     ref={inputRef} 
                     onChange={e=> {
                         setSearchTerm(e.target.value)

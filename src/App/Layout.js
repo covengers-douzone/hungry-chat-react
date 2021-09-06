@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import SidebarIndex from "./Sidebars/index";
 import Navigation from "./Navigation";
 import Profile from "./Sidebars/Profile";
+
 import Chat from "./Partials/Chat";
 import DisconnectedModal from "./Modals/DisconnectedModal";
 import fetchApi from "./Module/fetchApi";

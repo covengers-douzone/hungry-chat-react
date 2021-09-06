@@ -53,6 +53,8 @@ const Index = React.forwardRef(({
 
     const [joinOk, setJoinOk] = useState(true)
 
+    const [searchTerm, setSearchTerm] = useState("");
+
     let lastPage = 0
 
     const toggle1 = () => setTooltipOpen1(!tooltipOpen1);
@@ -270,12 +272,31 @@ const Index = React.forwardRef(({
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef}/>
+
+                <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="채팅검색" 
+                    ref={inputRef}
+                    onChange={e => {
+                        setSearchTerm(e.target.value)
+                    }}
+                    />
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">{
-                        roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                    <ul className="list-group list-group-flush">
+                    <p style={ {
+                            color:"coral",
+                            marginLeft:25,
+                        }}>채팅 목록</p>
+                        {roomList.filter((chat) => {
+                            if(searchTerm == ""){
+                                return chat
+                            } else if( chat.name?.toLowerCase().includes(searchTerm.toLowerCase())){
+                                return chat
+                            }
+                        }).map((chat, i) => {return <ChatListView chat={chat} key={i}/> })
                     }
                     </ul>
                 </PerfectScrollbar>
