@@ -40,12 +40,28 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const [roomOk , setRoomOk] = useState(false);
 
-    const chatForm = (chat) => {
+    const chatMessageForm = (chat) => {
+        let contents;
+        chat.type === 'TEXT' && (contents = chat.contents)
+        chat.type === 'IMG' && (contents = <img
+                                                  style={{
+                                                    height: "100px"
+                                                  }}
+                                                  src={config.URL + chat.contents.split('public')[1]}
+                                                  className="form-control"
+                                                  alt="avatar"
+                                            />)
         const chatMessage = {
-            text: chat.contents,
+            text: contents,
             date: chat.createdAt,
             notReadCount: chat.notReadCount,
         }
+        return chatMessage;
+    }
+
+    const chatForm = (chat) => {
+        const chatMessage = chatMessageForm(chat);
+
         if (chat.Participant.no !== Number(participantNo)) {
             return chatMessage;
         } else {
@@ -66,9 +82,9 @@ function Index({roomList, friendList, userNo, history,}) {
 
         const chat = await fetchApi(null,null).getChat(chatNo,localStorage.getItem("Authorization"));
 
-        const message ={
-            userNo , text: chat.contents ,date: chat.createdAt , notReadCount: chat.notReadCount
-        }
+        const message = chatMessageForm(chat);
+        message.userNo = userNo;
+
         Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
 
         selectedChat.messages && selectedChat.messages.push(message);
