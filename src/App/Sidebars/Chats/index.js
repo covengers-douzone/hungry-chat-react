@@ -45,6 +45,7 @@ const Index = React.forwardRef(({
 
     const {roomNo} = useSelector(state => state);
 
+
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
     const [tooltipOpen2, setTooltipOpen2] = useState(false);
 
@@ -193,7 +194,7 @@ const Index = React.forwardRef(({
     const ChatListView = (props) => {
         const {chat} = props;
 
-        return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
+        return <li style={ chat.type === "public" ? {backgroundColor:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)} id={chat.id}
                    ref={ref => {
                            joinRoom && chat.participantNo === participantNo

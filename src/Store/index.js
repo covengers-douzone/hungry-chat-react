@@ -34,7 +34,7 @@ const reducers = combineReducers({
     reload : reloadReducer,
     joinRoom : joinRoomReducer,
     lastReadNo : lastReadNoReducer,
-    joinOk  : joinOkReducer
+    joinOk  : joinOkReducer,
 });
 
 const store = createStore(reducers, composeWithDevTools());
