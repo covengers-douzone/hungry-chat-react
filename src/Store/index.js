@@ -16,6 +16,7 @@ import reloadReducer from "./Reducers/reloadReducer";
 import lastReadNoReducer from "./Reducers/lastReadNoReducer";
 import messageAllLengthReducer from "./Reducers/messageAllLengthReducer";
 import joinOkReducer from "./Reducers/joinOkReducer";
+import joinRoomReducer from "./Reducers/joinRoomReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -31,6 +32,7 @@ const reducers = combineReducers({
     friendList : friendListReducer,
     headCount : headCountReducer,
     reload : reloadReducer,
+    joinRoom : joinRoomReducer,
     lastReadNo : lastReadNoReducer,
     joinOk  : joinOkReducer
 });
