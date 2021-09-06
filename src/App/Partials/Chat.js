@@ -47,10 +47,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
         setTestOk(0)
         setLastPage(messageAllLength.count - config.CHAT_LIMIT)
-
-
     }, [joinOk])
-
 
     const handleSubmit = (newValue) => {
         const formData = new FormData();
@@ -211,7 +208,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 </div>
                             </div>
                         </PerfectScrollbar>
-                 
+
                         <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                     handleInputMsg={handleInputMsg}/>
                     </React.Fragment>

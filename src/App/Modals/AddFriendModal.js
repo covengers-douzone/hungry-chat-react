@@ -31,6 +31,9 @@ function AddFriendModal( props ) {
     const [email, setEmail] = useState();
 
     const [alertOpen, setAlertOpen] = useState(false);
+    const [existFriendFailAlertOpen, setExistFriendFailAlertOpen] = useState(false);
+    const [notFoundFriendAlertOpen, setNotFoundFriendAlertOpen] = useState(false);
+    const [badRequestAlertOpen, setBadRequestAlertOpen] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -38,6 +41,11 @@ function AddFriendModal( props ) {
 
     const send = async (event) => {
         event.preventDefault();
+        setAlertOpen(false);
+        setExistFriendFailAlertOpen(false);
+        setNotFoundFriendAlertOpen(false);
+        setBadRequestAlertOpen(false);
+
         try{
             await axios.post(`${config.URL}/api/addFriend`, {
                 username: email,
@@ -45,10 +53,17 @@ function AddFriendModal( props ) {
                 userNo: props.userNo
             })
                 .then(res => {
-                    setAlertOpen(!alertOpen);
+                    if(res.data.result === 'success'){
+                        setAlertOpen(!alertOpen);
+                    } else if(res.data.result === "fail" && res.data.message === "이메일이 일치하지 않습니다. 다시 한번 확인해주세요."){
+                        setNotFoundFriendAlertOpen(!notFoundFriendAlertOpen);
+                    } else if(res.data.result === "fail" && res.data.message === "이미 존재하는 친구입니다. 다시 한번 확인해주세요."){
+                        setExistFriendFailAlertOpen(!existFriendFailAlertOpen);
+                    } else if(res.data.result === "fail" && res.data.message === "잘못된 요청입니다. 다시 시도해주세요."){
+                        setBadRequestAlertOpen(!badRequestAlertOpen);
+                    }
                 })
                 .catch( err => {
-                    alert("이메일 혹은 친구목록을 다시 확인해주세요.");
                     console.log(`${err.message}`) })
         }catch (e) {
             console.log(e);
@@ -67,7 +82,7 @@ function AddFriendModal( props ) {
                 isOpen={tooltipOpen}
                 target={"Tooltip-Add-Friend"}
                 toggle={tooltipToggle}>
-                Add Friend
+                친구 추가
             </Tooltip>
             <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
                 <ModalHeader toggle={modalToggle}>
@@ -75,12 +90,15 @@ function AddFriendModal( props ) {
                 </ModalHeader>
                 <ModalBody>
                     <Alert isOpen={alertOpen} color="info">성공적으로 친구추가 되었습니다!</Alert>
+                    <Alert isOpen={existFriendFailAlertOpen} color="info">이미 존재하는 친구입니다. 다시 한번 확인해주세요.</Alert>
+                    <Alert isOpen={notFoundFriendAlertOpen} color="info">이메일이 일치하지 않습니다. 다시 한번 확인해주세요.</Alert>
+                    <Alert isOpen={badRequestAlertOpen} color="info">잘못된 요청입니다. 다시 시도해주세요.</Alert>
+
                     <Form>
                         <FormGroup>
                             <Label for="email">이메일</Label>
                             <Input type="text" name="email" id="email" onChange={(event)=>{
                                 const { value } = event.target;
-                                console.log(value);
                                 setEmail(value);
                             }}/>
                         </FormGroup>

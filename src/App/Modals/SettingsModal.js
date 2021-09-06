@@ -153,21 +153,21 @@ function SettingsModal(props) {
                             <br/>
                             <br/>
                             <div className="setting-account">
-                                <label htmlFor="name" id="comments"> 나의상태 </label>
+                                <label htmlFor="name" id="comments"> 닉네임 </label>
                                 <input type="text" name="nickname" placeholder={comments} onChange={ (event) => {
                                     const { value } = event.target;
                                     setComments(value);
                                 }}/>
                             </div>
                              <div className="setting-account">
-                                 <label htmlFor="name"> 신규이름 </label>
+                                 <label htmlFor="name" id="name"> 이름 </label>
                                 <input type="text" name="nickname" placeholder={nickname} onChange={ (event) => {
                                     const { value } = event.target;
                                     setNickname(value);
                                 }}/>
                             </div>
                              <div className="setting-account">
-                                 <label htmlFor="password"> 비밀번호 </label>
+                                 <label htmlFor="password" id="password"> 비밀번호 </label>
                                  <input type="password" name="password" onChange={ (event) => {
                                      const { value } = event.target;
                                      setPassword(value);
@@ -176,7 +176,7 @@ function SettingsModal(props) {
                         </TabPane>
                         <TabPane tabId="2">
                              <div className="setting-account">
-                                 <label htmlFor="name" id="Background"> 채팅배경화면 </label>
+                                 <label htmlFor="name" id="Background"> 배경화면 </label>
                                  <input type="file" name="backgroundImageUrl" />
                              </div>
                         </TabPane>

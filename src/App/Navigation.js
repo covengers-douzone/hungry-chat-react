@@ -35,6 +35,10 @@ function Navigation() {
         {
             name: 'Favorites',
             icon: <i className="ti ti-star"></i>,
+        },
+        {
+            name: 'Open-chat',
+            icon: <i className="ti ti-themify-favicon"></i>,
         }
     ];
 

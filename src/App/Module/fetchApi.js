@@ -1,18 +1,19 @@
 // 비동기 통신
 import {func} from "prop-types";
 import * as config from "../../config/config"
-export default function (defaultState , setState) {
+
+export default function (defaultState, setState) {
     const PORT = config.FETCH_API_PORT;
     const domain = config.FETCH_API_IP;
     return {
-        getRoomList: async function (userNo, token) { // 방 목록을 보여준다.
+        getOpenChatRoomList : async function (token) { // 방 전체 목록을 보여준다.
             try {
-                const response = await fetch(`${domain}:${PORT}/api/roomlist/${userNo}`, {
+                const response = await fetch(`${config.URL}/api/getOpenChatRoomList`, {
                     method: 'get',
                     credentials: 'include',
                     headers: {
                         "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Origin": `${config.URL}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
@@ -34,15 +35,44 @@ export default function (defaultState , setState) {
                 console.error("Error From React-Fetch: "+err.message);
             }
         },
-        getChatList: async function (roomNo, offset , limit , token) {
-            console.log("getChatList" , roomNo , offset , limit)
+        getRoomList: async function (userNo, token) { // 방 목록을 보여준다.
+            try {
+                const response = await fetch(`${config.URL}/api/roomlist/${userNo}`, {
+                    method: 'get',
+                    credentials: 'include',
+                    headers: {
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                json.data.length > 0 && setState(json.data);
+                // setState(json.data);
+                return json.data;
+            } catch (err) {
+                // Access Denied or System Error or Fetch Error(Cors ... )
+                console.error("Error From React-Fetch: " + err.message);
+            }
+        },
+        getChatList: async function (roomNo, offset, limit, token) {
+            console.log("getChatList", roomNo, offset, limit)
             try {
                 const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}/${offset}/${limit}`, {
                     method: 'get',
                     headers: {
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
@@ -68,9 +98,9 @@ export default function (defaultState , setState) {
                 const response = await fetch(`${domain}:${PORT}/api/chatlistCount/${roomNo}/`, {
                     method: 'get',
                     headers: {
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
@@ -90,14 +120,14 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getChat: async function (chatNo,token) {
+        getChat: async function (chatNo, token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getChat/${chatNo}`, {
                     method: 'get',
                     headers: {
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
@@ -141,16 +171,16 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        updateSendNotReadCount: async function (chatNo , token) {
+        updateSendNotReadCount: async function (chatNo, token) {
             try {
                 const response = await fetch(`${domain}:${PORT}/api/updateSendNotReadCount/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -171,23 +201,24 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        createRoom: async function (title, headCount,  type ,  password  , token) { // 방 생성
+        createRoom: async function (title, content, headCount, type, password, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/createRoom/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.URL}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
                         title,
+                        content,
                         headCount,
                         type,
-                        password ,
+                        password,
                     }),
                 });
 
@@ -204,20 +235,20 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        createParticipant: async function (UserNo , roomNo , role , token) { // 방 생성
+        createParticipant: async function (UserNo, roomNo, role, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/createParticipant/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.URL}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
-                        UserNo,roomNo,role
+                        UserNo, roomNo, role
 
                     }),
                 });
@@ -230,7 +261,7 @@ export default function (defaultState , setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-
+                return json.data;
             } catch (err) {
                 console.error(err);
             }
@@ -242,9 +273,9 @@ export default function (defaultState , setState) {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -264,16 +295,16 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        setStatus: async function (ParticipantNo,status,token) { // 방 생성
+        setStatus: async function (ParticipantNo, status, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/setStatus/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -297,16 +328,16 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getFriendList: async function (UserNo , token) { // 방 생성
+        getFriendList: async function (UserNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getFriendList/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -328,16 +359,16 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getFollowerList: async function (UserNo , token) { // 방 생성
+        getFollowerList: async function (UserNo, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/getFollowerList/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${URL}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -359,16 +390,16 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        getHeadCount: async function (participantNo , token) { // 방 생성
+        getHeadCount: async function (participantNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getHeadCount/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -389,16 +420,16 @@ export default function (defaultState , setState) {
                 console.error(err);
             }
         },
-        updateRoomNotReadCount: async function (participantNo , roomNo , token) { // 채팅 메시지의 notReadCount를 모두 감소
+        updateRoomNotReadCount: async function (participantNo, roomNo, token) { // 채팅 메시지의 notReadCount를 모두 감소
             try {
                 const response = await fetch(`${domain}:${PORT}/api/updateRoomNotReadCount/`, {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -427,9 +458,9 @@ export default function (defaultState , setState) {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -456,9 +487,39 @@ export default function (defaultState , setState) {
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        "Access-Control-Allow-Headers":"Content-Type",
-                        "Access-Control-Allow-Origin":`${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                        "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        participantNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getLastReadNoCount: async function (participantNo, token) { // 마지막 읽은 시각을 찾는다
+            try {
+                const response = await fetch(`${domain}:${PORT}/api/getLastReadNoCount/`, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
@@ -480,7 +541,7 @@ export default function (defaultState , setState) {
             }
         },
         uploadFile: async function (formData) {
-            try{
+            try {
                 const response = await fetch(`${domain}:${PORT}/api/uploadFile/`, {
                     method: 'post',
                     headers: {
@@ -498,7 +559,7 @@ export default function (defaultState , setState) {
                     throw json.message;
                 }
                 return json.data
-            } catch(e){
+            } catch (e) {
                 console.error(e);
             }
         }

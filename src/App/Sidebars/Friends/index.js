@@ -32,7 +32,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
     return (
         <div className="sidebar active">
             <header>
-                <span>Friends</span>
+                <span>친구 목록</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
                         <AddFriendsModal modal={addFriendsModalOpen} toggle={addFriendsModalToggle} userNo={userNo}/>
@@ -77,7 +77,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown friendName={item.name} friendNo={item.no}/>
+                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no}/>
                                         </div>
                                     </div>
                                 </li>

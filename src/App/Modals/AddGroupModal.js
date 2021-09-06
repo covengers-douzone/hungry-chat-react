@@ -25,6 +25,8 @@ function AddGroupModal({userNo, friendList}) {
 
     const [modal, setModal] = useState(false);
     const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+
 
     const [openInvite, setOpenInvite] = useState(false);
 
@@ -65,7 +67,7 @@ function AddGroupModal({userNo, friendList}) {
 
     const createRoom = async () => {
         const headcount = checkedItems.size + 1
-        const roomNo = await fetchApi(null, null).createRoom(title,headcount ,"private", null , localStorage.getItem("Authorization"));
+        const roomNo = await fetchApi(null, null).createRoom(title,content === '' ? "Private Chat" : content, headcount ,"private", null , localStorage.getItem("Authorization"));
 
         console.log("roomNo" , roomNo)
 
@@ -154,7 +156,10 @@ function AddGroupModal({userNo, friendList}) {
                         </FormGroup>
                         <FormGroup>
                             <Label for="description">방 설명</Label>
-                            <Input type="textarea" name="description" id="description"/>
+                            <Input type="textarea" name="description" id="description" onChange={(e)=>{
+                                const {value} = e.target;
+                                setContent(value);
+                            }}/>
                         </FormGroup>
                     </Form>
                 </ModalBody>

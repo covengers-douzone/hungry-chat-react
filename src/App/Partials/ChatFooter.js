@@ -1,6 +1,5 @@
 import React ,{useState,useRef,useEffect} from 'react'
 import {Button, Input} from 'reactstrap'
-import WomenAvatar5 from "../../assets/img/women_avatar5.jpg";
 import UploadFileModal from "../Modals/UploadFileModal";
 
 function ChatFooter(props) {

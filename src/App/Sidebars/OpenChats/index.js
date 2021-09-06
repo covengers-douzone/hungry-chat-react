@@ -3,7 +3,6 @@ import {useDispatch, useSelector} from "react-redux"
 import {Tooltip} from 'reactstrap'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
 //import {chatLists} from "./Data";
@@ -16,6 +15,13 @@ import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
+import {reloadAction} from "../../../Store/Actions/reloadAction";
+import AddOpenChatModal from "../../Modals/AddOpenChatModal";
+import AddGroupModal from "../../Modals/AddGroupModal";
+import {chatForm,chatMessageForm} from "../../Module/chatForm";
+import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
+import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
+import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 
 function Index({roomList, friendList, userNo, history,}) {
 
@@ -35,32 +41,18 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const [chatList, setChatList] = useState([]);
 
-    const [roomOk , setRoomOk] = useState(false);
+    const [joinOk  , setJoinOk] = useState(true)
 
-    const chatForm = (chat) => {
-        if (chat.Participant.no !== Number(participantNo)) {
-            return ({
-                text: chat.contents,
-                date: chat.createdAt,
-                notReadCount: chat.notReadCount,
-            })
-        } else {
-            return ({
-                text: chat.contents,
-                date: chat.createdAt,
-                notReadCount: chat.notReadCount,
-                type: 'outgoing-message'
-            })
-        }
-    }
+    const {reload} = useSelector(state => state);
 
+    let lastPage = 0;
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
 
-    useEffect(() => {
-        inputRef.current.focus();
-    });
+    // useEffect(() => {
+    //     inputRef.current.focus();
+    // });
 
     const callback = async ({socketUserNo, chatNo}) => {
         await fetchApi(null, null).updateSendNotReadCount(chatNo);
@@ -97,35 +89,55 @@ function Index({roomList, friendList, userNo, history,}) {
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
-        socket.on('roomUsers',async ({room,users})=>{
+        socket.on('roomUsers', async ({room, users}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
-                if(users[users.length -1].id !== socket.id){
+                if (users[users.length - 1].id !== socket.id) {
                     // chat list update
-                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map(chatForm);
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
+                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
                     selectedChat.messages = chats;
                     dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 }
-            } , 1000)
+            }, 1000)
 
         })
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
         }, async (response) => {
-            if(response.status === 'ok'){
+            if (response.status === 'ok') {
                 // update status
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+
+                const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
+                dispatch(lastReadNoAction(lastReadNo))
+
+                const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
                 // update notReadCount
                 await fetchApi(null, null).updateRoomNotReadCount(participantNo, roomNo, localStorage.getItem("Authorization"))
-                // set headCount(입장한 방)
+                // set headCount(입장한 방)s
                 dispatch(headCountAction(await fetchApi(null, null).getHeadCount(participantNo, localStorage.getItem("Authorization"))))
-                // chat list 불러오기
-                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, localStorage.getItem("Authorization"))
-                const chats = chatlist.map(chatForm);
+
+                //쳇 리스트 갯수 구하기
+                const chatListCount =  await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+
+                // lastPage가 -로 들어 갈때 처리 해주는 조건문
+                if(chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0){
+                    lastPage = 0;
+                }else{
+                    lastPage = chatListCount.count - config.CHAT_LIMIT
+                }
+                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
+                const chats = chatlist.map((chat) => chatForm(chat,participantNo));
+
                 selectedChat.messages = chats;
+
+                dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
+                setJoinOk(!joinOk)
+                dispatch(joinOKAction(joinOk))
+
             }
         });
         socket.on('message', callback);
@@ -172,53 +184,53 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const ChatListView = (props) => {
         const {chat} = props;
-
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>
             {chat.avatar}
             <div className="users-list-body">
                 <h5>{chat.name}</h5>
                 {chat.text}
-                <div className="users-list-action action-toggle">
-                    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}
-                    <ChatsDropdown/>
-                </div>
+                {/*<div className="users-list-action action-toggle">*/}
+                    {/*{chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    {/*<ChatsDropdown/>*/}
+                {/*</div>*/}
             </div>
         </li>
     };
 
     return (
-        <div className="sidebar active">
+        <div className="sidebar active" style={{backgroundColor:"lightpink"}}>
             <header>
-                <span>채팅</span>
+                <span>오픈 채팅</span>
                 <ul className="list-inline">
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"*/}
+                    {/*            id="Tooltip-New-Chat">*/}
+                    {/*        <i className="ti ti-comment-alt"></i>*/}
+                    {/*    </button>*/}
+                    {/*    <Tooltip*/}
+                    {/*        isOpen={tooltipOpen}*/}
+                    {/*        target={"Tooltip-New-Chat"}*/}
+                    {/*        toggle={toggle}>*/}
+                    {/*        오픈 채팅*/}
+                    {/*    </Tooltip>*/}
+                    {/*</li>*/}
                     <li className="list-inline-item">
-                        <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"
-                                id="Tooltip-New-Chat">
-                            <i className="ti ti-comment-alt"></i>
-                        </button>
-                        <Tooltip
-                            isOpen={tooltipOpen}
-                            target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
-                            오픈 채팅
-                        </Tooltip>
-                    </li>
-                    <li className="list-inline-item">
-                        <AddGroupModal userNo={userNo} friendList={friendList}/>
-                    </li>
-                    <li className="list-inline-item">
-                        <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
-                                id="Tooltip-New-Chat">
-                            <i className="ti ti-comment-alt"></i>
-                        </button>
-                        <Tooltip
-                            isOpen={tooltipOpen}
-                            target={"Tooltip-New-Chat"}
-                            toggle={toggle}>
-                            채팅 생성
-                        </Tooltip>
-                    </li>
+                        <AddOpenChatModal userNo={userNo}/>
+                        {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
+                     </li>
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"*/}
+                    {/*            id="Tooltip-New-Chat">*/}
+                    {/*        <i className="ti ti-comment-alt"></i>*/}
+                    {/*    </button>*/}
+                    {/*    <Tooltip*/}
+                    {/*        isOpen={tooltipOpen}*/}
+                    {/*        target={"Tooltip-New-Chat"}*/}
+                    {/*        toggle={toggle}>*/}
+                    {/*        친구 초대*/}
+                    {/*    </Tooltip>*/}
+                    {/*</li>*/}
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">
                             <i className="ti ti-close"></i>
