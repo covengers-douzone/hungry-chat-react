@@ -36,16 +36,14 @@ function Index({userNo, history}) {
 
     // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
          openRoomList.map((room,i) => {
-             // const host = room.Participants.
-             const openRoomCurrentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
-             const openRoomOtherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
-             console.log(openRoomCurrentParticipant);
+             const openChatHost = room.Participants.filter(participant => {return participant.role === "ROLE_HOST"})[0];
+             // console.log(room.Participants && room.Participants[0].role === "ROLE_HOST" && room.Participants[0].User.name);
              userOpenRoomList.push({
                  id: room.no,
-                 name: openRoomOtherParticipant && openRoomOtherParticipant[0] && openRoomOtherParticipant[0].User.name,
-                 participantNo : openRoomCurrentParticipant && openRoomCurrentParticipant[0] && openRoomCurrentParticipant.no,
+                 name: openChatHost && openChatHost.User.name,
+                 participantNo : openChatHost && openChatHost.no,
                  avatar: <figure className="avatar avatar-state-success">
-                     <img src={ openRoomCurrentParticipant && openRoomCurrentParticipant[0] && openRoomCurrentParticipant.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                     <img src={ openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
                  </figure>,
                  text: <p>What's up, how are you?</p>,
                  date: '03:41 PM',
@@ -55,22 +53,39 @@ function Index({userNo, history}) {
         })
 
         roomList.map((room,i) => {
-        const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
-        const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
-            // console.log(currentParticipant);
-            // console.log(otherParticipant[0].User);
-            userRoomList.push({
-            id: room.no,
-            name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
-            participantNo : currentParticipant.no,
-            avatar: <figure className="avatar avatar-state-success">
-                <img src={otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
-            </figure>,
-            text: <p>What's up, how are you?</p>,
-            date: '03:41 PM',
-            unread_messages: 1,
-            messages: []
-        });
+            const openChatHost = room.Participants.filter(participant => {return participant.role === "ROLE_HOST"})[0];
+            const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
+            const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
+
+            if(room.type === "private"){
+                userRoomList.push({
+                    id: room.no,
+                    type: room.type,
+                    name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
+                    participantNo : currentParticipant.no,
+                    avatar: <figure className="avatar avatar-state-success">
+                        <img src={ otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                    </figure>,
+                    text: <p>What's up, how are you?</p>,
+                    date: '03:41 PM',
+                    unread_messages: 1,
+                    messages: []
+                });
+            } else if(room.type === "public"){
+                userRoomList.push({
+                    id: room.no,
+                    type: room.type,
+                    name: openChatHost && openChatHost.User.name,
+                    participantNo : openChatHost && openChatHost.no,
+                    avatar: <figure className="avatar avatar-state-success">
+                        <img  src={ openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                    </figure>,
+                    text: <p>What's up, how are you?</p>,
+                    date: '03:41 PM',
+                    unread_messages: 1,
+                    messages: []
+                });
+            }
     })
 
 

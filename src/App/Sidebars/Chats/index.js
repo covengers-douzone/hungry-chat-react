@@ -171,19 +171,18 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const ChatListView = (props) => {
         const {chat} = props;
-
-        return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
-                   onClick={() => chatSelectHandle(chat)}>
-            {chat.avatar}
-            <div className="users-list-body">
-                <h5>{chat.name}</h5>
-                {chat.text}
-                <div className="users-list-action action-toggle">
-                    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}
-                    <ChatsDropdown/>
+            return( <li style={ chat.type === "public" ? {backgroundColor:"lightgoldenrodyellow" } : {backgroundColor:null }} className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
+                       onClick={() => chatSelectHandle(chat)}>
+                {chat.avatar}
+                <div className="users-list-body">
+                    <h5>{chat.name}</h5>
+                    {chat.text}
+                    {/*<div className="users-list-action action-toggle">*/}
+                    {/*    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    {/*    <ChatsDropdown/>*/}
+                    {/*</div>*/}
                 </div>
-            </div>
-        </li>
+            </li>)
     };
 
     return (

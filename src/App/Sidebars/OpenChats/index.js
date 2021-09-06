@@ -175,7 +175,6 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const ChatListView = (props) => {
         const {chat} = props;
-
         return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)}>
             {chat.avatar}
