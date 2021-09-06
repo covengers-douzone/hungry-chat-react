@@ -201,7 +201,7 @@ export default function (defaultState, setState) {
                 console.error(err);
             }
         },
-        createRoom: async function (title, headCount, type, password, token) { // 방 생성
+        createRoom: async function (title, content, headCount, type, password, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/createRoom/`, {
                     method: 'post',
@@ -215,6 +215,7 @@ export default function (defaultState, setState) {
                     },
                     body: JSON.stringify({
                         title,
+                        content,
                         headCount,
                         type,
                         password,

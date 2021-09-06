@@ -50,9 +50,9 @@ function Index({roomList, friendList, userNo, history,}) {
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
 
-    useEffect(() => {
-        inputRef.current.focus();
-    });
+    // useEffect(() => {
+    //     inputRef.current.focus();
+    // });
 
     const callback = async ({socketUserNo, chatNo}) => {
         await fetchApi(null, null).updateSendNotReadCount(chatNo);

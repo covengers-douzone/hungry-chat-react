@@ -20,9 +20,10 @@ import {reloadAction} from "../../Store/Actions/reloadAction";
 function AddOpenChatModal({userNo}) {
 
     const [modal, setModal] = useState(false);
-    const [title, setTitle] = useState("");
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
 
     const disfetch = useDispatch();
     const {reload} = useSelector(state => state);
@@ -34,7 +35,7 @@ function AddOpenChatModal({userNo}) {
 
     const createRoom = async () => {
         // const headcount = checkedItems.size + 1
-        const roomNo = await fetchApi(null, null).createRoom(`${title}`,1 ,"public", null , localStorage.getItem("Authorization"));
+        const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", null , localStorage.getItem("Authorization"));
         console.log("roomNo" , roomNo)
         await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
             // await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
@@ -44,10 +45,6 @@ function AddOpenChatModal({userNo}) {
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
 
-    // 방 제목 변경
-    const titleEvent = (e) => {
-        setTitle(e.target.value);
-    }
     const AvatarTooltip = (props) => {
         const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -82,12 +79,18 @@ function AddOpenChatModal({userNo}) {
                         <FormGroup>
                             <Label for="title">방 제목</Label>
                             <InputGroup>
-                                <Input type="text" name="title" id="title" onChange={titleEvent}/>
+                                <Input type="text" name="title" id="title" onChange={ (e) => {
+                                    const {value} = e.target
+                                    setTitle(value);
+                                }}/>
                             </InputGroup>
                         </FormGroup>
                         <FormGroup>
                             <Label for="description">방 설명</Label>
-                            <Input type="textarea" name="description" id="description"/>
+                            <Input type="textarea" name="description" id="description" onChange={ (e) => {
+                                const {value} = e.target
+                                setContent(value);
+                            }}/>
                         </FormGroup>
                     </Form>
                 </ModalBody>

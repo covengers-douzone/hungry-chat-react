@@ -34,7 +34,7 @@ const FriendsDropdown = ({roomList, friendNo, friendName}) => {
                 })
 
             if(result.length === 0){
-                const roomNo = await fetchApi(null, null).createRoom(friendName, 2 ,"private", null , localStorage.getItem("Authorization"));
+                const roomNo = await fetchApi(null, null).createRoom(friendName, "Private Chat",2 ,"private", null , localStorage.getItem("Authorization"));
                 const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
                 await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
                 dispatch(joinRoomAction(true));
