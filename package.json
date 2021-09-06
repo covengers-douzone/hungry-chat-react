@@ -16,6 +16,7 @@
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
     "react": "^16.14.0",
+    "react-contextmenu": "^2.14.0",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.8",
     "react-perfect-scrollbar": "^1.5.8",

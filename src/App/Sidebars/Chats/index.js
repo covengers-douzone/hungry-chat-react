@@ -21,7 +21,7 @@ import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
 import {func} from "prop-types";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
-import {chatForm,chatMessageForm} from "../../Module/chatForm";
+import {chatForm, chatMessageForm} from "../../Module/chatForm";
 
 const Index = React.forwardRef(({
                                     roomList,
@@ -51,7 +51,7 @@ const Index = React.forwardRef(({
 
     const [chatList, setChatList] = useState([]);
 
-    const [joinOk  , setJoinOk] = useState(true)
+    const [joinOk, setJoinOk] = useState(true)
 
     let lastPage = 0
 
@@ -61,8 +61,10 @@ const Index = React.forwardRef(({
     const callback = async ({socketUserNo, chatNo}) => {
         await fetchApi(null, null).updateSendNotReadCount(chatNo);
 
+        // 챗 no값을 통해 리스트를 불러 온다
         const chat = await fetchApi(null, null).getChat(chatNo, localStorage.getItem("Authorization"));
 
+        // message {} 에   chat에 대한 정보를 입력한다 , 단 chat.Participant.no를 사용 할 수 없다. 그래서 chat.participantNo 값을 통해 데이터를 Insert한다.
         const message = chatMessageForm(chat);
         message.userNo = userNo;
 
@@ -104,7 +106,7 @@ const Index = React.forwardRef(({
                 if (users[users.length - 1].id !== socket.id) {
                     // chat list update
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
+                    const chats = chatlist.map((chat) => chatForm(chat, participantNo));
                     selectedChat.messages = chats;
                     dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 }
@@ -123,24 +125,40 @@ const Index = React.forwardRef(({
                 dispatch(lastReadNoAction(lastReadNo))
 
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
+
                 // update notReadCount
                 await fetchApi(null, null).updateRoomNotReadCount(participantNo, roomNo, localStorage.getItem("Authorization"))
                 // set headCount(입장한 방)s
                 dispatch(headCountAction(await fetchApi(null, null).getHeadCount(participantNo, localStorage.getItem("Authorization"))))
 
                 //쳇 리스트 갯수 구하기
-                const chatListCount =  await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+                const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
                 // lastPage가 -로 들어 갈때 처리 해주는 조건문
-                if(chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0){
+                if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
                     lastPage = 0;
-                }else{
+                } else {
                     lastPage = chatListCount.count - config.CHAT_LIMIT
                 }
-                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                const chats = chatlist.map((chat) => chatForm(chat,participantNo));
 
-                selectedChat.messages = chats;
+
+                //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
+                if (lastReadNoCount && lastReadNoCount.count !== 0) {
+                    console.log("chatListCount.count", chatListCount.count)
+                    console.log("lastReadNoCount.count", lastReadNoCount.count)
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
+
+
+                    const chats = chatlist.map(chatForm);
+                    selectedChat.messages = chats;
+                } else {
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
+                    const chats = chatlist.map(chatForm);
+                    selectedChat.messages = chats;
+                }
+
+
+                // selectedChat.messages = chats;
 
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
@@ -197,10 +215,10 @@ const Index = React.forwardRef(({
         return <li style={ chat.type === "public" ? {backgroundColor:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
                    onClick={() => chatSelectHandle(chat)} id={chat.id}
                    ref={ref => {
-                           joinRoom && chat.participantNo === participantNo
-                               && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
-                        }}
-                >
+                       joinRoom && chat.participantNo === participantNo
+                       && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
+                   }}
+        >
             {chat.avatar}
             <div className="users-list-body">
                 <h5>{chat.name}</h5>
@@ -208,8 +226,8 @@ const Index = React.forwardRef(({
                 {/*<div className="users-list-action action-toggle">*/}
                 {/*    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
                 {/*    <ChatsDropdown/>*/}
-                </div>
-            </li>
+            </div>
+        </li>
     };
 
     return (
