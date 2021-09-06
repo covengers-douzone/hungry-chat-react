@@ -136,9 +136,10 @@ const Index = React.forwardRef(({
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
                 dispatch(lastReadNoAction(lastReadNo))
 
+                const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
                 // update notReadCount
                 await fetchApi(null, null).updateRoomNotReadCount(participantNo, roomNo, localStorage.getItem("Authorization"))
-                // set headCount(입장한 방)
+                // set headCount(입장한 방)s
                 dispatch(headCountAction(await fetchApi(null, null).getHeadCount(participantNo, localStorage.getItem("Authorization"))))
 
                 //쳇 리스트 갯수 구하기
@@ -154,10 +155,11 @@ const Index = React.forwardRef(({
                 const chats = chatlist.map(chatForm);
 
                 selectedChat.messages = chats;
-                setJoinOk(!joinOk)
-                dispatch(joinOKAction(joinOk))
+
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
+                setJoinOk(!joinOk)
+                dispatch(joinOKAction(joinOk))
 
             }
         });
