@@ -126,6 +126,7 @@ const Index = React.forwardRef(({
         }, async (response) => {
             if (response.status === 'ok') {
                 // update status
+
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
@@ -172,6 +173,7 @@ const Index = React.forwardRef(({
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 setJoinOk(!joinOk)
                 dispatch(joinOKAction(joinOk))
+
             }
         });
         socket.on('message', callback);

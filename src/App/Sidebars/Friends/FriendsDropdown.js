@@ -10,7 +10,7 @@ import axios from "axios";
 import * as config from "../../../config/config";
 
 
-const FriendsDropdown = ({roomList, friendNo, friendName}) => {
+const FriendsDropdown = ({roomList, friendNo, friendName, friendEmail, userNo}) => {
 
     const dispatch = useDispatch();
 
@@ -51,6 +51,24 @@ const FriendsDropdown = ({roomList, friendNo, friendName}) => {
         }
     }
 
+    const deleteFriendHandler = async (event) => {
+        event.preventDefault();
+        try{
+            await axios.post(`${config.URL}/api/deleteFriend`, {
+                friendNo: friendNo,
+                Authorization:localStorage.getItem("Authorization"),
+                userNo: userNo,
+            })
+            dispatch(reloadAction(!reload))
+            .catch( err => {
+                    console.log(`${err.message}`) })
+        }catch (e) {
+            console.log(e);
+        }
+        console.log(dispatch(reloadAction(!reload)));
+        dispatch(reloadAction(!reload));
+    }
+
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle tag="span">
@@ -63,6 +81,13 @@ const FriendsDropdown = ({roomList, friendNo, friendName}) => {
                     채팅생성
                     </li>
                 </DropdownItem>
+
+                <DropdownItem >
+                    <li onClick={deleteFriendHandler}>
+                    친구삭제
+                    </li>
+                </DropdownItem>
+
             </DropdownMenu>
         </Dropdown>
     )
