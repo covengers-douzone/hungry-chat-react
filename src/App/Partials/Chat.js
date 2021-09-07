@@ -38,6 +38,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     const [sendOk, setSendOk] = useState(true)
 
+    const [deleteOk, setDeleteOk] = useState(true)
+
     const [testOk, setTestOk] = useState(0)
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -90,17 +92,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
     }, [sendOk])
 
     useEffect(() => {
+
+
+     if (scrollEl) {
+            scrollEl.scrollTop = scrollEl.scrollHeight
+        }
+
+        console.log("DeleteOk 성공")
+
+    }, [deleteOk])
+
+    useEffect(() => {
         const getChatListUp = async () => {
             //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
 
             if (lastPage && lastPage >= 0) {
                 if (lastPage < config.CHAT_LIMIT) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat, participantNo));
+                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
                     selectedChat.messages = chats;
                 } else {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, messageAllLength.count, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat, participantNo));
+                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
                     selectedChat.messages = chats;
                 }
 
@@ -141,19 +154,21 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         let putChatNo = "";
         for (const key in data) {
+            //(data[key] === 'target') ? break : (putChatNo += data[key].toString())
             if (data[key] === 'target') {
                 break;
             } else {
                 putChatNo += data[key].toString();
             }
         }
-        let chatNo = putChatNo.split("[") // 뒤에 [object ~~ 떠서 자른 표시
-        chatNo = Number(chatNo[0])
-
-        console.log(chatNo)
-
-        await fetchApi(null, null).deleteChatNo(chatNo)
-
+        const splitData = putChatNo.split(",")
+        const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
+        const chatNo =  Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
+        // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
+        await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
+        const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
+        selectedChat.messages && (selectedChat.messages.splice (idx , 1));
+        setDeleteOk(!deleteOk)
 
         // console.log(  data , '번 채팅 선택');
     }
@@ -175,7 +190,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             <MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>
                                 <button> 메세지 정보</button>
                             </MenuItem>
-                            <MenuItem id="Message-Delete-item" data={`${message.chatNo}`} onClick={handleMessageDelete}
+                            <MenuItem id="Message-Delete-item" data={`${message.chatNo},${message.index}` }   onClick={handleMessageDelete}
                                       disabled={(message.participantNo !== participantNo)}>
                                 <button> 메세지 삭제</button>
                             </MenuItem>
@@ -190,6 +205,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         {message.chatNo}
                         <br/>
                         {message.notReadCount}
+                        <br/>
+                            {message.index}
                     </div>
                     <div>
                         {message.participantNo}

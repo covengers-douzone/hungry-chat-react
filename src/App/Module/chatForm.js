@@ -1,10 +1,8 @@
 import * as config from "../../config/config";
 import React from "react";
-
-const chatMessageForm = (chat) => {
+const chatMessageForm = (chat , index ) => {
 
     let contents;
-    console.log("chat", chat,chat.no)
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)
     chat.type === 'IMG' && (contents = <img
@@ -15,19 +13,20 @@ const chatMessageForm = (chat) => {
                                               className="form-control"
                                               alt="avatar"
                                         />)
-
     const chatMessage = {
         text: contents,
         date: chat.createdAt,
         notReadCount: chat.notReadCount,
         chatNo : chatNo,
-        participantNo : (chat.Participant && chat.Participant.no) || chat.participantNo
+        participantNo : (chat.Participant && chat.Participant.no) || chat.participantNo,
+        index : index,
     }
     return chatMessage;
 }
 
-const chatForm = (chat,participantNo) => {
-   const chatMessage = chatMessageForm(chat);
+const chatForm = (chat,participantNo,i) => {
+
+   const chatMessage = chatMessageForm(chat , i);
 
    if (chat.Participant.no !== Number(participantNo)) {
        return chatMessage;
