@@ -229,23 +229,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     ?
                     <React.Fragment>
                         <ChatHeader selectedChat={selectedChat}/>
-                        
-                        <form>
-                        <div onClick = {toggleMenu}>
-                            <i className="ti ti-search">채팅검색</i>    
-                        </div>                        
-                        
-                        <input 
-                        type="text" 
-                        className={isOpen ? "show-menu" : "hide-menu"}
-                        placeholder="채팅검색" 
-                        ref={inputRef}
-                        onChange={e => {
-                        setSearchTerm(e.target.value)
-                        }}/>
-                        
-                        </form>
-                        
                         <PerfectScrollbar
                             onUpdateSize={(ref) => {
                                 ref.updateScroll();
@@ -276,9 +259,25 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 </div>
                             </div>
                         </PerfectScrollbar>
-
+                        <div>
+                        <div onClick = {toggleMenu}>
+                            <i className="ti ti-search">채팅검색</i>    
+                        </div>                        
+                        
+                        <input 
+                        type="text" 
+                        className={isOpen ? "show-menu" : "hide-menu"}
+                        placeholder="채팅검색" 
+                        ref={inputRef}
+                        onChange={e => {
+                        setSearchTerm(e.target.value)
+                        }}
+                        />
+                        
+                        </div>
                         <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                     handleInputMsg={handleInputMsg}/>
+                        
                     </React.Fragment>
                     :
                     <div className="chat-body no-message">
