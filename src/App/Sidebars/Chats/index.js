@@ -125,16 +125,53 @@ const Index = React.forwardRef(({
             participantNo: selectedChat.participantNo
         }, async (response) => {
             if (response.status === 'ok') {
-                const results = await fetchList(localStorage.getItem("Authorization")).joinRoom(selectedChat.participantNo,roomNo);
-                const {lastReadNo,lastReadNoCount,headCount,chatListCount,lastPage,chatlist} = results;
-                console.log('chat',results);
-                selectedChat.messages = chatlist.map((chat) => chatForm(chat,participantNo));
-                dispatch(headCountAction(headCount)); // set headCount(입장한 방)
-                dispatch(lastReadNoAction(lastReadNo));
-                dispatch(messageAllLengthAction(chatListCount));
-                dispatch(messageLengthAction(selectedChat.messages.length - 1));
+                // update status
+                await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
+
+                const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
+                dispatch(lastReadNoAction(lastReadNo))
+                console.log("lastReadNo",lastReadNo)
+
+                const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
+
+                // update notReadCount
+                await fetchApi(null, null).updateRoomNotReadCount(participantNo, roomNo, localStorage.getItem("Authorization"))
+                // set headCount(입장한 방)s
+                dispatch(headCountAction(await fetchApi(null, null).getHeadCount(participantNo, localStorage.getItem("Authorization"))))
+
+                //쳇 리스트 갯수 구하기
+                const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+
+                // lastPage가 -로 들어 갈때 처리 해주는 조건문
+                if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
+                    lastPage = 0;
+                } else {
+                    lastPage = chatListCount.count - config.CHAT_LIMIT
+                }
+
+
+                //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
+                if (lastReadNoCount && lastReadNoCount.count !== 0) {
+                    console.log("chatListCount.count", chatListCount.count)
+                    console.log("lastReadNoCount.count", lastReadNoCount.count)
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
+
+
+                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
+                    selectedChat.messages = chats;
+                } else {
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
+                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
+                    selectedChat.messages = chats;
+                }
+
+
+                // selectedChat.messages = chats;
+
+                dispatch(messageAllLengthAction(chatListCount))
+                dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 setJoinOk(!joinOk)
-                dispatch(joinOKAction(joinOk));
+                dispatch(joinOKAction(joinOk))
             }
         });
         socket.on('message', callback);
@@ -240,20 +277,20 @@ const Index = React.forwardRef(({
             </header>
             <form>
 
-                <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="채팅검색" 
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="채팅검색"
                     ref={inputRef}
                     onChange={e => {
                         setSearchTerm(e.target.value)
                     }}
-                    />
+                />
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
-                    <p style={ {
+                        <p style={ {
                             color:"coral",
                             marginLeft:25,
                         }}>채팅 목록</p>
@@ -264,7 +301,7 @@ const Index = React.forwardRef(({
                                 return chat
                             }
                         }).map((chat, i) => {return <ChatListView chat={chat} key={i}/> })
-                    }
+                        }
                     </ul>
                 </PerfectScrollbar>
             </div>
