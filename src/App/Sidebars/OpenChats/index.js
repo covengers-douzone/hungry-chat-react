@@ -50,6 +50,7 @@ function Index({roomList, friendList, userNo, history,}) {
 
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
+    const [searchTerm, setSearchTerm] = useState("");
 
     // useEffect(() => {
     //     inputRef.current.focus();
@@ -260,8 +261,12 @@ function Index({roomList, friendList, userNo, history,}) {
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">{
-                        roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                    <ul className="list-group list-group-flush">
+                    <p style={ {
+                                color:"black",
+                                marginLeft:25,
+                            }}>오픈채팅방</p>
+                    {roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                     }
                     </ul>
                 </PerfectScrollbar>
