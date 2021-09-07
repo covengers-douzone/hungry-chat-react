@@ -215,7 +215,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         
                         <form>
                         <div onClick = {toggleMenu}>
-                            <i className="ti-search">채팅검색</i>    
+                            <i className="ti ti-search">채팅검색</i>    
                         </div>                        
                         
                         <input 

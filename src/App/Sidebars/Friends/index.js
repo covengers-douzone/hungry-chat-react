@@ -77,7 +77,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no}/>
+                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no} friendEmail={item.email} userNo={userNo}/>
                                         </div>
                                     </div>
                                 </li>
