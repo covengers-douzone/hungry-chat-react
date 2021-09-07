@@ -11,12 +11,18 @@ import {chatForm, chatMessageForm} from "../Module/chatForm";
 import {ContextMenu, MenuItem, ContextMenuTrigger} from "react-contextmenu";
 import {reloadAction} from "../../Store/Actions/reloadAction";
 import {messageLengthAction} from "../../Store/Actions/messageLengthAction";
+import io from "socket.io-client";
+import {lastReadNoAction} from "../../Store/Actions/lastReadNoAction";
+import {headCountAction} from "../../Store/Actions/headCountAction";
+import {messageAllLengthAction} from "../../Store/Actions/messageAllLengthAction";
+import {joinOKAction} from "../../Store/Actions/joinOKAction";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
     const dispatch = useDispatch
 
+    const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
     const {selectedChat} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
@@ -40,11 +46,34 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     const [deleteOk, setDeleteOk] = useState(true)
 
+    const [chatNo , setChatNo] = useState(null)
+
     const [testOk, setTestOk] = useState(0)
 
     const [searchTerm, setSearchTerm] = useState("");
 
     const inputRef = useRef();
+
+    useEffect(() => {
+        if (scrollEl) {
+            setTimeout(() => {
+                console.log("sendOk")
+                scrollEl.scrollTop = scrollEl.scrollHeight;
+            }, 100)
+        }
+    }, [sendOk])
+
+    useEffect(() => {
+
+
+        socket.emit("deleteMessage", ({roomNo , chatNo}) , async (response) => {
+            if (response.status === 'ok') {
+                console.log(roomNo ,"방의" ,chatNo  ,"삭제 완료")
+            }
+        })
+
+
+    }, [deleteOk])
 
     useEffect(() => {
         console.log("lastReadNo", lastReadNo)
@@ -82,25 +111,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         setInputMsg(newValue);
     };
 
-    useEffect(() => {
-        if (scrollEl) {
-            setTimeout(() => {
-                console.log("sendOk")
-                scrollEl.scrollTop = scrollEl.scrollHeight;
-            }, 100)
-        }
-    }, [sendOk])
-
-    useEffect(() => {
-
-
-     if (scrollEl) {
-            scrollEl.scrollTop = scrollEl.scrollHeight
-        }
-
-        console.log("DeleteOk 성공")
-
-    }, [deleteOk])
 
     useEffect(() => {
         const getChatListUp = async () => {
@@ -164,11 +174,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const splitData = putChatNo.split(",")
         const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
         const chatNo =  Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
+        console.log("client:ChatNo" , chatNo)
         // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
-        await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
-        const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
-        selectedChat.messages && (selectedChat.messages.splice (idx , 1));
+        // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
+        // const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
+        // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
+        setChatNo(chatNo)
         setDeleteOk(!deleteOk)
+
 
         // console.log(  data , '번 채팅 선택');
     }

@@ -106,6 +106,7 @@ const Index = React.forwardRef(({
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
+        // 새로운 유저가 들어 왔을떄 Read 값을 변경 시키기 위해 제작,
         socket.on('roomUsers', async ({room, users}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
@@ -119,6 +120,18 @@ const Index = React.forwardRef(({
             }, 1000)
 
         })
+
+        // 모든 메세지를 삭제
+        socket.on('deleteMessage' ,async ({room, users , chatNo})=>{
+            setTimeout(async () => {
+                // 새로운 유저 왔을 때
+                // chat list updateㄴ
+                const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
+                selectedChat.messages && (selectedChat.messages.splice (idx , 1));
+                dispatch(messageLengthAction(selectedChat.messages.length - 1))
+            }, 1000)
+        })
+
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
