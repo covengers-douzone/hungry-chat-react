@@ -257,7 +257,7 @@ function Index({roomList, friendList, userNo, history,}) {
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef}/>
+                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef} onChange={e=> {setSearchTerm(e.target.value)}} />
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
@@ -266,7 +266,13 @@ function Index({roomList, friendList, userNo, history,}) {
                                 color:"black",
                                 marginLeft:25,
                             }}>오픈채팅방</p>
-                    {roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                    {roomList.filter((chat) => {
+                            if(searchTerm == ""){
+                                return chat
+                            } else if( chat.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                                return chat
+                            }
+                        }).map((chat, i) => <ChatListView chat={chat} key={i}/>)
                     }
                     </ul>
                 </PerfectScrollbar>
