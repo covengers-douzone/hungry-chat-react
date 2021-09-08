@@ -24,20 +24,20 @@ function Navigation() {
 
     const navigationItems = [
         {
-            name: '채팅',
+            name: 'Chats',
             icon: <i className="ti ti-comment-alt"></i>
         },
         {
-            name: '친구목록',
+            name: 'Friends',
             icon: <i className="ti ti-user"></i>,
             notify_badge: true
         },
         {
-            name: '즐겨찾기',
+            name: 'Favorites',
             icon: <i className="ti ti-star"></i>,
         },
         {
-            name: '오픈채팅',
+            name: 'Open-chat',
             icon: <i className="ti ti-themify-favicon"></i>,
         }
     ];
@@ -95,7 +95,6 @@ function Navigation() {
                         </a>
                     </li>
                     <li>
-                        
                         <a onClick={settingsModalToggle}>
                                 <i className="ti ti-settings"></i>
                         </a>

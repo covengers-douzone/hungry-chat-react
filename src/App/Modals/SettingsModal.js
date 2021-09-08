@@ -19,6 +19,7 @@ import {
 } from 'reactstrap'
 import classnames from 'classnames'
 import * as config from "../../config/config";
+import {useHistory} from "react-router-dom";
 
 function SettingsModal(props) {
 
@@ -35,6 +36,9 @@ function SettingsModal(props) {
     const [ comments, setComments ] = useState();
     const [ password, setPassword ] = useState(null);
     const [ file, setFile ] = useState(null);
+    const [ username, setUsername ] = useState();
+    const [ phoneNumber, setPhoneNumber ]  = useState();
+    let history = useHistory();
 
     useEffect( () => {
         console.log(localStorage.getItem("userNo"));
@@ -92,6 +96,37 @@ function SettingsModal(props) {
         }
         props.toggle();
     }
+
+    const sendOut = async event => {
+        event.preventDefault();
+        try{
+            // var deleteData = [];
+            // deleteData[0].append("Authorization", localStorage.getItem("Authorization"));
+            // deleteData[1].append("userNo", localStorage.getItem("userNo"));
+            // deleteData[2].append("isDeleted", 1);
+            // console.log("deleteData : ", deleteData);
+
+            await axios.post(`${config.URL}/api/deleteUserInfo`, {data : {
+                "Authorization" : localStorage.getItem("Authorization"),
+                "userNo": localStorage.getItem("userNo"),
+                "isDeleted": 1
+            }}
+            
+            )
+                .then( res => {
+                    if(res.status !== 200){
+                        throw Error;
+                    }else if(res.status === 200){
+                        history.push("/sign-in");
+                    }
+                })
+                .catch(err => {console.log(err)})
+
+        }catch (err){
+            console.log(err.response + err.message);
+        }
+        props.toggle();
+    }
     return (
         <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
             <ModalHeader toggle={props.toggle}>
@@ -117,6 +152,16 @@ function SettingsModal(props) {
                             }}
                         >
                             채팅
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink href="#/"
+                            className={classnames({active: activeTab === '3'})}
+                            onClick={() => {
+                                toggle('3');
+                            }}
+                        >
+                            회원탈퇴
                         </NavLink>
                     </NavItem>
                     {/*<NavItem>*/}
@@ -173,25 +218,30 @@ function SettingsModal(props) {
                                      setPassword(value);
                                  }}/>
                              </div>
-                             <br/>
-                             <div>
-                                 <form>
-                                     <button>회원탈퇴</button>
-                                 </form>
-                             </div>
                         </TabPane>
-                        
                         <TabPane tabId="2">
                              <div className="setting-account">
                                  <label htmlFor="name" id="Background"> 배경화면 </label>
                                  <input type="file" name="backgroundImageUrl" />
                              </div>
                         </TabPane>
+
+                        <TabPane tabId="3">
+                            <div className="setting-account">
+                            
+                            </div> 
+                        </TabPane>
                     </TabContent>
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={send}>저장하기</Button>
+                {
+                activeTab != '3'
+                ?
+                <Button color="primary" onClick={send}>저장하기</Button> 
+                : 
+                <Button color="primary" onClick={sendOut}>탈퇴하기</Button>
+                }
             </ModalFooter>
         </Modal>
     )
