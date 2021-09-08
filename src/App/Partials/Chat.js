@@ -244,7 +244,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             containerRef={ref => setScrollEl(ref)} onYReachStart={handleScrollStart}
                             onScrollUp={handlePaging}
                             ref={scrollRef}
-
                         >
                             <div className="chat-body">
                                 <div className="messages">
