@@ -20,6 +20,10 @@ function Index({roomList, openRoomList, userNo, history,}) {
     const {selectedChat} = useSelector(state => state);
     const {reload} = useSelector(state => state);
 
+    let lastPage = 0;
+
+    const [searchTerm, setSearchTerm] = useState("");
+
     const mobileSidebarClose = () => {
         dispatch(mobileSidebarAction(false));
         document.body.classList.remove('navigation-open');
@@ -27,7 +31,7 @@ function Index({roomList, openRoomList, userNo, history,}) {
 
     const chatSelectHandle = async (chat) => {
         try {
-            console.log(chat)
+            console.log(chat);
             const result = roomList && roomList.filter(room => {
                 return room.type === "public" && room.participantNo === chat.participantNo;
             })
@@ -36,7 +40,6 @@ function Index({roomList, openRoomList, userNo, history,}) {
                 dispatch(participantNoAction(participantNo));
                 dispatch(reloadAction(!reload));
             } else {
-                console.log(result);
                 dispatch(participantNoAction(result[0].participantNo));
             }
                 dispatch(joinRoomAction(true));
@@ -120,12 +123,22 @@ function Index({roomList, openRoomList, userNo, history,}) {
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef}/>
+                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef} onChange={e=> {setSearchTerm(e.target.value)}} />
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
-                    <ul className="list-group list-group-flush">{
-                        openRoomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                    <ul className="list-group list-group-flush">
+                    <p style={ {
+                                color:"black",
+                                marginLeft:25,
+                            }}>오픈채팅방</p>
+                    {openRoomList.filter((chat) => {
+                            if(searchTerm == ""){
+                                return chat
+                            } else if( chat.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                                return chat
+                            }
+                        }).map((chat, i) => <ChatListView chat={chat} key={i}/>)
                     }
                     </ul>
                 </PerfectScrollbar>

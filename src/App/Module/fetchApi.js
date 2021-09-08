@@ -235,7 +235,7 @@ export default function (defaultState, setState) {
                 console.error(err);
             }
         },
-        createParticipant: async function (UserNo, roomNo, role, token) { // 방 생성
+        createParticipant: async function (userNo, roomNo, role, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/createParticipant/`, {
                     method: 'post',
@@ -248,7 +248,7 @@ export default function (defaultState, setState) {
                         Authorization: token
                     },
                     body: JSON.stringify({
-                        UserNo, roomNo, role
+                        userNo, roomNo, role
 
                     }),
                 });
@@ -328,7 +328,7 @@ export default function (defaultState, setState) {
                 console.error(err);
             }
         },
-        getFriendList: async function (UserNo, token) { // 방 생성
+        getFriendList: async function (userNo, token) { // 방 생성
             try {
                 const response = await fetch(`${domain}:${PORT}/api/getFriendList/`, {
                     method: 'post',
@@ -336,12 +336,12 @@ export default function (defaultState, setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Origin": `${domain}:${PORT}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
                     body: JSON.stringify({
-                        UserNo
+                        userNo
                     }),
                 });
 
@@ -359,7 +359,7 @@ export default function (defaultState, setState) {
                 console.error(err);
             }
         },
-        getFollowerList: async function (UserNo, token) { // 방 생성
+        getFollowerList: async function (userNo, token) { // 방 생성
             try {
                 const response = await fetch(`${config.URL}/api/getFollowerList/`, {
                     method: 'post',
@@ -372,7 +372,7 @@ export default function (defaultState, setState) {
                         Authorization: token
                     },
                     body: JSON.stringify({
-                        UserNo
+                        userNo
                     }),
                 });
 

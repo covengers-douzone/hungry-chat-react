@@ -5,7 +5,6 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
-import {logDOM} from "@testing-library/react";
 
 const Index = React.forwardRef(({userNo, history}, scrollRef) => {
 
@@ -108,6 +107,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
         userFriendList.push({
             no: friend.no,
             name: friend.name,
+            email: friend.email,
             comments: friend.comments,
             avatar: <figure className="avatar">
                 <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>

@@ -108,6 +108,7 @@ const Index = React.forwardRef(({
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
+        // 새로운 유저가 들어 왔을떄 Read 값을 변경 시키기 위해 제작,
         socket.on('roomUsers', async ({room, users}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
@@ -121,6 +122,18 @@ const Index = React.forwardRef(({
             }, 1000)
 
         })
+
+        // 모든 메세지를 삭제
+        socket.on('deleteMessage' ,async ({room, users , chatNo})=>{
+            setTimeout(async () => {
+                // 새로운 유저 왔을 때
+                // chat list updateㄴ
+                const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
+                selectedChat.messages && (selectedChat.messages.splice (idx , 1));
+                dispatch(messageLengthAction(selectedChat.messages.length - 1))
+            }, 1000)
+        })
+
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
@@ -132,6 +145,7 @@ const Index = React.forwardRef(({
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
                 dispatch(lastReadNoAction(lastReadNo))
+                console.log("lastReadNo",lastReadNo)
 
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
 
@@ -157,11 +171,11 @@ const Index = React.forwardRef(({
                     console.log("lastReadNoCount.count", lastReadNoCount.count)
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
 
-                    const chats = chatlist.map(chatForm);
+                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
                     selectedChat.messages = chats;
                 } else {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map(chatForm);
+                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
                     selectedChat.messages = chats;
                 }
 
