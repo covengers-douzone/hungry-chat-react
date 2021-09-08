@@ -2,11 +2,15 @@ import React, {useState} from 'react'
 import {Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {reloadAction} from "../../../Store/Actions/reloadAction";
+import axios from "axios";
+import * as config from "../../../config/config";
 
-const ChatsDropdown = () => {
+const ChatsDropdown = ({chat}) => {
 
     const dispatch = useDispatch();
+    const {reload} = useSelector(state => state);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -17,14 +21,34 @@ const ChatsDropdown = () => {
         dispatch(mobileProfileAction(true))
     };
 
+    const chatDeleteAction = async () => {
+        console.log(chat);
+        try {
+            await axios.post(`${config.URL}/api/deleteChat`, {
+                openChatHostCheck: chat.openChatHostCheck,
+                participantNo: chat.participantNo,
+                roomNo: chat.id,
+                Authorization: localStorage.getItem("Authorization"),
+            }).then(res => {
+                dispatch(reloadAction(!reload));
+            }).catch(err => {
+                console.log(`${err.message}`)
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
+
     return (
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle tag="a">
                 <i className="ti ti-more"></i>
+                {/*<i className="ti ti-trash" style={{color:"red"}}></i>*/}
             </DropdownToggle>
             <DropdownMenu>
                 <DropdownItem onClick={profileActions}>프로필</DropdownItem>
-                <DropdownItem>삭제하기</DropdownItem>
+                <DropdownItem onClick={chatDeleteAction}>삭제하기</DropdownItem>
             </DropdownMenu>
         </Dropdown>
     )

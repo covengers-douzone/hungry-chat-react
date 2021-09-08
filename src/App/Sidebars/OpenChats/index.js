@@ -5,180 +5,82 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
-//import {chatLists} from "./Data";
 import fetchApi from "../../Module/fetchApi";
 import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
-import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
-import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
-import io from "socket.io-client"
-import {roomNoAction} from "../../../Store/Actions/roomNoAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
-import * as config from "../../../config/config"
-import {headCountAction} from "../../../Store/Actions/headCountAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import AddOpenChatModal from "../../Modals/AddOpenChatModal";
-import AddGroupModal from "../../Modals/AddGroupModal";
-import {chatForm,chatMessageForm} from "../../Module/chatForm";
-import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
-import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
-import {joinOKAction} from "../../../Store/Actions/joinOKAction";
-import fetchList from "../../Module/fetchList";
+import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
+import {profileAction} from "../../../Store/Actions/profileAction";
+import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
-function Index({roomList, friendList, userNo, history,}) {
-
-    // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
-
+function Index({roomList, openRoomList, userNo, history,}) {
     const dispatch = useDispatch();
-
     const inputRef = useRef();
-
     const {selectedChat} = useSelector(state => state);
-
-    const {participantNo} = useSelector(state => state);
-
-    const {roomNo} = useSelector(state => state);
-
-    const [tooltipOpen, setTooltipOpen] = useState(false);
-
-    const [chatList, setChatList] = useState([]);
-
-    const [joinOk  , setJoinOk] = useState(true)
-
     const {reload} = useSelector(state => state);
-
-    let lastPage = 0;
-
-    const toggle = () => setTooltipOpen(!tooltipOpen);
-
-
-    // useEffect(() => {
-    //     inputRef.current.focus();
-    // });
-
-    const callback = async ({socketUserNo, chatNo}) => {
-        await fetchApi(null, null).updateSendNotReadCount(chatNo);
-
-        const chat = await fetchApi(null,null).getChat(chatNo,localStorage.getItem("Authorization"));
-
-        const message = chatMessageForm(chat);
-        message.userNo = userNo;
-
-        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
-
-        selectedChat.messages && selectedChat.messages.push(message);
-
-        dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
-    }
-
-    setTimeout(async () => {
-        if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
-            return;
-        } else {
-            console.log("", selectedChat.messages[selectedChat.messages.length - 1])
-            if (selectedChat.messages[selectedChat.messages.length - 1] === 0) { // 마지막 메시지가 0 이라면
-
-            }
-        }
-
-    }, 3000)
-
-    useEffect(() => {
-        if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
-            return;
-        }
-
-        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
-
-        socket.on('roomUsers', async ({room, users}) => {
-            setTimeout(async () => {
-                // 새로운 유저 왔을 때
-                if (users[users.length - 1].id !== socket.id) {
-                    // chat list update
-                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat,participantNo));
-                    selectedChat.messages = chats;
-                    dispatch(messageLengthAction(selectedChat.messages.length - 1))
-                }
-            }, 1000)
-
-        })
-        socket.emit("join", {
-            nickName: selectedChat.name,
-            roomNo: selectedChat.id,
-            participantNo: selectedChat.participantNo
-        }, async (response) => {
-            if (response.status === 'ok') {
-                const results = await fetchList(localStorage.getItem("Authorization")).joinRoom(selectedChat.participantNo,roomNo);
-                const {lastReadNo,lastReadNoCount,headCount,chatListCount,lastPage,chatlist} = results;
-
-                selectedChat.messages = chatlist.map((chat) => chatForm(chat,participantNo));
-                dispatch(headCountAction(headCount)); // set headCount(입장한 방)
-                dispatch(lastReadNoAction(lastReadNo));
-                dispatch(messageAllLengthAction(chatListCount));
-                dispatch(messageLengthAction(selectedChat.messages.length - 1));
-                setJoinOk(!joinOk)
-                dispatch(joinOKAction(joinOk));
-            }
-        });
-        socket.on('message', callback);
-
-        return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
-            if (roomNo) {
-                console.log("방나가기")
-                const results = await fetchList(localStorage.getItem("Authorization")).leftRoom(selectedChat.participantNo);
-                socket.disconnect();
-            }
-        }
-
-    }, [selectedChat]);
 
     const mobileSidebarClose = () => {
         dispatch(mobileSidebarAction(false));
         document.body.classList.remove('navigation-open');
     };
 
-
     const chatSelectHandle = async (chat) => {
         try {
-            chat.unread_messages = 1
-            dispatch(participantNoAction(chat.participantNo))
-            dispatch(roomNoAction(chat.id))
-            if (chat.messages) {
-                dispatch(messageLengthAction(chat.messages.length))
-            }
-            dispatch(selectedChatAction(chat));
-            dispatch(mobileSidebarAction(false));
-
-        } catch (e) {
-            if (e === "System Error") {
-                history.push("/error/500") // 500 Page(DB error) // 수정 필요
+            console.log(chat)
+            const result = roomList && roomList.filter(room => {
+                return room.type === "public" && room.participantNo === chat.participantNo;
+            })
+            if(result.length === 0){
+                const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
+                dispatch(participantNoAction(participantNo));
+                dispatch(reloadAction(!reload));
             } else {
-                // Token 문제 발생 시 -> return null -> length error -> catch
-                alert("Token invalid or Token expired. Please login again");
-                history.push("/sign-in");
-                console.log("Error : {}", e.message);
+                console.log(result);
+                dispatch(participantNoAction(result[0].participantNo));
             }
+                dispatch(joinRoomAction(true));
+                dispatch(sidebarAction('Chats'));
+        } catch (e) {
+            console.log(e.message);
+            // if (e === "System Error") {
+            //     history.push("/error/500") // 500 Page(DB error) // 수정 필요
+            // } else {
+            //     // Token 문제 발생 시 -> return null -> length error -> catch
+            //     alert("Token invalid or Token expired. Please login again");
+            //     history.push("/sign-in");
+            //     console.log("Error : {}", e.message);
+            // }
         }
+    };
+
+    const profileActions = () => {
+        dispatch(profileAction(true));
+        dispatch(mobileProfileAction(true))
     };
 
     const ChatListView = (props) => {
         const {chat} = props;
-        return <li className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
-                   onClick={() => chatSelectHandle(chat)}>
-            {chat.avatar}
-            <div className="users-list-body">
+
+        return <li style={ chat.password ? {color:"coral"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
+            <div onClick={profileActions}>
+                {chat.avatar}
+            </div>
+            <div className="users-list-body"  onClick={() => chatSelectHandle(chat)} id={chat.id} >
                 <h5>{chat.name}</h5>
                 {chat.text}
-                {/*<div className="users-list-action action-toggle">*/}
+            </div>
+            <div className="users-list-body">
+                <div className="users-list-action action-toggle">
                     {/*{chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
-                    {/*<ChatsDropdown/>*/}
-                {/*</div>*/}
+                    <ChatsDropdown chat={chat}/>
+                </div>
             </div>
         </li>
     };
 
     return (
-        <div className="sidebar active" style={{backgroundColor:"lightpink"}}>
+        <div className="sidebar active">
             <header>
                 <span>오픈 채팅</span>
                 <ul className="list-inline">
@@ -197,7 +99,7 @@ function Index({roomList, friendList, userNo, history,}) {
                     <li className="list-inline-item">
                         <AddOpenChatModal userNo={userNo}/>
                         {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
-                     </li>
+                    </li>
                     {/*<li className="list-inline-item">*/}
                     {/*    <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"*/}
                     {/*            id="Tooltip-New-Chat">*/}
@@ -223,7 +125,7 @@ function Index({roomList, friendList, userNo, history,}) {
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">{
-                        roomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
+                        openRoomList.map((chat, i) => <ChatListView chat={chat} key={i}/>)
                     }
                     </ul>
                 </PerfectScrollbar>
