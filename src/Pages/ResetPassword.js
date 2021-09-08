@@ -7,7 +7,6 @@ function ResetPassword({location}) {
     const { register, handleSubmit, errors } = useForm();
     let history = useHistory();
     const foundUsername = location.username;
-    console.log(foundUsername);
     useEffect(() => document.body.classList.add('form-membership'), []);
 
     const onSubmit = function handleSubmit(errors, e) {

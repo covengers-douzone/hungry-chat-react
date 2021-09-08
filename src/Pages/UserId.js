@@ -6,7 +6,6 @@ import {useHistory} from "react-router-dom";
 function UserId({location}) {
     let history = useHistory();
     const userName = location.username;
-    console.log(userName);
     useEffect(() => document.body.classList.add('form-membership'), []);
 
     function toFindPassword(){

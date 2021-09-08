@@ -75,7 +75,6 @@ function Index({roomList, friendList, userNo, history,}) {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
             return;
         } else {
-            console.log("", selectedChat.messages[selectedChat.messages.length - 1])
             if (selectedChat.messages[selectedChat.messages.length - 1] === 0) { // 마지막 메시지가 0 이라면
 
             }
@@ -136,8 +135,6 @@ function Index({roomList, friendList, userNo, history,}) {
 
                 //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
-                    console.log("chatListCount.count", chatListCount.count)
-                    console.log("lastReadNoCount.count", lastReadNoCount.count)
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
 
 
@@ -164,7 +161,6 @@ function Index({roomList, friendList, userNo, history,}) {
 
         return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
-                console.log("방나가기")
                 const results = await fetchList(localStorage.getItem("Authorization")).leftRoom(selectedChat.participantNo);
                 socket.disconnect();
             }

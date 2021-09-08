@@ -65,7 +65,6 @@ export default function (defaultState, setState) {
             }
         },
         getChatList: async function (roomNo, offset, limit, token) {
-            console.log("getChatList", roomNo, offset, limit)
             try {
                 const response = await fetch(`${domain}:${PORT}/api/chatlist/${roomNo}/${offset}/${limit}`, {
                     method: 'get',
@@ -165,7 +164,6 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                console.log(json)
                 //json.data.length > 0 && setChatList([...chatList, ...json.data]);
             } catch (err) {
                 console.error(err);
@@ -196,7 +194,6 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                console.log(json)
             } catch (err) {
                 console.error(err);
             }

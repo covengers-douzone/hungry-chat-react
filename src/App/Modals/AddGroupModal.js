@@ -40,7 +40,6 @@ function AddGroupModal({userNo, friendList}) {
 
     const callbackSetItem = (checkItems) => {
         setCheckedItems(checkItems)
-        console.log("callbackSetItem", checkItems)
     }
 
     const callbackComplete = () => {
@@ -48,11 +47,9 @@ function AddGroupModal({userNo, friendList}) {
     }
     const callbackAddItem = (value) => {
         checkedItems.add(value)
-        console.log("callbackAddItem", checkedItems)
     }
     const callbackDeleteItem = (value) => {
         checkedItems.delete(value)
-        console.log("callbackDeleteItem", checkedItems)
     }
 
 
@@ -68,8 +65,6 @@ function AddGroupModal({userNo, friendList}) {
     const createRoom = async () => {
         const headcount = checkedItems.size + 1
         const roomNo = await fetchApi(null, null).createRoom(title,content === '' ? "Private Chat" : content, headcount ,"private", null , localStorage.getItem("Authorization"));
-
-        console.log("roomNo" , roomNo)
 
         await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
 
