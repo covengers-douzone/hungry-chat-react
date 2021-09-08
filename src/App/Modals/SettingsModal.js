@@ -37,7 +37,6 @@ function SettingsModal(props) {
     const [ file, setFile ] = useState(null);
 
     useEffect( () => {
-        console.log(localStorage.getItem("userNo"));
         try{
             fetch(`${config.URL}/api/getUserByNo/${localStorage.getItem("userNo")}`, {
                 method: 'get',
@@ -76,8 +75,6 @@ function SettingsModal(props) {
             formData.append("comments", comments);
             formData.append("nickname", nickname);
             formData.append("password", password);
-            console.log(formData);
-
             await axios.post(`${config.URL}/api/updateSettings`, formData)
                 .then( res => {
                     if(res.status !== 200){

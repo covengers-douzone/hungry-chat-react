@@ -25,7 +25,6 @@ const FollowersDropdown = ({friendNo, friendName, friendEmail, userNo}) => {
     const joinRoomHandler = async (event) => {
         event.preventDefault();
         const roomNo = await fetchApi(null, null).createRoom(`${friendName}`,"Private Chat", 2 ,"private", null , localStorage.getItem("Authorization"));
-        console.log("roomNo" , roomNo)
         await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
         await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         dispatch(reloadAction(!reload));

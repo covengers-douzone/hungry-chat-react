@@ -102,7 +102,6 @@ function Navigation() {
                     <li>
                         <a href="/sign-in" onClick={() => {
                             localStorage.clear();
-                            console.log(localStorage.getItem("Authorization"))
                         }}>
                             <i className="ti ti-power-off"></i>
                         </a>
