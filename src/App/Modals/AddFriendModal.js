@@ -26,7 +26,14 @@ function AddFriendModal( props ) {
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
-    const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
+    const tooltipToggle = () => {
+        setAlertOpen(false);
+        setExistFriendFailAlertOpen(false);
+        setNotFoundFriendAlertOpen(false);
+        setBadRequestAlertOpen(false);
+
+        setTooltipOpen(!tooltipOpen);
+    }
 
     const [email, setEmail] = useState();
 
