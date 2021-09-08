@@ -19,10 +19,8 @@ const URL = "http://localhost:9999"
 //             Authorization: token
 //         }
 //     }
-//         console.log(data.get("Authorization"));
 //        await axios(option)
 //            .then(response => {
-//            console.log(response);
 //            // return response;
 //        }).catch(err => {
 //            // console.log(`${err.status} : ${err.message}`);

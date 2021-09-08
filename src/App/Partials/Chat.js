@@ -57,7 +57,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
     useEffect(() => {
         if (scrollEl) {
             setTimeout(() => {
-                console.log("sendOk")
                 scrollEl.scrollTop = scrollEl.scrollHeight;
             }, 100)
         }
@@ -68,7 +67,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         socket.emit("deleteMessage", ({roomNo , chatNo}) , async (response) => {
             if (response.status === 'ok') {
-                console.log(roomNo ,"방의" ,chatNo  ,"삭제 완료")
             }
         })
 
@@ -76,9 +74,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
     }, [deleteOk])
 
     useEffect(() => {
-        console.log("lastReadNo", lastReadNo)
-
-        //
         if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위친
             scrollEl.scrollTop = scrollEl.scrollTop + 10
         } else if (scrollEl) {
@@ -146,11 +141,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
     // 스크롤이 맨 위에 위치 했을때 실행되는 핸들러
     const handleScrollStart = async (e) => {
 
+
         // 맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
-        if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop !== scrollEl.scrollHeight)) {
+        if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop === 0) ){
             setTimeout(() => {
                 setTestOk(testOk + 1)
-                scrollEl.scrollTop = scrollEl.scrollTop + 10
+               // scrollEl.scrollTop = scrollEl.scrollTop
                 setLastPage(lastPage - config.CHAT_LIMIT)
             }, 1000)
         } else {
@@ -174,7 +170,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const splitData = putChatNo.split(",")
         const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
         const chatNo =  Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
-        console.log("client:ChatNo" , chatNo)
         // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
         // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
         // const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)

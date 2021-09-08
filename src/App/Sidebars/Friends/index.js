@@ -43,7 +43,6 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                 const isRoom = room.otherParticipantNo.filter(otherParticipantNo => {return otherParticipantNo.userNo === friendNo});
                 return room.type === "private" && room.headcount === 2 && isRoom.length !== 0
             })
-            console.log('result',result);
             if(result.length === 0){
                 const roomNo = await fetchApi(null, null).createRoom(friendName, "Private Chat",2 ,"private", null , localStorage.getItem("Authorization"));
                 const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;

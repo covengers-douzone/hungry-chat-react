@@ -24,7 +24,6 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
     const {reload} = useSelector(state => state);
 
     useEffect( ()=>{
-        console.log('reload',reload);
         try{
             fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
             fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))

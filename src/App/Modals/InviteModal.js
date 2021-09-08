@@ -39,7 +39,6 @@ function InviteModal({
     const checkHandler = (no, {target}) => {
         setChecked(!bChecked);
         checkedItemHandler(no, target.checked);
-        //   console.log("no" , no)
 
     };
 
@@ -82,7 +81,6 @@ function InviteModal({
 
     // Create Button Event
     const modalToggle = async () => {
-        console.log()
         setModal(!modal);
     }
     const inviteFriends = () => {
