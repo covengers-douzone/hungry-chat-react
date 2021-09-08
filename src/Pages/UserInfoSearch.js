@@ -31,6 +31,7 @@ function UserInfoSearch() {
             authCode -= 1000;
         }
         setCode(authCode);// 인증코드
+         console.log(e.target.number.value);
         fetch("http://localhost:8888/api/user/sms", {
             method: "POST",
             credentials: 'include',

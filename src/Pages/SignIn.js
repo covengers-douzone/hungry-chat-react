@@ -20,8 +20,10 @@ function SignIn({history}) {
                     password: e.target.password.value,
                 })
             }). then(response => {
+                console.log(response.status);
                 if(response.status === 401){
                     alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
+                    console.log("중복된 데이터가 있는지 확인할것.")
                     history.push("/sign-in");
                 }else if (response.status === 500){
                     history.push("/sign-in");
