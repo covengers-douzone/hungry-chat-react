@@ -152,6 +152,7 @@ function Index({roomList, friendList, userNo, history,}) {
 
                 // selectedChat.messages = chats;
 
+
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 setJoinOk(!joinOk)

@@ -77,8 +77,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     useEffect(() => {
         console.log("lastReadNo", lastReadNo)
-
-        //
+        console.log("scrollEl" , scrollEl)
         if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위친
             scrollEl.scrollTop = scrollEl.scrollTop + 10
         } else if (scrollEl) {
@@ -146,11 +145,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
     // 스크롤이 맨 위에 위치 했을때 실행되는 핸들러
     const handleScrollStart = async (e) => {
 
+
         // 맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
-        if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop !== scrollEl.scrollHeight)) {
+        if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop === 0) ){
             setTimeout(() => {
                 setTestOk(testOk + 1)
-                scrollEl.scrollTop = scrollEl.scrollTop + 10
+               // scrollEl.scrollTop = scrollEl.scrollTop
                 setLastPage(lastPage - config.CHAT_LIMIT)
             }, 1000)
         } else {
