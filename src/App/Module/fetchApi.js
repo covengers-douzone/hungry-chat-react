@@ -336,7 +336,7 @@ export default function (defaultState, setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Origin": `${domain}:${PORT}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },

@@ -23,6 +23,8 @@ import {func} from "prop-types";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 import {chatForm, chatMessageForm} from "../../Module/chatForm";
+import {profileAction} from "../../../Store/Actions/profileAction";
+import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
 const Index = React.forwardRef(({
                                     roomList,
@@ -139,7 +141,6 @@ const Index = React.forwardRef(({
         }, async (response) => {
             if (response.status === 'ok') {
                 // update status
-
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
@@ -170,7 +171,6 @@ const Index = React.forwardRef(({
                     console.log("lastReadNoCount.count", lastReadNoCount.count)
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
 
-
                     const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
                     selectedChat.messages = chats;
                 } else {
@@ -181,12 +181,10 @@ const Index = React.forwardRef(({
 
 
                 // selectedChat.messages = chats;
-
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 setJoinOk(!joinOk)
                 dispatch(joinOKAction(joinOk))
-
             }
         });
         socket.on('message', callback);
@@ -230,23 +228,31 @@ const Index = React.forwardRef(({
         }
     };
 
+
+    const profileActions = () => {
+        dispatch(profileAction(true));
+        dispatch(mobileProfileAction(true))
+    };
+
     const ChatListView = (props) => {
         const {chat} = props;
 
-        return <li style={ chat.type === "public" ? {backgroundColor:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}
-                   onClick={() => chatSelectHandle(chat)} id={chat.id}
-                   ref={ref => {
-                       joinRoom && chat.participantNo === participantNo
-                       && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
-                   }}
-        >
-            {chat.avatar}
-            <div className="users-list-body">
+        return <li style={ chat.type === "public" ? {color:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
+            <div onClick={profileActions}>
+                {chat.avatar}
+            </div>
+            <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}
+                 ref={ref => {
+                     joinRoom && chat.participantNo === participantNo
+                     && chatSelectHandle(chat) && dispatch(joinRoomAction(false))}}>
                 <h5>{chat.name}</h5>
                 {chat.text}
-                {/*<div className="users-list-action action-toggle">*/}
-                {/*    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
-                {/*    <ChatsDropdown/>*/}
+            </div>
+            <div className="users-list-body">
+                <div className="users-list-action action-toggle">
+                    {/*{chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    <ChatsDropdown chat={chat}/>
+                </div>
             </div>
         </li>
     };
