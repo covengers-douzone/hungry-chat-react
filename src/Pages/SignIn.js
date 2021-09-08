@@ -39,10 +39,7 @@ function SignIn({history}) {
                     window.localStorage.setItem("name", response.name);
 
                     console.log(localStorage.getItem("name"));
-                    console.log(response.name);
-                    console.log(response.username);
                     console.log(response.Authorization);
-                    console.log(response.no);
                     history.push('/'+response.no);
                 })
                 .catch(error => {
@@ -54,9 +51,35 @@ function SignIn({history}) {
             history.push("/sign-in");
         }
     }
+
+    const unknownLoginHandler = (e) => {
+        e.preventDefault();
+            fetch("http://localhost:8888/api/user/unknownLogin",{
+                method: "get",
+                headers: {
+                    "Accept":"application/json",
+                },
+            }).then(response => {
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("unknownLoginHandler error occured");
+
+                }
+            }).then(response => {
+                    console.log(response)
+                    window.localStorage.setItem("username", response.username);
+                    window.localStorage.setItem("userNo", response.no);
+                    window.localStorage.setItem("name", response.name);
+                    console.log(localStorage.getItem("name"));
+                    history.push('/'+response.no);
+            }).catch(error => {
+                    alert("Error: " + error.message);
+                    history.push("/sign-in");
+                })
+    }
+
     useEffect(() => document.body.classList.add('form-membership'), []);
-
-
 
     return (
         <div className="form-wrapper">
@@ -76,7 +99,7 @@ function SignIn({history}) {
                 <hr/>
                 <div className="form-group d-flex justify-content-between">
                     <a href="/userinfo" className="btn btn-outline-light btn-sm">ID/PW 찾기</a>
-                    <a href="/unknown-user" className="btn btn-outline-light btn-sm">비회원 로그인</a>
+                    <a href="#" className="btn btn-outline-light btn-sm" onClick={unknownLoginHandler}>비회원 로그인</a>
                     <a href="/sign-up" className="btn btn-outline-light btn-sm">회원가입</a>
                 </div>
                 <hr/>
