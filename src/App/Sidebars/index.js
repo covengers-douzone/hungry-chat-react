@@ -56,7 +56,8 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                  date: '03:41 PM',
                  unread_messages: 1,
                  messages: [],
-                 openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no
+                 openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
+                 headcount : room.headCount
              });
         })
 
@@ -79,7 +80,8 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     date: '03:41 PM',
                     unread_messages: 1,
                     messages: [],
-                    openChatHostCheck: false
+                    openChatHostCheck: false,
+                    headcount : room.headCount
                 });
             } else if(room.type === "public"){
                 userRoomList.push({
@@ -97,7 +99,8 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     date: '03:41 PM',
                     unread_messages: 1,
                     messages: [],
-                    openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no
+                    openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
+                    headcount : room.headCount
                 });
             }
     })
