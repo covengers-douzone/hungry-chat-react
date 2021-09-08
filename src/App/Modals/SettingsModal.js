@@ -173,7 +173,14 @@ function SettingsModal(props) {
                                      setPassword(value);
                                  }}/>
                              </div>
+                             <br/>
+                             <div>
+                                 <form>
+                                     <button>회원탈퇴</button>
+                                 </form>
+                             </div>
                         </TabPane>
+                        
                         <TabPane tabId="2">
                              <div className="setting-account">
                                  <label htmlFor="name" id="Background"> 배경화면 </label>
