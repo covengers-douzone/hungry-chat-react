@@ -3,10 +3,13 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 
 
 function SignIn({history}) {
+
     function loginHandler(e){
         e.preventDefault();
+        const username = e.target.email.value;
+        const password = e.target.password.value;
         if(e.target.email.value !== '' || e.target.password.value !== ''){
-            fetch("http://localhost:8888/api/user/login",{
+            fetch("http://localhost:8888/api/user/activation",{
                 method: "POST",
                 headers: {
                     "Access-Control-Allow-Headers":"Authorization",
@@ -17,7 +20,6 @@ function SignIn({history}) {
                 },
                 body: JSON.stringify({
                     username: e.target.email.value,
-                    password: e.target.password.value,
                 })
             }). then(response => {
                 console.log(response.status);
@@ -30,20 +32,64 @@ function SignIn({history}) {
                     console.log("500 Error, 서버를 재시작해주세요.");
                 }else {
                     if(response.ok){
-                        return response.json();
+                        response.json().then(data => {
+                            if(data.data === true){
+                                history.push({
+                                    pathname: '/activation', 
+                                    username: username,
+                                    password: password,
+                                    isDeleted: data.data
+                                });
+                            }else {
+                                    fetch("http://localhost:8888/api/user/login",{
+                                        method: "POST",
+                                        headers: {
+                                            "Access-Control-Allow-Headers":"Authorization",
+                                            "Access-Control-Allow-Origin":"http://localhost:8888",
+                                            "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
+                                            "Accept":"application/json",
+                                            "Content-Type":"application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            username: username,
+                                            password: password
+                                        })
+                                    }). then(response => {
+                                        console.log(response.status);
+                                        if(response.status === 401){
+                                            alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
+                                            console.log("중복된 데이터가 있는지 확인할것.")
+                                            history.push("/sign-in");
+                                        }else if (response.status === 500){
+                                            history.push("/sign-in");
+                                            console.log("500 Error, 서버를 재시작해주세요.");
+                                        }else {
+                                            if(response.ok){
+                                                return response.json();
+                                            }
+                                        }
+                                    })
+                                        .then(response => {
+                                            window.localStorage.setItem("Authorization", response.Authorization);
+                                            window.localStorage.setItem("username", response.username);
+                                            window.localStorage.setItem("userNo", response.no.toString());
+                                            window.localStorage.setItem("name", response.name);
+                        
+                                            console.log(localStorage.getItem("name"));
+                                            console.log(response.Authorization);
+                                            history.push('/'+response.no);
+                                        })
+                                        .catch(error => {
+                                        alert("Error: "+error.message);
+                                        history.push("/sign-in");
+                                    })
+                            }
+                        });
+                        console.log("res: ", Promise.resolve);
+                        
                     }
                 }
             })
-                .then(response => {
-                    window.localStorage.setItem("Authorization", response.Authorization);
-                    window.localStorage.setItem("username", response.username);
-                    window.localStorage.setItem("userNo", response.no.toString());
-                    window.localStorage.setItem("name", response.name);
-
-                    console.log(localStorage.getItem("name"));
-                    console.log(response.Authorization);
-                    history.push('/'+response.no);
-                })
                 .catch(error => {
                 alert("Error: "+error.message);
                 history.push("/sign-in");

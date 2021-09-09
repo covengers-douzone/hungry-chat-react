@@ -224,8 +224,11 @@ function SettingsModal(props) {
                         </TabPane>
 
                         <TabPane tabId="3">
-                            <div className="setting-account">
-                            
+                            <div className="setting-account-widhaldraw">
+                                 <label>※이용약관</label>
+                                 <p>① 회원탈퇴 시 사용자의 정보가 바로 삭제되는 것은 아닙니다.</p>
+                                 <p>② 사용자는 탈퇴 후에도 로그인 시 서비스 이용이 가능합니다.</p>
+                                 <p>③ 탈퇴 후 3개월 동안 로그인 기록이 없을시 해당 모든 정보가 삭제됩니다.</p>
                             </div> 
                         </TabPane>
                     </TabContent>
@@ -237,7 +240,7 @@ function SettingsModal(props) {
                 ?
                 <Button color="primary" onClick={send}>저장하기</Button> 
                 : 
-                <Button color="primary" onClick={sendOut}>탈퇴하기</Button>
+                <Button color="danger" onClick={sendOut}>탈퇴하기</Button>
                 }
             </ModalFooter>
         </Modal>
