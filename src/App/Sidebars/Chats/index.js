@@ -217,7 +217,7 @@ const Index = React.forwardRef(({
             } else {
                 // Token 문제 발생 시 -> return null -> length error -> catch
                 alert("Token invalid or Token expired. Please login again");
-                history.push("/sign-in");
+                history.push("/");
                 console.log("Error : {}", e.message);
             }
         }

@@ -5,7 +5,7 @@ function Error500({ history }) {
 
     function errorPageHandler(e){
         e.preventDefault();
-        history.push("/sign-in");
+        history.push("/");
 
     }
 
