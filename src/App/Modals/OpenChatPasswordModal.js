@@ -22,7 +22,7 @@ import {sidebarAction} from "../../Store/Actions/sidebarAction";
 function OpenChatPasswordModal({modal, setModal, enterPasswordChat, roomList}) {
 
 
-    const disfetch = useDispatch();
+    const dispatch = useDispatch();
     const {reload} = useSelector(state => state);
     const [password, setPassword] = useState("");
     const [wrongPasswordAlert, setWrongPasswordAlert] = useState(false);
@@ -43,17 +43,17 @@ function OpenChatPasswordModal({modal, setModal, enterPasswordChat, roomList}) {
             })
             if(result.length === 0){
                 const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,enterPasswordChat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
-                disfetch(participantNoAction(participantNo));
-                disfetch(reloadAction(!reload));
+                dispatch(participantNoAction(participantNo));
+                dispatch(reloadAction(!reload));
             } else {
-                disfetch(participantNoAction(result[0].participantNo));
+                dispatch(participantNoAction(result[0].participantNo));
             }
-            disfetch(joinRoomAction(true));
-            disfetch(sidebarAction('Chats'));
+            dispatch(joinRoomAction(true));
+            dispatch(sidebarAction('Chats'));
         }else{
             setWrongPasswordAlert(true);
         }
-        disfetch(reloadAction(!reload));
+        dispatch(reloadAction(!reload));
     }
     const modalClose = () => {
         setModal(!modal);

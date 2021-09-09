@@ -16,7 +16,7 @@ import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
 function Index({roomList, openRoomList, history,}) {
-    const disfetch = useDispatch();
+    const dispatch = useDispatch();
     const inputRef = useRef();
     const {selectedChat} = useSelector(state => state);
     const {reload} = useSelector(state => state);
@@ -32,7 +32,7 @@ function Index({roomList, openRoomList, history,}) {
     let lastPage = 0;
 
     const mobileSidebarClose = () => {
-        disfetch(mobileSidebarAction(false));
+        dispatch(mobileSidebarAction(false));
         document.body.classList.remove('navigation-open');
     };
 
@@ -48,13 +48,13 @@ function Index({roomList, openRoomList, history,}) {
                 })
                 if(result.length === 0){
                     const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
-                    disfetch(participantNoAction(participantNo));
-                    disfetch(reloadAction(!reload));
+                    dispatch(participantNoAction(participantNo));
+                    dispatch(reloadAction(!reload));
                 } else {
-                    disfetch(participantNoAction(result[0].participantNo));
+                    dispatch(participantNoAction(result[0].participantNo));
                 }
-                disfetch(joinRoomAction(true));
-                disfetch(sidebarAction('Chats'));
+                dispatch(joinRoomAction(true));
+                dispatch(sidebarAction('Chats'));
             }
         } catch (e) {
             console.log(e.message);
@@ -72,8 +72,8 @@ function Index({roomList, openRoomList, history,}) {
     };
 
     const profileActions = () => {
-        disfetch(profileAction(true));
-        disfetch(mobileProfileAction(true))
+        dispatch(profileAction(true));
+        dispatch(mobileProfileAction(true))
     };
 
 

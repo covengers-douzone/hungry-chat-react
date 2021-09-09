@@ -34,7 +34,7 @@ function AddGroupModal({friendList}) {
 
     const [checkedItems, setCheckedItems] = useState(new Set());
 
-    const disfetch = useDispatch
+    const dispatch = useDispatch
 
     const [completeInvite , setCompleteInvite] = useState(false)
 
