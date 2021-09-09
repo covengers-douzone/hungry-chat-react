@@ -106,7 +106,7 @@ function SettingsModal(props) {
 
         if(password !== null){
             try{
-                await fetch(`${config.SPRING_URL}/api/user/passwordupdate`, {
+                await fetch(`${config.SPRING_URL}/api/auth/passwordupdate`, {
                     method: 'post',
                     credentials: 'include',
                     body:JSON.stringify({
