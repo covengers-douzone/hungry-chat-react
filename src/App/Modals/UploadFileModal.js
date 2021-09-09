@@ -19,11 +19,6 @@ import {
     InputGroupText,
     CustomInput
 } from 'reactstrap'
-import classnames from 'classnames'
-import ManAvatar3 from '../../assets/img/man_avatar3.jpg'
-import axios from "axios";
-import * as config from "../../config/config";
-import fetchApi from "../Module/fetchApi";
 
 function UploadFileModal(props) {
 

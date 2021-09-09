@@ -21,12 +21,12 @@ import {useDispatch, useSelector} from "react-redux";
 import InviteModal from "./InviteModal";
 import {friendListAction} from "../../Store/Actions/friendListAction";
 
-function AddGroupModal({userNo, friendList}) {
+function AddGroupModal({friendList}) {
 
     const [modal, setModal] = useState(false);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const [openInvite, setOpenInvite] = useState(false);
 
@@ -34,7 +34,7 @@ function AddGroupModal({userNo, friendList}) {
 
     const [checkedItems, setCheckedItems] = useState(new Set());
 
-    const disfetch = useDispatch
+    const dispatch = useDispatch
 
     const [completeInvite , setCompleteInvite] = useState(false)
 
@@ -136,7 +136,7 @@ function AddGroupModal({userNo, friendList}) {
                                 <AvatarTooltip name="Cloe Jeayes" id={2}/>
 
                                 <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
-                                    <InviteModal userNo={userNo} openValue={openInvite}
+                                    <InviteModal openValue={openInvite}
                                                  friendList={friendList} callbackItem={callbackSetItem}
                                                  callbackAddItem={callbackAddItem}
                                                  callbackDeleteItem={callbackDeleteItem}

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
-import {useHistory} from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 function SignUp({history}) {
@@ -62,7 +61,7 @@ function SignUp({history}) {
             })
             .catch(error => {
                 alert("Error: " + error.message);
-                history.push("/sign-in");
+                history.push("/");
             })
     }
     // sms 인증 끝
@@ -96,7 +95,7 @@ function SignUp({history}) {
                 console.log(response.result);
                 if(response.result === "success"){
                     alert(`${response.data.name}님 회원 가입을 축하합니다.`);
-                    history.push("/sign-in");
+                    history.push("/");
                 }else{
                     alert("이미 존재하는 이메일입니다.");
                     history.push("/sign-up");
@@ -104,7 +103,7 @@ function SignUp({history}) {
             })
             .catch(error => {
                 alert("Error: " + error.message);
-                history.push("/sign-in");
+                history.push("/");
             })
     }
 
@@ -144,7 +143,7 @@ function SignUp({history}) {
                 <button type="submit" className="btn btn-primary btn-block btn-lg">회원가입</button>
                 <hr/>
                 <p className="text-muted">이미 계정을 가지고 계신가요?</p>
-                <a href="/sign-in" className="btn btn-outline-light btn-sm">로그인</a>
+                <a href="/" className="btn btn-outline-light btn-sm">로그인</a>
             </form>
         </div>
     )

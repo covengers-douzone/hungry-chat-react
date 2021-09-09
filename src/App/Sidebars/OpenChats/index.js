@@ -10,19 +10,26 @@ import {mobileSidebarAction} from "../../../Store/Actions/mobileSidebarAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import AddOpenChatModal from "../../Modals/AddOpenChatModal";
+import OpenChatPasswordModal from "../../Modals/OpenChatPasswordModal";
 import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
-function Index({roomList, openRoomList, userNo, history,}) {
+function Index({roomList, openRoomList, history,}) {
     const dispatch = useDispatch();
     const inputRef = useRef();
     const {selectedChat} = useSelector(state => state);
     const {reload} = useSelector(state => state);
 
-    let lastPage = 0;
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const [searchTerm, setSearchTerm] = useState("");
+
+    const [modal, setModal] = useState(false);
+    const [enterPasswordChat, setEnterPasswordChat] = useState();
+
+
+    let lastPage = 0;
 
     const mobileSidebarClose = () => {
         dispatch(mobileSidebarAction(false));
@@ -32,20 +39,27 @@ function Index({roomList, openRoomList, userNo, history,}) {
     const chatSelectHandle = async (chat) => {
         try {
             console.log(chat);
-            const result = roomList && roomList.filter(room => {
-                return room.type === "public" && room.participantNo === chat.participantNo;
-            })
-            if(result.length === 0){
-                const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
-                dispatch(participantNoAction(participantNo));
-                dispatch(reloadAction(!reload));
+            if (chat.password){
+                setEnterPasswordChat(chat);
+                setModal(!modal);
             } else {
-                dispatch(participantNoAction(result[0].participantNo));
-            }
+                const result = roomList && roomList.filter(room => {
+                    return room.type === "public" && room.participantNo === chat.participantNo;
+                })
+                if(result.length === 0){
+                    const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
+                    dispatch(participantNoAction(participantNo));
+                    dispatch(reloadAction(!reload));
+                } else {
+                    dispatch(participantNoAction(result[0].participantNo));
+                }
                 dispatch(joinRoomAction(true));
                 dispatch(sidebarAction('Chats'));
+            }
         } catch (e) {
             console.log(e.message);
+
+
             // if (e === "System Error") {
             //     history.push("/error/500") // 500 Page(DB error) // 수정 필요
             // } else {
@@ -62,15 +76,17 @@ function Index({roomList, openRoomList, userNo, history,}) {
         dispatch(mobileProfileAction(true))
     };
 
+
+
     const ChatListView = (props) => {
         const {chat} = props;
 
-        return <li style={ chat.password ? {color:"coral"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
+        return <li style={ chat.password ? {color:"palevioletred"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
             <div onClick={profileActions}>
                 {chat.avatar}
             </div>
             <div className="users-list-body"  onClick={() => chatSelectHandle(chat)} id={chat.id} >
-                <h5>{chat.name}</h5>
+                { chat.password ?  <h5><i className="ti ti-key"></i> {chat.name}</h5> : <h5>{chat.name}</h5>}
                 {chat.text}
             </div>
             <div className="users-list-body">
@@ -86,6 +102,7 @@ function Index({roomList, openRoomList, userNo, history,}) {
         <div className="sidebar active">
             <header>
                 <span>오픈 채팅</span>
+                <OpenChatPasswordModal modal={modal} setModal={setModal} enterPasswordChat={enterPasswordChat} roomList={roomList}/>
                 <ul className="list-inline">
                     {/*<li className="list-inline-item">*/}
                     {/*    <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"*/}
@@ -100,8 +117,8 @@ function Index({roomList, openRoomList, userNo, history,}) {
                     {/*    </Tooltip>*/}
                     {/*</li>*/}
                     <li className="list-inline-item">
-                        <AddOpenChatModal userNo={userNo}/>
-                        {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
+                        <AddOpenChatModal />
+                        {/*<AddGroupModal friendList={friendList}/>*/}
                     </li>
                     {/*<li className="list-inline-item">*/}
                     {/*    <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"*/}

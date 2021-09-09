@@ -6,5 +6,6 @@ export const SOCKET_PORT = '9999';
 export const DEFAULT_PROFILE_IMG = "http://simpleicon.com/wp-content/uploads/account.png";
 export const URL = 'http://localhost:9999';
 export const CHAT_LIMIT = 5
+export const SPRING_URL = 'http://localhost:8888'
 
 

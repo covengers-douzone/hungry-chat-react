@@ -6,7 +6,7 @@ import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
 
-const Index = React.forwardRef(({userNo, history}, scrollRef) => {
+const Index = React.forwardRef(({history}, scrollRef) => {
 
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
@@ -18,6 +18,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
     const [roomList, setRoomList] = useState([]);
     const [openRoomList, setOpenRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
+    const userNo = Number(localStorage.getItem("userNo"));
     // const [title, setTitle] = useState('');
     // const [content, setContent] = useState('');
 
@@ -44,7 +45,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                  id: room.no,
                  type: room.type,
                  name : room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
-                 password : room.password,
+                 password : room.password ? room.password : null,
                  openChatHostNo : openChatHost && openChatHost.no,
                  participantNo : currentParticipant && currentParticipant.no,
                  otherParticipantNo:otherParticipant && otherParticipant.map( (participant) => participant.no ),
@@ -70,6 +71,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     id: room.no,
                     type: room.type,
                     name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
+                    password : room.password ? room.password : null,
                     participantNo : currentParticipant.no, // 이 채팅방의 '나'
                     otherParticipantNo :  otherParticipant && otherParticipant.filter( participant => { return participant.no }), // 이 채팅방의 '너'
                     avatar: <figure className="avatar avatar-state-success">
@@ -87,7 +89,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     id: room.no,
                     type: room.type,
                     name: room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
-                    password : room.password,
+                    password : room.password ? room.password : null,
                     openChatHostNo : openChatHost && openChatHost.no,
                     participantNo : currentParticipant && currentParticipant.no,
                     otherParticipantNo: otherParticipant && otherParticipant.filter( participant => { return participant.no }),
@@ -134,16 +136,16 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
             {
                 (() => {
                     if (selectedSidebar === 'Chats') {
-                        return <ChatsIndex roomList={userRoomList} friendList={friendList} userNo={userNo}
+                        return <ChatsIndex roomList={userRoomList} friendList={friendList}
                                            history={history} ref={scrollRef}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList}
                                              friendList={userFriendList}
-                                             followerList={userFollowerList} userNo={userNo} history={history}/>
+                                             followerList={userFollowerList} history={history}/>
                     } else if (selectedSidebar === 'Favorites') {
                         return <FavoritesIndex/>
                     } else if (selectedSidebar === 'Open-chat') {
-                        return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList} friendList={friendList} userNo={userNo}
+                        return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList} friendList={friendList}
                                                history={history}/>
                     }
                 })()

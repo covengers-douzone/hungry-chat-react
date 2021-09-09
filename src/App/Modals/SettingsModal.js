@@ -15,7 +15,7 @@ import {
     ModalHeader,
     Input,
     CustomInput,
-    Collapse
+    Collapse, Alert
 } from 'reactstrap'
 import classnames from 'classnames'
 import * as config from "../../config/config";
@@ -33,11 +33,13 @@ function SettingsModal(props) {
     // 변경한 데이터 저장하기
     const [ profileImage, setProfileImage ] = useState();
     const [ nickname, setNickname ] = useState();
+    const [ name, setName ] = useState();
     const [ comments, setComments ] = useState();
     const [ password, setPassword ] = useState(null);
     const [ file, setFile ] = useState(null);
     const [ username, setUsername ] = useState();
     const [ phoneNumber, setPhoneNumber ]  = useState();
+    const [alertOpen, setAlertOpen] = useState(false);
     let history = useHistory();
 
     useEffect( () => {
@@ -59,6 +61,8 @@ function SettingsModal(props) {
             }).then(res => {
                 setProfileImage(res.data.profileImageUrl);
                 setNickname(res.data.nickname);
+                setUsername(res.data.username);
+                setName(res.data.name);
                 setComments(res.data.comments);
             })
                 .catch(err => {
@@ -94,6 +98,42 @@ function SettingsModal(props) {
         props.toggle();
     }
 
+    const changePasswordHandler = async (e) => {
+        e.preventDefault();
+        setAlertOpen(false);
+        console.log(username);
+        console.log(password);
+
+        if(password !== null){
+            try{
+                await fetch(`${config.SPRING_URL}/api/auth/passwordupdate`, {
+                    method: 'post',
+                    credentials: 'include',
+                    body:JSON.stringify({
+                        username : username,
+                        password : password
+                    }),
+                    headers: {
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        'Content-Type': 'application/json',
+                        // 'Accept': 'application/json',
+                        Authorization: localStorage.getItem("Authorization")
+                    },
+                }).then(res => {
+                    if (res.ok){
+                        setAlertOpen(true);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }catch (err){
+                console.log(err);
+            }
+        } // 여기 else 자리에 validator 넣고 alert 추가해주면 될 듯
+    }
+
     const sendOut = async event => {
         event.preventDefault();
         try{
@@ -114,7 +154,7 @@ function SettingsModal(props) {
                     if(res.status !== 200){
                         throw Error;
                     }else if(res.status === 200){
-                        history.push("/sign-in");
+                        history.push("/");
                     }
                 })
                 .catch(err => {console.log(err)})
@@ -143,12 +183,12 @@ function SettingsModal(props) {
                     </NavItem>
                     <NavItem>
                         <NavLink href="#/"
-                            className={classnames({active: activeTab === '2'})}
-                            onClick={() => {
-                                toggle('2');
-                            }}
+                                 className={classnames({active: activeTab === '2'})}
+                                 onClick={() => {
+                                     toggle('2');
+                                 }}
                         >
-                            채팅
+                            비밀번호 변경
                         </NavLink>
                     </NavItem>
                     <NavItem>
@@ -156,6 +196,16 @@ function SettingsModal(props) {
                             className={classnames({active: activeTab === '3'})}
                             onClick={() => {
                                 toggle('3');
+                            }}
+                        >
+                            채팅
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink href="#/"
+                            className={classnames({active: activeTab === '4'})}
+                            onClick={() => {
+                                toggle('4');
                             }}
                         >
                             회원탈퇴
@@ -196,49 +246,57 @@ function SettingsModal(props) {
                             <br/>
                             <div className="setting-account">
                                 <label htmlFor="name" id="comments"> 닉네임 </label>
-                                <input type="text" name="nickname" placeholder={comments} onChange={ (event) => {
-                                    const { value } = event.target;
-                                    setComments(value);
-                                }}/>
-                            </div>
-                             <div className="setting-account">
-                                 <label htmlFor="name" id="name"> 이름 </label>
                                 <input type="text" name="nickname" placeholder={nickname} onChange={ (event) => {
                                     const { value } = event.target;
                                     setNickname(value);
                                 }}/>
                             </div>
                              <div className="setting-account">
-                                 <label htmlFor="password" id="password"> 비밀번호 </label>
-                                 <input type="password" name="password" onChange={ (event) => {
-                                     const { value } = event.target;
-                                     setPassword(value);
-                                 }}/>
-                             </div>
+                                 <label htmlFor="name" id="name"> 이름 </label>
+                                <input type="text" name="name" placeholder={name} onChange={ (event) => {
+                                    const { value } = event.target;
+                                    setName(value);
+                                }}/>
+                            </div>
+
                         </TabPane>
                         <TabPane tabId="2">
-                             <div className="setting-account">
-                                 <label htmlFor="name" id="Background"> 배경화면 </label>
-                                 <input type="file" name="backgroundImageUrl" />
-                             </div>
+                            <div className="setting-account">
+                                <Alert isOpen={alertOpen} color="info">비밀번호가 변경되었습니다.</Alert>
+                                <div className="setting-account">
+                                    <label htmlFor="password" id="password"> 비밀번호 </label>
+                                    <input type="password" name="password" onChange={ (event) => {
+                                        const { value } = event.target;
+                                        setPassword(value);
+                                    }}/>
+                                </div>
+                            </div> 
                         </TabPane>
-
                         <TabPane tabId="3">
+                            <div className="setting-account">
+                                <label htmlFor="name" id="Background"> 배경화면 </label>
+                                <input type="file" name="backgroundImageUrl" />
+                            </div>
+
+                        </TabPane>
+                        <TabPane tabId="4">
+
                             <div className="setting-account-widhaldraw">
                                  <label>※이용약관</label>
                                  <p>① 회원탈퇴 시 사용자의 정보가 바로 삭제되는 것은 아닙니다.</p>
                                  <p>② 사용자는 탈퇴 후에도 로그인 시 서비스 이용이 가능합니다.</p>
                                  <p>③ 탈퇴 후 3개월 동안 로그인 기록이 없을시 해당 모든 정보가 삭제됩니다.</p>
                             </div> 
+
                         </TabPane>
                     </TabContent>
                 </Form>
             </ModalBody>
             <ModalFooter>
                 {
-                activeTab != '3'
+                activeTab != '4'
                 ?
-                <Button color="primary" onClick={send}>저장하기</Button> 
+                activeTab != '2' ? <Button color="primary" onClick={send}>저장하기</Button> :  <Button color="primary" onClick={changePasswordHandler}>변경하기</Button>
                 : 
                 <Button color="danger" onClick={sendOut}>탈퇴하기</Button>
                 }

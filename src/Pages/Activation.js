@@ -66,7 +66,7 @@ function Activation({location}) {
             })
             .catch(error => {
                 alert("Error: " + error.message);
-                history.push("/sign-in");
+                history.push("/");
             })
     }
 
@@ -111,9 +111,9 @@ function Activation({location}) {
                                         if(response.status === 401){
                                             alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
                                             console.log("중복된 데이터가 있는지 확인할것.")
-                                            history.push("/sign-in");
+                                            history.push("/");
                                         }else if (response.status === 500){
-                                            history.push("/sign-in");
+                                            history.push("/");
                                             console.log("500 Error, 서버를 재시작해주세요.");
                                         }else {
                                             if(response.ok){
@@ -129,21 +129,21 @@ function Activation({location}) {
                         
                                             console.log(localStorage.getItem("name"));
                                             console.log(response.Authorization);
-                                            history.push('/'+response.no);
+                                            history.push('/chat');
                                         })
                                         .catch(error => {
                                         alert("Error: "+error.message);
-                                        history.push("/sign-in");
+                                        history.push("/");
                                     })
                     }else{
                         alert("이름과 휴대폰번호를 다시 확인해주세요")
-                        history.push("/sign-in")
+                        history.push("/")
                     }
                 })
             
         }else{
             alert("인증 실패");
-            history.push("/sign-in")
+            history.push("/")
         }
     }
 

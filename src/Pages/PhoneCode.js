@@ -21,7 +21,7 @@ function PhoneCode() {
                 <p className="text-muted">Take a different action.</p>
                 <a href="/sign-up" className="btn btn-sm btn-outline-light mr-1">Register now!</a>
                 or
-                <a href="/sign-in" className="btn btn-sm btn-outline-light ml-1">Login!</a>
+                <a href="/" className="btn btn-sm btn-outline-light ml-1">Login!</a>
             </form>
         </div>
     )
