@@ -24,6 +24,7 @@ function AddOpenChatModal({userNo}) {
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [roomPassword, setRoomPassword] = useState("");
 
     const disfetch = useDispatch();
     const {reload} = useSelector(state => state);
@@ -35,7 +36,9 @@ function AddOpenChatModal({userNo}) {
 
     const createRoom = async () => {
         // const headcount = checkedItems.size + 1
-        const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", null , localStorage.getItem("Authorization"));
+        roomPassword === "" ? setRoomPassword(null) : setRoomPassword(roomPassword);
+        console.log(roomPassword==="");
+        const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", roomPassword , localStorage.getItem("Authorization"));
         await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
             // await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         setModal(!modal);
@@ -81,6 +84,15 @@ function AddOpenChatModal({userNo}) {
                                 <Input type="text" name="title" id="title" onChange={ (e) => {
                                     const {value} = e.target
                                     setTitle(value);
+                                }}/>
+                            </InputGroup>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="password">비밀번호 설정</Label>
+                            <InputGroup>
+                                <Input type="password" name="password" id="password" onChange={ (e) => {
+                                    const {value} = e.target
+                                    setRoomPassword(value);
                                 }}/>
                             </InputGroup>
                         </FormGroup>

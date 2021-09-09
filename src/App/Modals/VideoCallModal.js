@@ -36,7 +36,7 @@ function VideoCallModal() {
                             <button type="button" onClick={modalToggle}
                                     className="btn btn-danger btn-floating btn-lg"
                                     data-dismiss="modal">
-                                <i className="ti ti-close"></i>
+                                <i className="ti "></i>
                             </button>
                             <button type="button" onClick={modalToggle}
                                     className="btn btn-success btn-pulse btn-floating btn-lg">

@@ -44,7 +44,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                  id: room.no,
                  type: room.type,
                  name : room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
-                 password : room.password,
+                 password : room.password ? room.password : null,
                  openChatHostNo : openChatHost && openChatHost.no,
                  participantNo : currentParticipant && currentParticipant.no,
                  otherParticipantNo:otherParticipant && otherParticipant.map( (participant) => participant.no ),
@@ -70,6 +70,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     id: room.no,
                     type: room.type,
                     name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
+                    password : room.password ? room.password : null,
                     participantNo : currentParticipant.no, // 이 채팅방의 '나'
                     otherParticipantNo :  otherParticipant && otherParticipant.filter( participant => { return participant.no }), // 이 채팅방의 '너'
                     avatar: <figure className="avatar avatar-state-success">
@@ -87,7 +88,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
                     id: room.no,
                     type: room.type,
                     name: room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
-                    password : room.password,
+                    password : room.password ? room.password : null,
                     openChatHostNo : openChatHost && openChatHost.no,
                     participantNo : currentParticipant && currentParticipant.no,
                     otherParticipantNo: otherParticipant && otherParticipant.filter( participant => { return participant.no }),
