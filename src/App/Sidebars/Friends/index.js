@@ -12,7 +12,7 @@ import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import {sidebarAction} from "../../../Store/Actions/sidebarAction";
 
-function Index({roomList, friendList, followerList, userNo, history, mobileSidebar }) {
+function Index({roomList, friendList, followerList, history, mobileSidebar }) {
 
 
     useEffect(() => {
@@ -24,6 +24,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
     const dispatch = useDispatch();
 
     const {reload} = useSelector(state => state);
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const mobileSidebarClose = () => {
         dispatch(mobileSidebarAction(false));
@@ -45,7 +46,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
             })
             if(result.length === 0){
                 const roomNo = await fetchApi(null, null).createRoom(friendName, "Private Chat",2 ,"private", null , localStorage.getItem("Authorization"));
-                const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
+                const participantNo = (await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
                 await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
                 dispatch(joinRoomAction(true));
                 dispatch(participantNoAction(participantNo));
@@ -67,7 +68,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                 <span>친구 목록</span>
                 <ul className="list-inline">
                     <li className="list-inline-item">
-                        <AddFriendsModal modal={addFriendsModalOpen} toggle={addFriendsModalToggle} userNo={userNo}/>
+                        <AddFriendsModal modal={addFriendsModalOpen} toggle={addFriendsModalToggle}/>
                     </li>
                     <li className="list-inline-item d-xl-none d-inline">
                         <button onClick={mobileSidebarClose} className="btn btn-light">
@@ -109,7 +110,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no} friendEmail={item.email} userNo={userNo} createRoom={createRoomHandler}/>
+                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no} friendEmail={item.email} createRoom={createRoomHandler}/>
                                         </div>
                                     </div>
                                 </li>
@@ -136,7 +137,7 @@ function Index({roomList, friendList, followerList, userNo, history, mobileSideb
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FollowersDropdown friendName={item.name} friendNo={item.no} friendEmail={item.email} userNo={userNo} createRoom={createRoomHandler}/>
+                                            <FollowersDropdown friendName={item.name} friendNo={item.no} friendEmail={item.email} createRoom={createRoomHandler}/>
                                         </div>
                                     </div>
                                 </li>

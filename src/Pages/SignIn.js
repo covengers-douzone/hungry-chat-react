@@ -42,7 +42,7 @@ function SignIn({history}) {
 
                     console.log(localStorage.getItem("name"));
                     console.log(response.Authorization);
-                    history.push('/chat/'+response.no);
+                    history.push('/chat');
                 })
                 .catch(error => {
                 alert("Error: "+error.message);

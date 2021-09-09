@@ -15,11 +15,13 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
-function Index({roomList, openRoomList, userNo, history,}) {
+function Index({roomList, openRoomList, history,}) {
     const disfetch = useDispatch();
     const inputRef = useRef();
     const {selectedChat} = useSelector(state => state);
     const {reload} = useSelector(state => state);
+
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -115,8 +117,8 @@ function Index({roomList, openRoomList, userNo, history,}) {
                     {/*    </Tooltip>*/}
                     {/*</li>*/}
                     <li className="list-inline-item">
-                        <AddOpenChatModal userNo={userNo}/>
-                        {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
+                        <AddOpenChatModal />
+                        {/*<AddGroupModal friendList={friendList}/>*/}
                     </li>
                     {/*<li className="list-inline-item">*/}
                     {/*    <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"*/}

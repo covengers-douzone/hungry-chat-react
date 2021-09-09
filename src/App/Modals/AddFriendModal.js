@@ -57,7 +57,7 @@ function AddFriendModal( props ) {
             await axios.post(`${config.URL}/api/addFriend`, {
                 username: email,
                 Authorization:localStorage.getItem("Authorization"),
-                userNo: props.userNo
+                userNo: Number(localStorage.getItem("userNo"))
             })
                 .then(res => {
                     if(res.data.result === 'success'){
