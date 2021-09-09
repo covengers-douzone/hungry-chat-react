@@ -6,9 +6,6 @@ import Profile from "./Sidebars/Profile";
 
 import Chat from "./Partials/Chat";
 import DisconnectedModal from "./Modals/DisconnectedModal";
-import fetchApi from "./Module/fetchApi";
-import {useDispatch, useSelector} from "react-redux";
-import {userNoAction} from "../Store/Actions/userNoAction";
 
 
 function Layout({history}) {

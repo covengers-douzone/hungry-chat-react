@@ -21,14 +21,15 @@ function App() {
         <Router>
                 <Route path="/error/500" component={Error500}/>
             <Switch>
-                <Route path="/sign-in" component={SignIn}/>
+                {/*<Route path="/sign-in" component={SignIn}/>*/}
+                <Route path="/chat/:UserNo" component={Layout}/>
                 <Route path="/sign-up" component={SignUp}/>
                 <Route path="/lock-screen" component={LockScreen}/>
                 <Route path="/reset-password" component={ResetPassword}/>
                 <Route path="/phone-code" component={PhoneCode}/>
                 <Route path="/userinfo" component={UserInfoSearch}/>
                 <Route path="/userId" component={UserId}/>
-                <Route path="/:UserNo" component={Layout}/>
+                <Route path="/" component={SignIn}/>
             </Switch>
         </Router>
     )

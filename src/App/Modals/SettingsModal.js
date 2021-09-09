@@ -114,7 +114,7 @@ function SettingsModal(props) {
                     if(res.status !== 200){
                         throw Error;
                     }else if(res.status === 200){
-                        history.push("/sign-in");
+                        history.push("/");
                     }
                 })
                 .catch(err => {console.log(err)})
