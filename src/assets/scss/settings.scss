@@ -55,12 +55,30 @@
   font-size: 25px;
 }
 
-.setting-account label
+.setting-account
 {
   padding-top : 10px;
-  margin: 0 10px 0 0;
   font-weight: bold;
-  color: #ffaeff;
+
+  #name {
+
+    margin: 0 50px 0 0;
+    color: skyblue;
+  }
+  #nickname{
+    margin: 0 38px 0 0;
+    color: skyblue;
+  }
+
+  #comments{
+    margin: 0 10px 0 0;
+    color: #ffaeff;
+  }
+
+  #password{
+    margin: 0 30px 0 0;
+    color: #ffaeff;
+  }
 }
 
 .setting-account-widhaldraw
@@ -73,21 +91,6 @@
   }
 }
 
-.setting-account #comments
-{
-  padding-top : 10px;
-  margin: 0 22px 0 0;
-  font-weight: bold;
-  color: skyblue;
-}
-
-.setting-account #name
-{
-  padding-top : 10px;
-  margin: 0 34px 0 0;
-  font-weight: bold;
-  color: #ffaeff;
-}
 
 
 .setting-account #Background

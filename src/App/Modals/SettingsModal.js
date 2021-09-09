@@ -82,7 +82,6 @@ function SettingsModal(props) {
             formData.append("userNo", localStorage.getItem("userNo"));
             formData.append("comments", comments);
             formData.append("nickname", nickname);
-            formData.append("password", password);
             await axios.post(`${config.URL}/api/updateSettings`, formData)
                 .then( res => {
                     if(res.status !== 200){
@@ -244,18 +243,26 @@ function SettingsModal(props) {
                             </div>
                             <br/>
                             <br/>
+
+                             <div className="setting-account">
+                                 <label htmlFor="name" id="name">이름   </label>
+                                <input type="text" name="name" placeholder={name} onChange={ (event) => {
+                                    const { value } = event.target;
+                                    setName(value);
+                                }}/>
+                            </div>
                             <div className="setting-account">
-                                <label htmlFor="name" id="comments"> 닉네임 </label>
+                                <label htmlFor="name" id="nickname">닉네임   </label>
                                 <input type="text" name="nickname" placeholder={nickname} onChange={ (event) => {
                                     const { value } = event.target;
                                     setNickname(value);
                                 }}/>
                             </div>
-                             <div className="setting-account">
-                                 <label htmlFor="name" id="name"> 이름 </label>
-                                <input type="text" name="name" placeholder={name} onChange={ (event) => {
+                            <div className="setting-account">
+                                <label htmlFor="name" id="comments">상태 메시지 </label>
+                                <input type="text" name="comments" placeholder={comments} onChange={ (event) => {
                                     const { value } = event.target;
-                                    setName(value);
+                                    setComments(value);
                                 }}/>
                             </div>
 
