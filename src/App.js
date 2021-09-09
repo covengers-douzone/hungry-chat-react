@@ -22,7 +22,7 @@ function App() {
         <Router>
                 <Route path="/error/500" component={Error500}/>
             <Switch>
-                <Route exact path="/" component={SignIn}/>
+
                 {/*<Route path="/sign-in" component={SignIn}/>*/}
                 <Route path="/chat" component={Layout}/>
                 <Route path="/sign-up" component={SignUp}/>
@@ -32,7 +32,7 @@ function App() {
                 <Route path="/userinfo" component={UserInfoSearch}/>
                 <Route path="/userId" component={UserId}/>
                 <Route path="/activation" component={Activation}/>
-                
+                <Route exact path="/" component={SignIn}/>
             </Switch>
         </Router>
     )
