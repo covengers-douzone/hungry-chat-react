@@ -24,9 +24,9 @@ function SignIn({history}) {
                 if(response.status === 401){
                     alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
                     console.log("중복된 데이터가 있는지 확인할것.")
-                    history.push("/sign-in");
+                    history.push("/");
                 }else if (response.status === 500){
-                    history.push("/sign-in");
+                    history.push("/");
                     console.log("500 Error, 서버를 재시작해주세요.");
                 }else {
                     if(response.ok){
@@ -42,15 +42,15 @@ function SignIn({history}) {
                     window.localStorage.setItem("role", response.role);
                     console.log(localStorage.getItem("name"));
                     console.log(response.Authorization);
-                    history.push('/'+response.no);
+                    history.push('/chat');
                 })
                 .catch(error => {
                 alert("Error: "+error.message);
-                history.push("/sign-in");
+                history.push("/");
             })
         } else{
             alert("아이디/패스워드를 입력하세요.");
-            history.push("/sign-in");
+            history.push("/");
         }
     }
 
@@ -74,10 +74,10 @@ function SignIn({history}) {
                     window.localStorage.setItem("userNo", response.no);
                     window.localStorage.setItem("name", response.name);
                     console.log(localStorage.getItem("name"));
-                    history.push('/'+response.no);
+                    history.push('/chat/'+response.no);
             }).catch(error => {
                     alert("Error: " + error.message);
-                    history.push("/sign-in");
+                    history.push("/");
                 })
     }
 

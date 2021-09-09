@@ -111,7 +111,7 @@ function Navigation() {
                         </a>
                     </li>
                     <li>
-                        <a href="/sign-in" onClick={() => {
+                        <a href="/" onClick={() => {
                             localStorage.clear();
                         }}>
                             <i className="ti ti-power-off"></i>

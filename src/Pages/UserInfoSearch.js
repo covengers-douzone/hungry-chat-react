@@ -62,7 +62,7 @@ function UserInfoSearch() {
             })
             .catch(error => {
                 alert("Error: " + error.message);
-                history.push("/sign-in");
+                history.push("/");
             })
     }
 /*

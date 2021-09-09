@@ -14,13 +14,13 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
-function Index({roomList, openRoomList, userNo, history,}) {
+function Index({roomList, openRoomList, history,}) {
     const dispatch = useDispatch();
     const inputRef = useRef();
     const {selectedChat} = useSelector(state => state);
     const {reload} = useSelector(state => state);
 
-    let lastPage = 0;
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -36,7 +36,7 @@ function Index({roomList, openRoomList, userNo, history,}) {
                 return room.type === "public" && room.participantNo === chat.participantNo;
             })
             if(result.length === 0){
-                const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
+                const participantNo = (await fetchApi(null,null).createParticipant(userNo ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
                 dispatch(participantNoAction(participantNo));
                 dispatch(reloadAction(!reload));
             } else {
@@ -100,8 +100,8 @@ function Index({roomList, openRoomList, userNo, history,}) {
                     {/*    </Tooltip>*/}
                     {/*</li>*/}
                     <li className="list-inline-item">
-                        <AddOpenChatModal userNo={userNo}/>
-                        {/*<AddGroupModal userNo={userNo} friendList={friendList}/>*/}
+                        <AddOpenChatModal />
+                        {/*<AddGroupModal friendList={friendList}/>*/}
                     </li>
                     {/*<li className="list-inline-item">*/}
                     {/*    <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"*/}

@@ -24,7 +24,7 @@ function LockScreen() {
                 </div>
                 <button className="btn btn-primary btn-block btn-lg">로그인</button>
                 <hr/>
-                <a href="/sign-in" className="btn btn-sm btn-outline-light ml-1">로그인</a>
+                <a href="/" className="btn btn-sm btn-outline-light ml-1">로그인</a>
             </form>
         </div>
     )

@@ -29,7 +29,7 @@ function ResetPassword({location}) {
     })
     .then(response => {
         if(response.ok) {
-            history.push('/sign-in')
+            history.push('/')
         }
     })
     }
@@ -58,7 +58,7 @@ function ResetPassword({location}) {
                 <hr/>
                 <p className="text-muted">Take a different action.</p>
                 or
-                <a href="/sign-in" className="btn btn-sm btn-outline-light ml-1">Login!</a>
+                <a href="/" className="btn btn-sm btn-outline-light ml-1">Login!</a>
             </form>
         </div>
     )
