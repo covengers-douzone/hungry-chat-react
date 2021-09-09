@@ -27,9 +27,7 @@ const Index = React.forwardRef(({userNo, history}, scrollRef) => {
         try {
             // 비회원 로직
                console.log("localStorage" , localStorage.getItem("role"))
-
                if(userNo === "unkwons-users"){ // 비회원 로직
-
                    fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
                }else{ // 회원 로직
                    fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
