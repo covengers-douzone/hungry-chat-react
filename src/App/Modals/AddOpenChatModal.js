@@ -26,7 +26,7 @@ function AddOpenChatModal() {
     const [content, setContent] = useState("");
     const [roomPassword, setRoomPassword] = useState("");
 
-    const disfetch = useDispatch();
+    const dispatch = useDispatch();
     const {reload} = useSelector(state => state);
     const userNo = Number(localStorage.getItem("userNo"));
 
@@ -43,7 +43,7 @@ function AddOpenChatModal() {
         await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
             // await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         setModal(!modal);
-        disfetch(reloadAction(!reload));
+        dispatch(reloadAction(!reload));
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
