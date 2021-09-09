@@ -14,6 +14,7 @@ import Layout from "./App/Layout"
 import UserInfoSearch from "./Pages/UserInfoSearch"
 import UserId from "./Pages/UserId"
 import Error500 from "./Pages/Error500"
+import Activation from "./Pages/Activation"
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Router>
                 <Route path="/error/500" component={Error500}/>
             <Switch>
+                <Route exact path="/" component={SignIn}/>
                 {/*<Route path="/sign-in" component={SignIn}/>*/}
                 <Route path="/chat" component={Layout}/>
                 <Route path="/sign-up" component={SignUp}/>
@@ -29,7 +31,8 @@ function App() {
                 <Route path="/phone-code" component={PhoneCode}/>
                 <Route path="/userinfo" component={UserInfoSearch}/>
                 <Route path="/userId" component={UserId}/>
-                <Route path="/" component={SignIn}/>
+                <Route path="/activation" component={Activation}/>
+                
             </Switch>
         </Router>
     )
