@@ -140,7 +140,9 @@ const Index = React.forwardRef(({
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
-                dispatch(lastReadNoAction(lastReadNo))
+                if(lastReadNo !== undefined){
+                    dispatch(lastReadNoAction(lastReadNo))
+                }
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
 
                 // update notReadCount

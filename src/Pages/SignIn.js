@@ -70,11 +70,12 @@ function SignIn({history}) {
                 }
             }).then(response => {
                     console.log(response)
-                    window.localStorage.setItem("username", response.username);
-                    window.localStorage.setItem("userNo", response.no);
-                    window.localStorage.setItem("name", response.name);
-                    console.log(localStorage.getItem("name"));
-                    history.push('/chat/'+response.no);
+                    window.localStorage.setItem("username", response.data.username);
+                    window.localStorage.setItem("userNo", response.data.no);
+                    window.localStorage.setItem("name", response.data.name);
+                    window.localStorage.setItem("role", response.data.role);
+                    console.log("localStorage.getItem(\"role\")" , localStorage.getItem("role"));
+                    history.push('/chat');
             }).catch(error => {
                     alert("Error: " + error.message);
                     history.push("/");

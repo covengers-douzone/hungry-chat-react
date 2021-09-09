@@ -8,7 +8,7 @@ export default function (defaultState, setState) {
     return {
         getOpenChatRoomList : async function (type,token) { // 방 전체 목록을 보여준다.
             try {
-                const response = await fetch(`${config.URL}/api/getOpenChatRoomList`, {
+                const response = await fetch(`${config.URL}/api/getOpenChatRoomList/${type}`, {
                     method: 'get',
                     credentials: 'include',
                     headers: {
@@ -19,9 +19,6 @@ export default function (defaultState, setState) {
                         'Accept': 'application/json',
                         Authorization: token
                     },
-                    body: JSON.stringify({
-                        type,
-                    }),
                 });
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);

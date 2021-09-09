@@ -36,7 +36,13 @@ function Index({roomList, openRoomList, history,}) {
                 return room.type === "public" && room.participantNo === chat.participantNo;
             })
             if(result.length === 0){
-                const participantNo = (await fetchApi(null,null).createParticipant(userNo ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
+                let participantNo;
+                if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
+                    participantNo = (await fetchApi(null,null).createParticipant(userNo ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
+                }else{
+                     participantNo = (await fetchApi(null,null).createParticipant(userNo ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
+                }
+
                 dispatch(participantNoAction(participantNo));
                 dispatch(reloadAction(!reload));
             } else {
