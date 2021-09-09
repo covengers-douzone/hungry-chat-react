@@ -20,7 +20,6 @@ import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
 import friendListReducer from "../../Store/Reducers/friendListReducer";
 
 function InviteModal({
-                         userNo,
                          openValue,
                          friendList,
                          callbackItem,
