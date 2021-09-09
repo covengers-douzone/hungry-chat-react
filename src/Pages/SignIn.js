@@ -39,7 +39,7 @@ function SignIn({history}) {
                     window.localStorage.setItem("username", response.username);
                     window.localStorage.setItem("userNo", response.no.toString());
                     window.localStorage.setItem("name", response.name);
-
+                    window.localStorage.setItem("role", response.role);
                     console.log(localStorage.getItem("name"));
                     console.log(response.Authorization);
                     history.push('/'+response.no);

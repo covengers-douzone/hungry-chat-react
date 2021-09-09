@@ -21,11 +21,22 @@ function Navigation() {
 
     const settingsModalToggle = () => setSettingsModalOpen(!settingsModalOpen);
 
+    let opacity;
+
+    (1 === 1) ? opacity = {opacity : 0.1} : opacity = {opacity : 1.0}
+
+
+        //이게  < 가 틀리면 > 로 간다
+    // ((1 === 1) && (opacity = {opacity : 0.1} )|| (opacity = {opacity : 1.0}))
+    // ㅍ
+     //  const value =  ((1 === 1) && (opacity = {opacity : 0.1} ))
+
+
 
     const navigationItems = [
         {
             name: 'Chats',
-            icon: <i className="ti ti-comment-alt"></i>
+            icon: <i className="ti ti-comment-alt" style={opacity} />
         },
         {
             name: 'Friends',
