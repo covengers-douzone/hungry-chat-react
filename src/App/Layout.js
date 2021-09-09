@@ -14,11 +14,7 @@ function Layout({history}) {
     let upOffset = 0;
     let downOffset = 0;
 
-    const {UserNo} = useParams();
-
     const scrollRef = useRef()
-
-
 
     useEffect(() => {
         document.querySelector('*').addEventListener('click', (e) => {
@@ -34,7 +30,7 @@ function Layout({history}) {
         <div className="layout">
             <Navigation/>
             <div className="content">
-                <SidebarIndex userNo={UserNo} history={history}  ref = {scrollRef}  upOffset = {upOffset}  downOffset={downOffset}/>
+                <SidebarIndex history={history}  ref = {scrollRef}  upOffset = {upOffset}  downOffset={downOffset}/>
                 <Chat ref = {scrollRef} upOffset = {upOffset} downOffset ={downOffset} />
                 <Profile/>
                 <DisconnectedModal/>

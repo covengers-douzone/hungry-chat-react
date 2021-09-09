@@ -10,11 +10,12 @@ import axios from "axios";
 import * as config from "../../../config/config";
 
 
-const FriendsDropdown = ({roomList, friendNo, friendName, friendEmail, userNo, createRoom}) => {
+const FriendsDropdown = ({roomList, friendNo, friendName, friendEmail, createRoom}) => {
 
     const dispatch = useDispatch();
 
     const {reload} = useSelector(state => state);
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 

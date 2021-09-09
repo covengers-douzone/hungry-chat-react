@@ -29,7 +29,6 @@ import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
-                                    userNo,
                                     history
                                 }, scrollRef) => {
 
@@ -41,13 +40,10 @@ const Index = React.forwardRef(({
     const inputRef = useRef();
 
     const {selectedChat} = useSelector(state => state);
-
     const {participantNo} = useSelector(state => state);
-
     const {joinRoom} = useSelector(state => state);
-
     const {roomNo} = useSelector(state => state);
-
+    const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
     const [tooltipOpen2, setTooltipOpen2] = useState(false);
@@ -270,7 +266,7 @@ const Index = React.forwardRef(({
                         </Tooltip>
                     </li>
                     <li className="list-inline-item">
-                        <AddGroupModal userNo={userNo} friendList={friendList}/>
+                        <AddGroupModal friendList={friendList}/>
                     </li>
                     <li className="list-inline-item">
                         <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
@@ -309,7 +305,7 @@ const Index = React.forwardRef(({
                         <p style={ {
                             color:"coral",
                             marginLeft:25,
-                        }}>채팅 목록</p>
+                        }}>{localStorage.getItem("name")}의 채팅 목록</p>
                         {roomList.filter((chat) => {
                             if(searchTerm == ""){
                                 return chat

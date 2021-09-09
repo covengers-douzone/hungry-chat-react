@@ -17,7 +17,7 @@ import fetchApi from "../Module/fetchApi";
 import {useDispatch, useSelector} from "react-redux";
 import {reloadAction} from "../../Store/Actions/reloadAction";
 
-function AddOpenChatModal({userNo}) {
+function AddOpenChatModal() {
 
     const [modal, setModal] = useState(false);
 
@@ -27,6 +27,7 @@ function AddOpenChatModal({userNo}) {
 
     const disfetch = useDispatch();
     const {reload} = useSelector(state => state);
+    const userNo = Number(localStorage.getItem("userNo"));
 
     // Create Button Event
     const modalToggle = () => {
