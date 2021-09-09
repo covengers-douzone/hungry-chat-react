@@ -81,7 +81,7 @@ function Navigation() {
             <div className="nav-group">
                 <ul>
                     <li>
-                        <a href={"/"+ localStorage.getItem("userNo")} className="logo">
+                        <a href={"/chat/"+ localStorage.getItem("userNo")} className="logo">
                             <Logo/>
                         </a>
                     </li>
