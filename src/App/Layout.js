@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import SidebarIndex from "./Sidebars/index";
 import Navigation from "./Navigation";
 import Profile from "./Sidebars/Profile";
+import ChatProfile from './Sidebars/ChatProfile';
 
 import Chat from "./Partials/Chat";
 import DisconnectedModal from "./Modals/DisconnectedModal";
@@ -33,6 +34,7 @@ function Layout({history}) {
                 <SidebarIndex history={history}  ref = {scrollRef}  upOffset = {upOffset}  downOffset={downOffset}/>
                 <Chat ref = {scrollRef} upOffset = {upOffset} downOffset ={downOffset} />
                 <Profile/>
+                <ChatProfile/>
                 <DisconnectedModal/>
             </div>
         </div>

@@ -23,8 +23,9 @@ import {func} from "prop-types";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 import {chatForm, chatMessageForm} from "../../Module/chatForm";
-import {profileAction} from "../../../Store/Actions/profileAction";
-import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
+import {chatprofileAction} from "../../../Store/Actions/chatprofileAction";
+import {mobileChatProfileAction} from "../../../Store/Actions/mobileChatProfileAction";
+
 
 const Index = React.forwardRef(({
                                     roomList,
@@ -221,15 +222,15 @@ const Index = React.forwardRef(({
 
 
     const profileActions = () => {
-        dispatch(profileAction(true));
-        dispatch(mobileProfileAction(true))
+        dispatch(chatprofileAction(true));
+        dispatch(mobileChatProfileAction(true))
     };
 
     const ChatListView = (props) => {
         const {chat} = props;
 
         return <li style={ chat.type === "public" ? {color:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
-            <div onClick={profileActions}>
+            <div onClick={profileActions}  >
                 {chat.avatar}
             </div>
             <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}

@@ -4,49 +4,35 @@ import PerfectScrollbar from "react-perfect-scrollbar"
 import {profileAction} from "../../Store/Actions/profileAction"
 import {mobileProfileAction} from "../../Store/Actions/mobileProfileAction"
 import * as config from "../../config/config";
+import fetchApi from "../Module/fetchApi";
 
 function Profile() {
-
     const dispatch = useDispatch();
 
-    const [ profileImage, setProfileImage ] = useState();
-    const [ nickname, setNickname ] = useState();
-    const [ name, setName ] = useState();
-    const [ comments, setComments ] = useState();
-    const [ username, setUsername ] = useState();
-    const [ phoneNumber, setPhoneNumber ]  = useState();
-
-    useEffect( () => {
+    const userNo = Number(localStorage.getItem("userNo"));
+    const userFriendList = [];
+    const {reload} = useSelector(state => state);
+    const [friendList, setFriendList] = useState([]);
+    useEffect( ()=>{
         try{
-            fetch(`${config.URL}/api/getUserByNo/${localStorage.getItem("userNo")}`, {
-                method: 'get',
-                credentials: 'include',
-                headers: {
-                    "Access-Control-Allow-Headers": "Content-Type",
-                    "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
-                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                    'Content-Type': 'text/plain',
-                    'Accept': 'application/json',
-                    Authorization: localStorage.getItem("Authorization")
-                },
-            }).then(res => {
-                return res.json();
-
-            }).then(res => {
-                setProfileImage(res.data.profileImageUrl);
-                setNickname(res.data.nickname);
-                setUsername(res.data.username);
-                setName(res.data.name);
-                setComments(res.data.comments);
-                setPhoneNumber(res.data.phoneNumber);
-            })
-                .catch(err => {
-                console.log(err);
-            })
+            fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
         }catch (err){
             console.log(err);
         }
-    }, [])
+    }, [reload]);
+    friendList.map((friend, i) => {
+        userFriendList.push({
+            no: friend.no,
+            name: friend.name,
+            email: friend.email,
+            comments: friend.comments,
+            phoneNumber: friend.phoneNumber,
+            avatar: <figure className="avatar">
+                <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
+            </figure>
+        })
+    });
+    console.log(friendList);
 
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
 
@@ -55,13 +41,16 @@ function Profile() {
         dispatch(profileAction(false));
         dispatch(mobileProfileAction(false))
     };
-
+    
     return (
         <div className={`sidebar-group ${mobileProfileSidebar ? "mobile-open" : ""}`}>
             <div className={profileSidebar ? 'sidebar active' : 'sidebar'}>
+                {true &&
+                friendList.map((item, i) => 
+                
                 <header>
-                    <span>나의 정보</span>
-                    <ul className="list-inline">
+                    <span>{item.name}의 정보</span>
+                    <ul className="list-inline" key={i}>
                         <li className="list-inline-item">
                             <a href="/#/" onClick={(e) => profileActions(e)}
                                className="btn btn-light">
@@ -70,28 +59,35 @@ function Profile() {
                         </li>
                     </ul>
                 </header>
-                <div className="sidebar-body">
+                )
+                }
+
+                {true && friendList.map((item, i) => 
+                
+                <div className="sidebar-body" key={i}>
                     <PerfectScrollbar>
                         <div className="text-center">
                             <figure className="avatar avatar-state-danger avatar-xl mb-4">
-                                <img src={profileImage} className="rounded-circle" alt="avatar"/>
+                                <img src={item.profileImageUrl} className="rounded-circle" alt="avatar"/>
                             </figure>
-                            <h5 className="text-primary mb-1">{localStorage.getItem("name")}</h5>
-                            <small className="text-muted">Last seen: Today</small>
+                            <h5 className="text-primary mb-1">{item.name}</h5>
+                            <small className="text-muted">계정 생성일: {item.createdAt}</small><br/>
+                            <small className="text-muted">최근 로그인: {item.lastLoginAt}</small>
                         </div>
                         <hr/>
                         <div className="pl-4 pr-4">
                             <h6>이메일</h6>
-                            <p className="text-muted">{username}</p>
+                            <p className="text-muted">{item.username}</p>
                         </div>
                         <div className="pl-4 pr-4">
                             <h6>나의상태</h6>
-                            <p className="text-muted">{comments}</p>
+                            <p className="text-muted">{item.comments}</p>
                         </div>
                         <div className="pl-4 pr-4">
                             <h6>휴대폰</h6>
-                            <p className="text-muted">{phoneNumber}</p>
+                            <p className="text-muted">{item.phoneNumber}</p>
                         </div>
+                      
                         {/*<hr/>
                         <div className="pl-4 pr-4">
                             <h6>Media</h6>
@@ -230,9 +226,12 @@ function Profile() {
                                         notification</label>
                                 </div>
                             </div>
+                            
                         </div>*/}
                     </PerfectScrollbar>
                 </div>
+                )
+                }
             </div>
         </div>
     )
