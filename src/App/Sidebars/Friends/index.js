@@ -109,7 +109,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                             color:"coral",
                             marginLeft:25,
                         }}>친구 목록</p>
-                        {friendList.filter((item) => {
+                        {friendList && friendList.filter((item) => {
                             if(searchTerm == ""){
                                 return item
                             } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -138,7 +138,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                 color:"coral",
                                 marginLeft:25,
                             }}>나를 친구 추가한 사람들</p>
-                            {followerList.filter((item) => {
+                            {followerList && followerList.filter((item) => {
                                 if(searchTerm == ""){
                                     return item
                                 } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
