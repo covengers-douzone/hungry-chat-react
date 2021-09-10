@@ -350,7 +350,8 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState(json.data);
+                // json.data.length > 0 && setState(json.data);
+                setState(json.data)
                 return json.data
             } catch (err) {
                 console.error(err);
@@ -364,7 +365,7 @@ export default function (defaultState, setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${URL}`,
+                        "Access-Control-Allow-Origin": `${config.URL}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -381,7 +382,8 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState(json.data);
+                // json.data.length > 0 && setState(json.data);
+                setState(json.data);
                 return json.data
             } catch (err) {
                 console.error(err);

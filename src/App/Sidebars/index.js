@@ -5,6 +5,7 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
+import {reloadAction} from "../../Store/Actions/reloadAction";
 
 const Index = React.forwardRef(({history}, scrollRef) => {
 
@@ -19,8 +20,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     const [openRoomList, setOpenRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
     const userNo = Number(localStorage.getItem("userNo"));
-    // const [title, setTitle] = useState('');
-    // const [content, setContent] = useState('');
 
     const {reload} = useSelector(state => state);
 
@@ -105,7 +104,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 });
             }
     })
-
 
     friendList.map((friend, i) => {
         userFriendList.push({
