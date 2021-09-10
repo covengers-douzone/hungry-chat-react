@@ -67,7 +67,7 @@ function OpenChatPasswordModal({modal, setModal, enterPasswordChat, roomList}) {
                      <i className="fa fa-users"></i> 비밀번호 입력
                 </ModalHeader>
                 <ModalBody>
-                    <Alert isOpen={wrongPasswordAlert} color="info">이메일이 일치하지 않습니다. 다시 한번 확인해주세요.</Alert>
+                    <Alert isOpen={wrongPasswordAlert} color="info">비밀번호가 일치하지 않습니다. 다시 한번 확인해주세요.</Alert>
                     <Form>
                         <FormGroup>
                             <Label for="password">비밀번호</Label>
