@@ -17,6 +17,7 @@ import lastReadNoReducer from "./Reducers/lastReadNoReducer";
 import messageAllLengthReducer from "./Reducers/messageAllLengthReducer";
 import joinOkReducer from "./Reducers/joinOkReducer";
 import joinRoomReducer from "./Reducers/joinRoomReducer";
+import chatInfoReducer from "./Reducers/chatInfoReducer";
 
 
 const reducers = combineReducers({
@@ -36,6 +37,7 @@ const reducers = combineReducers({
     joinRoom : joinRoomReducer,
     lastReadNo : lastReadNoReducer,
     joinOk  : joinOkReducer,
+    chatInfo : chatInfoReducer
 });
 
 const store = createStore(reducers, composeWithDevTools());
