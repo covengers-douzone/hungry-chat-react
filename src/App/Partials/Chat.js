@@ -236,7 +236,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 selectedChat.name
                     ?
                     <React.Fragment>
-                        <ChatHeader selectedChat={selectedChat}/>
+                        <ChatHeader history={props.history} selectedChat={selectedChat}/>
                         <PerfectScrollbar
                             onUpdateSize={(ref) => {
                                 ref.updateScroll();
