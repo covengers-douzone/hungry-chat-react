@@ -1,16 +1,52 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {profileAction} from "../../Store/Actions/profileAction"
 import {mobileProfileAction} from "../../Store/Actions/mobileProfileAction"
-import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
-import WomenAvatar1 from "../../assets/img/women_avatar1.jpg"
-import WomenAvatar3 from "../../assets/img/women_avatar3.jpg"
-import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
+import * as config from "../../config/config";
 
 function Profile() {
 
     const dispatch = useDispatch();
+
+    const [ profileImage, setProfileImage ] = useState();
+    const [ nickname, setNickname ] = useState();
+    const [ name, setName ] = useState();
+    const [ comments, setComments ] = useState();
+    const [ username, setUsername ] = useState();
+    const [ phoneNumber, setPhoneNumber ]  = useState();
+
+    useEffect( () => {
+        try{
+            fetch(`${config.URL}/api/getUserByNo/${localStorage.getItem("userNo")}`, {
+                method: 'get',
+                credentials: 'include',
+                headers: {
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    'Content-Type': 'text/plain',
+                    'Accept': 'application/json',
+                    Authorization: localStorage.getItem("Authorization")
+                },
+            }).then(res => {
+                return res.json();
+
+            }).then(res => {
+                setProfileImage(res.data.profileImageUrl);
+                setNickname(res.data.nickname);
+                setUsername(res.data.username);
+                setName(res.data.name);
+                setComments(res.data.comments);
+                setPhoneNumber(res.data.phoneNumber);
+            })
+                .catch(err => {
+                console.log(err);
+            })
+        }catch (err){
+            console.log(err);
+        }
+    }, [])
 
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
 
@@ -24,7 +60,7 @@ function Profile() {
         <div className={`sidebar-group ${mobileProfileSidebar ? "mobile-open" : ""}`}>
             <div className={profileSidebar ? 'sidebar active' : 'sidebar'}>
                 <header>
-                    <span>About</span>
+                    <span>나의 정보</span>
                     <ul className="list-inline">
                         <li className="list-inline-item">
                             <a href="/#/" onClick={(e) => profileActions(e)}
@@ -38,22 +74,25 @@ function Profile() {
                     <PerfectScrollbar>
                         <div className="text-center">
                             <figure className="avatar avatar-state-danger avatar-xl mb-4">
-                                <img src={WomenAvatar5} className="rounded-circle" alt="avatar"/>
+                                <img src={profileImage} className="rounded-circle" alt="avatar"/>
                             </figure>
-                            <h5 className="text-primary mb-1">Frans Hanscombe</h5>
+                            <h5 className="text-primary mb-1">{localStorage.getItem("name")}</h5>
                             <small className="text-muted">Last seen: Today</small>
                         </div>
                         <hr/>
                         <div className="pl-4 pr-4">
-                            <h6>About</h6>
-                            <p className="text-muted">I love reading, traveling and discovering new things.
-                                You need to be happy in life.</p>
+                            <h6>이메일</h6>
+                            <p className="text-muted">{username}</p>
                         </div>
                         <div className="pl-4 pr-4">
-                            <h6>Phone</h6>
-                            <p className="text-muted">(555) 555 55 55</p>
+                            <h6>나의상태</h6>
+                            <p className="text-muted">{comments}</p>
                         </div>
-                        <hr/>
+                        <div className="pl-4 pr-4">
+                            <h6>휴대폰</h6>
+                            <p className="text-muted">{phoneNumber}</p>
+                        </div>
+                        {/*<hr/>
                         <div className="pl-4 pr-4">
                             <h6>Media</h6>
                             <PerfectScrollbar>
@@ -191,7 +230,7 @@ function Profile() {
                                         notification</label>
                                 </div>
                             </div>
-                        </div>
+                        </div>*/}
                     </PerfectScrollbar>
                 </div>
             </div>
