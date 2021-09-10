@@ -40,6 +40,7 @@ function SettingsModal(props) {
     const [ username, setUsername ] = useState();
     const [ phoneNumber, setPhoneNumber ]  = useState();
     const [alertOpen, setAlertOpen] = useState(false);
+    
     let history = useHistory();
 
     useEffect( () => {
@@ -98,6 +99,11 @@ function SettingsModal(props) {
     }
 
     const changePasswordHandler = async (e) => {
+        if(!/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/.test(password)){
+            alert("문자,숫자,특수문자포함 8~15자리를 사용해야합니다.")
+            console.log(password)
+            return false
+        }
         e.preventDefault();
         setAlertOpen(false);
         console.log(username);
@@ -272,7 +278,7 @@ function SettingsModal(props) {
                                 <Alert isOpen={alertOpen} color="info">비밀번호가 변경되었습니다.</Alert>
                                 <div className="setting-account">
                                     <label htmlFor="password" id="password"> 비밀번호 </label>
-                                    <input type="password" name="password" onChange={ (event) => {
+                                    <input type="password" name="password"  onChange={ (event) => {
                                         const { value } = event.target;
                                         setPassword(value);
                                     }}/>
@@ -280,6 +286,7 @@ function SettingsModal(props) {
                             </div> 
                         </TabPane>
                         <TabPane tabId="3">
+
                             <div className="setting-account">
                                 <label htmlFor="name" id="Background"> 배경화면 </label>
                                 <input type="file" name="backgroundImageUrl" />
