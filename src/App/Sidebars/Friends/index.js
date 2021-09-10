@@ -11,6 +11,8 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import {sidebarAction} from "../../../Store/Actions/sidebarAction";
+import {profileAction} from "../../../Store/Actions/profileAction";
+import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
 function Index({roomList, friendList, followerList, history, mobileSidebar }) {
 
@@ -62,6 +64,11 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
         }
     }
 
+    const profileActions = () => {
+        dispatch(profileAction(true));
+        dispatch(mobileProfileAction(true))
+    };
+
     return (
         <div className="sidebar active">
             <header>
@@ -103,7 +110,9 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                             }
                         }).map((item, i) => {
                                 return <li key={i} className="list-group-item">
-                                    {item.avatar}
+                                    <div onClick={profileActions}>
+                                        {item.avatar}
+                                    </div>
                                     <div className="users-list-body">
                                         <div>
                                             <h5>{item.name}</h5>
@@ -130,7 +139,9 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                 }
                             }).map((item, i) => {
                                 return <li key={i} className="list-group-item">
-                                    {item.avatar}
+                                    <div onClick={profileActions}>
+                                        {item.avatar}
+                                    </div>
                                     <div className="users-list-body">
                                         <div>
                                             <h5>{item.name}</h5>
