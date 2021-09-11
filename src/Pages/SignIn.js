@@ -74,7 +74,7 @@ function SignIn({history}) {
                                             window.localStorage.setItem("username", response.username);
                                             window.localStorage.setItem("userNo", response.no.toString());
                                             window.localStorage.setItem("name", response.name);
-                        
+                                            window.localStorage.setItem("role", response.role);
                                             console.log(localStorage.getItem("name"));
                                             console.log(response.Authorization);
                                             history.push('/chat');
@@ -90,7 +90,6 @@ function SignIn({history}) {
                     }
                 }
             })
-
                 .catch(error => {
                 alert("Error: "+error.message);
                 history.push("/");
@@ -140,7 +139,7 @@ function SignIn({history}) {
                     window.localStorage.setItem("username", response.username);
                     window.localStorage.setItem("userNo", response.no.toString());
                     window.localStorage.setItem("name", response.name);
-
+                    window.localStorage.setItem("role", response.role);
                     console.log(localStorage.getItem("name"));
                     console.log(localStorage.getItem("Authorization"));
                     history.push('/chat');

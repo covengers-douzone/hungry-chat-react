@@ -15,26 +15,45 @@ function Navigation() {
 
     const [editModalOpen, setEditModalOpen] = useState(false);
 
-    const editModalToggle = () => setEditModalOpen(!editModalOpen);
+    const editModalToggle = () => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN" ){
+            setEditModalOpen(!editModalOpen)
+        }
+
+    };
 
     const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
-    const settingsModalToggle = () => setSettingsModalOpen(!settingsModalOpen);
+    const settingsModalToggle = () => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN" ){
+            setSettingsModalOpen(!settingsModalOpen)
+        }
+    };
+
+    let opacity
+    (localStorage.getItem("role") === "ROLE_UNKNOWN") ? opacity = {opacity : 0.2} : opacity = {opacity : 1.0}
+
+
+        //이게  < 가 틀리면 > 로 간다
+    // ((1 === 1) && (opacity = {opacity : 0.1} )|| (opacity = {opacity : 1.0}))
+    // ㅍ
+     //  const value =  ((1 === 1) && (opacity = {opacity : 0.1} ))
+
 
 
     const navigationItems = [
         {
             name: 'Chats',
-            icon: <i className="ti ti-comment-alt"></i>
+            icon: <i className="ti ti-comment-alt"  />
         },
         {
             name: 'Friends',
-            icon: <i className="ti ti-user"></i>,
+            icon: <i className="ti ti-user" style={opacity}></i>,
             notify_badge: true
         },
         {
             name: 'Favorites',
-            icon: <i className="ti ti-star"></i>,
+            icon: <i className="ti ti-star" style={opacity}></i>,
         },
         {
             name: 'Open-chat',
@@ -49,11 +68,21 @@ function Navigation() {
         const [tooltipOpen, setTooltipOpen] = useState(false);
 
         const toggle = () => setTooltipOpen(!tooltipOpen);
+        // req.body.type
 
         const linkDispatch = (e, name) => {
             e.preventDefault();
-            dispatch(sidebarAction(name));
-            dispatch(mobileSidebarAction(true))
+            if(localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat")){
+                dispatch(sidebarAction(name));
+                dispatch(mobileSidebarAction(true))
+            }
+            else if(localStorage.getItem("role") !== "ROLE_UNKNOWN") {
+                dispatch(sidebarAction(name));
+                dispatch(mobileSidebarAction(true))
+            }else{
+            }
+
+
         };
 
         return (
@@ -64,6 +93,7 @@ function Navigation() {
                     {item.icon}
                 </a>
                 <Tooltip
+
                     placement="right"
                     isOpen={tooltipOpen}
                     target={tooltipName}
@@ -91,19 +121,19 @@ function Navigation() {
                     }
                     <li className="brackets">
                         <a href="/#/" onClick={editModalToggle}>
-                            <i className="ti ti-pencil"></i>
+                            <i className="ti ti-pencil" style={opacity}></i>
                         </a>
                     </li>
                     <li>
                         <a onClick={settingsModalToggle}>
-                                <i className="ti ti-settings"></i>
+                                <i className="ti ti-settings" style={opacity}></i>
                         </a>
                     </li>
                     <li>
                         <a href="/" onClick={() => {
                             localStorage.clear();
                         }}>
-                            <i className="ti ti-power-off"></i>
+                            <i className="ti ti-power-off" style={opacity}></i>
                         </a>
                     </li>
                 </ul>

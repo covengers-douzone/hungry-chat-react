@@ -6,9 +6,9 @@ export default function (defaultState, setState) {
     const PORT = config.FETCH_API_PORT;
     const domain = config.FETCH_API_IP;
     return {
-        getOpenChatRoomList : async function (token) { // 방 전체 목록을 보여준다.
+        getOpenChatRoomList : async function (type,token) { // 방 전체 목록을 보여준다.
             try {
-                const response = await fetch(`${config.URL}/api/getOpenChatRoomList`, {
+                const response = await fetch(`${config.URL}/api/getOpenChatRoomList/${type}`, {
                     method: 'get',
                     credentials: 'include',
                     headers: {
@@ -18,7 +18,7 @@ export default function (defaultState, setState) {
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
-                    }
+                    },
                 });
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
