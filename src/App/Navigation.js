@@ -119,11 +119,11 @@ function Navigation() {
                         navigationItems.map((item, i) => <NavigationItemView key={i} item={item}
                                                                              tooltipName={"Tooltip-" + i}/>)
                     }
-                    <li className="brackets">
-                        <a href="/#/" onClick={editModalToggle}>
-                            <i className="ti ti-pencil" style={opacity}></i>
-                        </a>
-                    </li>
+                    {/*<li className="brackets">*/}
+                    {/*    <a href="/#/" onClick={editModalToggle}>*/}
+                    {/*        <i className="ti ti-pencil" style={opacity}></i>*/}
+                    {/*    </a>*/}
+                    {/*</li>*/}
                     <li>
                         <a onClick={settingsModalToggle}>
                                 <i className="ti ti-settings" style={opacity}></i>

@@ -27,7 +27,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     useEffect(() => {
         try {
             // 비회원 로직
-
             if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
