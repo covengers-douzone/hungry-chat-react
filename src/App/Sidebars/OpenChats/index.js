@@ -58,8 +58,6 @@ function Index({roomList, openRoomList, history,}) {
             }
         } catch (e) {
             console.log(e.message);
-
-
             // if (e === "System Error") {
             //     history.push("/error/500") // 500 Page(DB error) // 수정 필요
             // } else {
