@@ -1,16 +1,24 @@
 import React, {useState} from 'react'
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import {
     Dropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap'
-import VoiceCallModal from "../Modals/VoiceCallModal"
-import VideoCallModal from "../Modals/VideoCallModal"
 import {profileAction} from "../../Store/Actions/profileAction"
 import {mobileProfileAction} from "../../Store/Actions/mobileProfileAction";
+import axios from "axios";
+import {reloadAction} from "../../Store/Actions/reloadAction";
+import {sidebarAction} from "../../Store/Actions/sidebarAction";
+import * as config from "../../config/config";
+import {mobileSidebarAction} from "../../Store/Actions/mobileSidebarAction";
+import {participantNoAction} from "../../Store/Actions/participantNoAction";
+import {roomNoAction} from "../../Store/Actions/roomNoAction";
+import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
 
 function ChatHeader(props) {
 
     const dispatch = useDispatch();
+    const {chatInfo} = useSelector(state => state);
+    const {reload} = useSelector(state => state);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -20,6 +28,33 @@ function ChatHeader(props) {
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
     };
+
+    const chatDeleteAction = async () => {
+        console.log(chatInfo);
+        try {
+            await axios.post(`${config.URL}/api/deleteChat`, {
+                openChatHostCheck: chatInfo.openChatHostCheck,
+                participantNo: chatInfo.participantNo,
+                roomNo: chatInfo.id,
+                Authorization: localStorage.getItem("Authorization"),
+            }).then(res => {
+                dispatch(reloadAction(!reload));
+
+                dispatch(participantNoAction(false))
+                dispatch(roomNoAction(false))
+                dispatch(selectedChatAction(false));
+                // dispatch(mobileSidebarAction(true));
+                dispatch(sidebarAction('Chat'));
+
+            }).catch(err => {
+                console.log(`${err.message}`)
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+        dispatch(reloadAction(!reload));
+    }
+
 
     return (
         <div className="chat-header">
@@ -34,12 +69,14 @@ function ChatHeader(props) {
             </div>
             <div className="chat-header-action">
                 <ul className="list-inline">
-                    {/*<li className="list-inline-item">
-                        <VoiceCallModal/>
-                    </li>
-                    <li className="list-inline-item">
-                        <VideoCallModal/>
-                    </li>*/}
+
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <VoiceCallModal/>*/}
+                    {/*</li>*/}
+                    {/*<li className="list-inline-item">*/}
+                    {/*    <VideoCallModal/>*/}
+                    {/*</li>*/}
+
                     <li className="list-inline-item" data-toggle="tooltip">
                         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                             <DropdownToggle
@@ -53,10 +90,13 @@ function ChatHeader(props) {
                             </DropdownToggle>
                             <DropdownMenu right>
                                 <DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>
-                                {/*<DropdownItem>Add to archive</DropdownItem>
-                                <DropdownItem>Delete</DropdownItem>
+
                                 <DropdownItem divider/>
-                                <DropdownItem>Block</DropdownItem>*/}
+                                <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
+                                {/*<DropdownItem>Add to archive</DropdownItem>*/}
+                                {/*<DropdownItem>Delete</DropdownItem>*/}
+                                {/*<DropdownItem>Block</DropdownItem>*/}
+
                             </DropdownMenu>
                         </Dropdown>
                     </li>

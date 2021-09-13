@@ -6,6 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
+import {chatInfoAction} from "../../../Store/Actions/chatInfoAction";
 //import {chatLists} from "./Data";
 import fetchApi from "../../Module/fetchApi";
 import fetchList from "../../Module/fetchList";
@@ -141,7 +142,9 @@ const Index = React.forwardRef(({
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
-                dispatch(lastReadNoAction(lastReadNo))
+                if(lastReadNo !== undefined){
+                    dispatch(lastReadNoAction(lastReadNo))
+                }
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
 
                 // update notReadCount
@@ -199,6 +202,7 @@ const Index = React.forwardRef(({
 
     const chatSelectHandle = async (chat) => {
         try {
+            dispatch(chatInfoAction(chat));
             chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
@@ -221,16 +225,18 @@ const Index = React.forwardRef(({
     };
 
 
-    const profileActions = () => {
-        dispatch(chatprofileAction(true));
-        dispatch(mobileChatProfileAction(true))
+
+    const profileActions = (chat) => {
+        dispatch(chatInfoAction(chat));
+        dispatch(profileAction(true));
+        dispatch(mobileProfileAction(true))
     };
 
     const ChatListView = (props) => {
         const {chat} = props;
-
         return <li style={ chat.type === "public" ? {color:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
-            <div onClick={profileActions}  >
+
+            <div onClick={() => profileActions(chat)}>
                 {chat.avatar}
             </div>
             <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}

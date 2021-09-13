@@ -32,7 +32,7 @@ function Layout({history}) {
             <Navigation/>
             <div className="content">
                 <SidebarIndex history={history}  ref = {scrollRef}  upOffset = {upOffset}  downOffset={downOffset}/>
-                <Chat ref = {scrollRef} upOffset = {upOffset} downOffset ={downOffset} />
+                <Chat history={history}  ref = {scrollRef} upOffset = {upOffset} downOffset ={downOffset} />
                 <Profile/>
                 <ChatProfile/>
                 <DisconnectedModal/>
