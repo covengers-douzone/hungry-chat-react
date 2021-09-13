@@ -19,7 +19,8 @@ function SignIn({history}) {
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
-                    username: e.target.email.value,
+                    username: username,
+                    password: password
                 })
             }). then(response => {
                 console.log(response.status);
@@ -29,6 +30,8 @@ function SignIn({history}) {
                     history.push("/");
                 }else if (response.status === 500){
                     history.push("/");
+                    alert("")
+                    alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
                     console.log("500 Error, 서버를 재시작해주세요.");
                 }else {
                     if(response.ok){
