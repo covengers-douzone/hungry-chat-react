@@ -562,6 +562,98 @@ export default function (defaultState, setState) {
                 console.error(e);
             }
         },
+        deleteUnknown: async function (chatNo, token) {
+            try {
+
+                const response = await fetch(`${domain}:${PORT}/api/deleteChatNo/${chatNo}`, {
+                    method: 'post',
+                    credentials: 'include',
+                    headers: {
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
+                    },
+
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        // type 은 join  , exit 만 가능 ,
+        updateHeadCount: async function (type,roomNo, token) {
+            try {
+                console.log("updateHeadCount" , type,roomNo , token)
+                const response = await fetch(`${domain}:${PORT}/api/updateHeadCount/`, {
+                    method: 'post',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        type , roomNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        getJoinOk: async function (roomNo,participantNo, token) {
+            try {
+
+                const response = await fetch(`${domain}:${PORT}/api/getJoinOk/${roomNo}/${participantNo}`, {
+                    method: 'get',
+                    credentials: 'include',
+                    headers: {
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        'Content-Type': 'text/plain',
+                        'Accept': 'application/json',
+                        Authorization: token
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
         deleteChatNo: async function (chatNo, token) {
             try {
 
