@@ -17,6 +17,7 @@ import lastReadNoReducer from "./Reducers/lastReadNoReducer";
 import messageAllLengthReducer from "./Reducers/messageAllLengthReducer";
 import joinOkReducer from "./Reducers/joinOkReducer";
 import joinRoomReducer from "./Reducers/joinRoomReducer";
+import roomTypeReducer from "./Reducers/roomTypeReducer";
 import profileInfoReducer from "./Reducers/profileInfoReducer";
 
 const reducers = combineReducers({
@@ -28,6 +29,7 @@ const reducers = combineReducers({
     messageLength : messageLengthReducer,
     messageAllLength : messageAllLengthReducer,
     roomNo : roomNoReducer,
+    roomType : roomTypeReducer,
     participantNo : participantNoReducer,
     userNo : userNoReducer,
     friendList : friendListReducer,

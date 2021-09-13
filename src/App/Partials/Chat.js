@@ -28,6 +28,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     const {selectedChat} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
+    const {roomType} = useSelector(state => state);
     const {participantNo} = useSelector(state => state);
     const {headCount} = useSelector(state => state)
     const {messageAllLength} = useSelector(state => state)
@@ -232,15 +233,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         {message.type ? <i className="ti-double-check text-info"></i> : null}
                     </div>
                     <div>
-                        {message.chatNo}
-                        <br/>
-                        {message.notReadCount}
-                        <br/>
-                            {message.index}
+                        { (roomType === "official" ) ? "" : message.notReadCount }
                     </div>
-                    <div>
-                        {message.participantNo}
-                    </div>
+
                 </div>);
         }
     };
@@ -257,6 +252,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 selectedChat.name
                     ?
                     <React.Fragment>
+                        <h3>현재 총 인원  : {selectedChat.headcount}  </h3>
                         <ChatHeader history={props.history} selectedChat={selectedChat}/>
                         <PerfectScrollbar
                             onUpdateSize={(ref) => {

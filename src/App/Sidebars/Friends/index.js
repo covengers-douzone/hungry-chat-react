@@ -122,7 +122,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no} friendEmail={item.email} createRoom={createRoomHandler}/>
+                                            <FriendsDropdown roomList={roomList} friendName={item.name} friendNo={item.no} friendEmail={item.username} createRoom={createRoomHandler}/>
                                         </div>
                                     </div>
                                 </li>
@@ -151,7 +151,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                             <p>{item.comments}</p>
                                         </div>
                                         <div className="users-list-action action-toggle">
-                                            <FollowersDropdown friendName={item.name} friendNo={item.no} friendEmail={item.email} createRoom={createRoomHandler}/>
+                                            <FollowersDropdown friendName={item.name} friendNo={item.no} friendEmail={item.username} createRoom={createRoomHandler}/>
                                         </div>
                                     </div>
                                 </li>

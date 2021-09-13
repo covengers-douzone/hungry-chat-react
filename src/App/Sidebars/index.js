@@ -221,7 +221,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
 
                         return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList}
                                                friendList={friendList}
-
                                                history={history}/>
                     }
                 })()
