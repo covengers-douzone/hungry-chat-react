@@ -74,7 +74,7 @@ function Activation({location}) {
         e.preventDefault();
 
         if(e.target.text.value === e.target.code.value){
-            fetch("http://localhost:8888/api/user/useractivation", {
+            fetch("http://localhost:8888/api/user/activation", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
