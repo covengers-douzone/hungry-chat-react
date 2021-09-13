@@ -17,8 +17,18 @@ import lastReadNoReducer from "./Reducers/lastReadNoReducer";
 import messageAllLengthReducer from "./Reducers/messageAllLengthReducer";
 import joinOkReducer from "./Reducers/joinOkReducer";
 import joinRoomReducer from "./Reducers/joinRoomReducer";
+<<<<<<< HEAD
+
+import chatProfileSidebarReducer from "./Reducers/chatProfileSidebarReducer";
+import mobileChatProfileSidebarReducer from "./Reducers/mobileChatProfileSidebarReducer";
+
+import chatInfoReducer from "./Reducers/chatInfoReducer";
+
+
+=======
 import profileInfoReducer from "./Reducers/profileInfoReducer";
 
+>>>>>>> 4c1d675a72def9f57b71111b6e96e33a81649125
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -37,7 +47,16 @@ const reducers = combineReducers({
     joinRoom : joinRoomReducer,
     lastReadNo : lastReadNoReducer,
     joinOk  : joinOkReducer,
+<<<<<<< HEAD
+
+    chatProfileSidebar:chatProfileSidebarReducer,
+    mobileChatProfileSidebar: mobileChatProfileSidebarReducer,
+
+    chatInfo : chatInfoReducer
+
+=======
     profileInfo : profileInfoReducer
+>>>>>>> 4c1d675a72def9f57b71111b6e96e33a81649125
 });
 
 const store = createStore(reducers, composeWithDevTools());

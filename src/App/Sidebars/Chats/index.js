@@ -225,6 +225,7 @@ const Index = React.forwardRef(({
 
 
     const profileActions = (chat) => {
+
         let hostProfile;
         let otherUserProfile;
         chat.otherParticipantNo.map(participant => {

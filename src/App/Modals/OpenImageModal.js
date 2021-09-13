@@ -19,6 +19,7 @@ import {
     InputGroupText,
     CustomInput
 } from 'reactstrap'
+import { saveAs } from 'file-saver';
 
 function OpenImageModal(props) {
 
@@ -27,6 +28,11 @@ function OpenImageModal(props) {
     const toggle = tab => {
         if (activeTab !== tab) setActiveTab(tab);
     };
+
+    const downloadImage = () => {
+        const image_name = props.image.split('--');
+        saveAs(props.image, image_name[1]) // Put your image url here.
+    }
 
     return (
         <div>
@@ -52,7 +58,7 @@ function OpenImageModal(props) {
                         }
                     </div>
                     <ModalFooter>
-                        <Button color="primary">저장하기</Button>
+                        <Button color="primary" onClick={() => downloadImage()}>다운로드</Button>
                     </ModalFooter>
                 </div>
             </Modal>
