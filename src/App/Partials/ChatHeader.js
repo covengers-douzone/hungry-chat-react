@@ -13,10 +13,10 @@ import {mobileSidebarAction} from "../../Store/Actions/mobileSidebarAction";
 import {participantNoAction} from "../../Store/Actions/participantNoAction";
 import {roomNoAction} from "../../Store/Actions/roomNoAction";
 import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
+import {chatProfileAction} from "../../Store/Actions/chatProfileAction";
+//import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
-
-
 
 function ChatHeader(props) {
 
@@ -32,6 +32,11 @@ function ChatHeader(props) {
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
     };
+
+    const chatProfileActions = () => {
+        dispatch(chatProfileAction(true));
+        //dispatch(mobileChatProfileAction(true));
+    }
 
     const chatDeleteAction = async () => {
         try {
@@ -92,8 +97,9 @@ function ChatHeader(props) {
                                 </button>
                             </DropdownToggle>
                             <DropdownMenu right>
+                                <DropdownItem onClick={chatProfileActions} title="프로필">채팅방 정보</DropdownItem>
+                                <DropdownItem divider/>
                                 <DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>
-
                                 <DropdownItem divider/>
                                 <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
                                 {/*<DropdownItem>Add to archive</DropdownItem>*/}
