@@ -89,10 +89,24 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         });
 
         if (room.type === "private") {
+            // (방 제목) 다른 유저들의 이름
+            let otherParticipantsName;
+
+            // 방제가 없고, 그룹톡인 경우
+            if(room.title === '' && room.headCount > 2){
+                otherParticipantsName = otherParticipant && otherParticipant.map(other => {return other.User.name}).join(',');
+            // 그룹톡이고 방제가 있는 경우
+            } else if(room.headCount > 2){
+                otherParticipantsName = room.title;
+            // 1:1톡인 경우
+            } else {
+                otherParticipantsName = otherParticipant && otherParticipant[0] && otherParticipant[0].User.name;
+            }
+
             userRoomList.push({
                 id: room.no,
                 type: room.type,
-                name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
+                name: otherParticipantsName,
                 participantNo: currentParticipant.no, // 이 채팅방의 '나'
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
