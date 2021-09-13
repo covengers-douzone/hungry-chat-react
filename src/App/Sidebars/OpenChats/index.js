@@ -14,6 +14,7 @@ import OpenChatPasswordModal from "../../Modals/OpenChatPasswordModal";
 import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
+import {profileInfoAction} from "../../../Store/Actions/profileInfoAction";
 
 function Index({roomList, openRoomList, history,}) {
     const dispatch = useDispatch();
@@ -69,7 +70,9 @@ function Index({roomList, openRoomList, history,}) {
         }
     };
 
-    const profileActions = () => {
+    const profileActions = (chat) => {
+        // 개인톡(내가 방장일 경우)
+        dispatch(profileInfoAction(chat.openChatHost));
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
     };
@@ -78,9 +81,8 @@ function Index({roomList, openRoomList, history,}) {
 
     const ChatListView = (props) => {
         const {chat} = props;
-
         return <li style={ chat.password ? {color:"palevioletred"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
-            <div onClick={profileActions}>
+            <div onClick={() => profileActions(chat)}>
                 {chat.avatar}
             </div>
             <div className="users-list-body"  onClick={() => chatSelectHandle(chat)} id={chat.id} >
