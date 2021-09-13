@@ -101,7 +101,7 @@ function Index({roomList, openRoomList, history,}) {
 
         return <li style={chat.password ? {color: "palevioletred"} : null}
                    className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
-            <div onClick={profileActions}>
+            <div onClick={() => profileActions(chat)}>
                 {chat.avatar}
             </div>
             <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}>

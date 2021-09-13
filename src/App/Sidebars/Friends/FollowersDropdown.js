@@ -11,7 +11,6 @@ import * as config from "../../../config/config";
 const FollowersDropdown = ({friendNo, friendName, friendEmail, createRoom}) => {
 
     const dispatch = useDispatch();
-
     const {reload} = useSelector(state => state);
     const userNo = Number(localStorage.getItem("userNo"));
 
@@ -29,14 +28,16 @@ const FollowersDropdown = ({friendNo, friendName, friendEmail, createRoom}) => {
     }
 
     const AddFriendHandler = async (event) => {
+        console.log(friendEmail)
         event.preventDefault();
         try{
             await axios.post(`${config.URL}/api/addFriend`, {
                 username: friendEmail,
                 Authorization:localStorage.getItem("Authorization"),
                 userNo: userNo
+
             }).catch( err => {
-                    console.log(`${err.message}`) })
+                console.log(`${err.message}`) })
         }catch (e) {
             console.log(e);
         }
