@@ -20,6 +20,7 @@ import joinRoomReducer from "./Reducers/joinRoomReducer";
 import chatProfileSidebarReducer from "./Reducers/chatProfileSidebarReducer";
 import mobileChatProfileSidebarReducer from "./Reducers/mobileChatProfileSidebarReducer";
 import chatInfoReducer from "./Reducers/chatInfoReducer";
+import roomTypeReducer from "./Reducers/roomTypeReducer";
 
 
 const reducers = combineReducers({
@@ -31,6 +32,7 @@ const reducers = combineReducers({
     messageLength : messageLengthReducer,
     messageAllLength : messageAllLengthReducer,
     roomNo : roomNoReducer,
+    roomType : roomTypeReducer,
     participantNo : participantNoReducer,
     userNo : userNoReducer,
     friendList : friendListReducer,

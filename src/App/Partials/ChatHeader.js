@@ -13,13 +13,17 @@ import {mobileSidebarAction} from "../../Store/Actions/mobileSidebarAction";
 import {participantNoAction} from "../../Store/Actions/participantNoAction";
 import {roomNoAction} from "../../Store/Actions/roomNoAction";
 import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
+import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
+import fetchApi from "../Module/fetchApi";
+
+
 
 function ChatHeader(props) {
 
     const dispatch = useDispatch();
     const {chatInfo} = useSelector(state => state);
     const {reload} = useSelector(state => state);
-
+    const {roomNo} = useSelector(state=>state)
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -38,10 +42,11 @@ function ChatHeader(props) {
                 roomNo: chatInfo.id,
                 Authorization: localStorage.getItem("Authorization"),
             }).then(res => {
+                fetchApi(null, null).updateHeadCount("exit",roomNo, localStorage.getItem("Authorization"))
                 dispatch(reloadAction(!reload));
-
                 dispatch(participantNoAction(false))
                 dispatch(roomNoAction(false))
+                dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
                 // dispatch(mobileSidebarAction(true));
                 dispatch(sidebarAction('Chat'));

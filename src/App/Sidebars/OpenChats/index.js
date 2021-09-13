@@ -20,7 +20,8 @@ function Index({roomList, openRoomList, history,}) {
     const inputRef = useRef();
     const {selectedChat} = useSelector(state => state);
     const {reload} = useSelector(state => state);
-
+    const {participantNo} = useSelector(state => state);
+    const {roomNo} = useSelector(state => state);
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -39,20 +40,37 @@ function Index({roomList, openRoomList, history,}) {
     const chatSelectHandle = async (chat) => {
         try {
             console.log("chat", chat);
-            if (chat.password){
+            if (chat.password) {
                 setEnterPasswordChat(chat);
                 setModal(!modal);
             } else {
+
+
                 const result = roomList && roomList.filter(room => {
-                    return room.type === "public" && room.participantNo === chat.participantNo;
+                    return (room.type === "public" || room.type === "official")&& room.participantNo === chat.participantNo;
                 })
-                if(result.length === 0){
-                    const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,chat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
-                    dispatch(participantNoAction(participantNo));
-                    dispatch(reloadAction(!reload));
+
+                if (result.length === 0) {
+                    const roomNo = chat.id
+                    const joinChecked = await fetchApi(null, null).getJoinOk(roomNo, participantNo, localStorage.getItem("Authorization"));
+                    if (joinChecked == null) {
+                        const participantNo = (await fetchApi(null, null).createParticipant(localStorage.getItem("userNo"), chat.id, "ROLE_MEMBER",
+                            localStorage.getItem("Authorization"))).no;
+                        dispatch(participantNoAction(participantNo));
+                        dispatch(reloadAction(!reload));
+                        await fetchApi(null, null).updateHeadCount("join",roomNo, localStorage.getItem("Authorization"))
+
+                        console.log(participantNo , "가 " ,  chat.id , "방에 처음으로 오픈 채팅을 입장")
+                    } else {
+                        dispatch(participantNoAction(participantNo));
+                        dispatch(reloadAction(!reload));
+                        console.log("원래 이미 오픈 채팅에 입장 되어 있을 경우")
+                    }
                 } else {
                     dispatch(participantNoAction(result[0].participantNo));
                 }
+
+
                 dispatch(joinRoomAction(true));
                 dispatch(sidebarAction('Chats'));
             }
@@ -75,16 +93,16 @@ function Index({roomList, openRoomList, history,}) {
     };
 
 
-
     const ChatListView = (props) => {
         const {chat} = props;
 
-        return <li style={ chat.password ? {color:"palevioletred"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
+        return <li style={chat.password ? {color: "palevioletred"} : null}
+                   className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
             <div onClick={profileActions}>
                 {chat.avatar}
             </div>
-            <div className="users-list-body"  onClick={() => chatSelectHandle(chat)} id={chat.id} >
-                { chat.password ?  <h5><i className="ti ti-key"></i> {chat.name}</h5> : <h5>{chat.name}</h5>}
+            <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}>
+                {chat.password ? <h5><i className="ti ti-key"></i> {chat.name}</h5> : <h5>{chat.name}</h5>}
                 {chat.text}
             </div>
             <div className="users-list-body">
@@ -100,7 +118,8 @@ function Index({roomList, openRoomList, history,}) {
         <div className="sidebar active">
             <header>
                 <span>오픈 채팅</span>
-                <OpenChatPasswordModal modal={modal} setModal={setModal} enterPasswordChat={enterPasswordChat} roomList={roomList}/>
+                <OpenChatPasswordModal modal={modal} setModal={setModal} enterPasswordChat={enterPasswordChat}
+                                       roomList={roomList}/>
                 <ul className="list-inline">
                     {/*<li className="list-inline-item">*/}
                     {/*    <button onClick={() => dispatch(sidebarAction('Open-chat'))} className="btn btn-light"*/}
@@ -115,7 +134,7 @@ function Index({roomList, openRoomList, history,}) {
                     {/*    </Tooltip>*/}
                     {/*</li>*/}
                     <li className="list-inline-item">
-                        <AddOpenChatModal />
+                        <AddOpenChatModal/>
                         {/*<AddGroupModal friendList={friendList}/>*/}
                     </li>
                     {/*<li className="list-inline-item">*/}
@@ -138,23 +157,25 @@ function Index({roomList, openRoomList, history,}) {
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef} onChange={e=> {setSearchTerm(e.target.value)}} />
+                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef} onChange={e => {
+                    setSearchTerm(e.target.value)
+                }}/>
             </form>
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
-                    <p style={ {
-                                color:"black",
-                                marginLeft:25,
-                            }}>오픈채팅방</p>
-                    {openRoomList.filter((chat) => {
-                            if(searchTerm == ""){
+                        <p style={{
+                            color: "black",
+                            marginLeft: 25,
+                        }}>오픈채팅방</p>
+                        {openRoomList.filter((chat) => {
+                            if (searchTerm == "") {
                                 return chat
-                            } else if( chat.name.toLowerCase().includes(searchTerm.toLowerCase())){
+                            } else if (chat.name.toLowerCase().includes(searchTerm.toLowerCase())) {
                                 return chat
                             }
                         }).map((chat, i) => <ChatListView chat={chat} key={i}/>)
-                    }
+                        }
                     </ul>
                 </PerfectScrollbar>
             </div>

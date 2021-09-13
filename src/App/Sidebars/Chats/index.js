@@ -28,6 +28,8 @@ import {chatprofileAction} from "../../../Store/Actions/chatprofileAction";
 import {mobileChatProfileAction} from "../../../Store/Actions/mobileChatProfileAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
+import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
+import {reloadAction} from "../../../Store/Actions/reloadAction";
 
 
 const Index = React.forwardRef(({
@@ -47,6 +49,7 @@ const Index = React.forwardRef(({
     const {participantNo} = useSelector(state => state);
     const {joinRoom} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
+    const {reload} = useSelector(state=> state)
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
@@ -108,28 +111,36 @@ const Index = React.forwardRef(({
 
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
+
         // 새로운 유저가 들어 왔을떄 Read 값을 변경 시키기 위해 제작,
         socket.on('roomUsers', async ({room, users}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
-                if (users[users.length - 1].id !== socket.id) {
+                //console.log("selectedChat.headcount" , selectedChat.headcount)
+
+
+                if (users[users.length - 1].id !== socket.id) { //  내꺼를 업데이트 시킨다.
                     // chat list update
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                     const chats = chatlist.map((chat) => chatForm(chat, participantNo));
                     selectedChat.messages = chats;
-                    dispatch(messageLengthAction(selectedChat.messages.length - 1))
+                    selectedChat.headcount =  await fetchApi(chatList, setChatList).getHeadCount(participantNo)
+                    console.log("selectedChat.headcount" , selectedChat.headcount)
+
+
+                    dispatch(reloadAction(!reload))
                 }
             }, 1000)
 
         })
 
         // 모든 메세지를 삭제
-        socket.on('deleteMessage' ,async ({room, users , chatNo})=>{
+        socket.on('deleteMessage', async ({room, users, chatNo}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
                 // chat list updateㄴ
                 const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
-                selectedChat.messages && (selectedChat.messages.splice (idx , 1));
+                selectedChat.messages && (selectedChat.messages.splice(idx, 1));
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
             }, 1000)
         })
@@ -143,10 +154,13 @@ const Index = React.forwardRef(({
                 // update status
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
+
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
-                if(lastReadNo !== undefined){
+                if (lastReadNo !== undefined) {
                     dispatch(lastReadNoAction(lastReadNo))
                 }
+
+
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
 
                 // update notReadCount
@@ -169,11 +183,11 @@ const Index = React.forwardRef(({
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
 
-                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
+                    const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
                     selectedChat.messages = chats;
                 } else {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat,i) => chatForm(chat,participantNo,i));
+                    const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
                     selectedChat.messages = chats;
                 }
 
@@ -190,6 +204,7 @@ const Index = React.forwardRef(({
         return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
                 const results = await fetchList(localStorage.getItem("Authorization")).leftRoom(selectedChat.participantNo);
+
                 socket.disconnect();
             }
         }
@@ -204,10 +219,17 @@ const Index = React.forwardRef(({
 
     const chatSelectHandle = async (chat) => {
         try {
+            console.log("chatSelectHandle" , chat.type)
             dispatch(chatInfoAction(chat));
             chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
+
+            // 방 들어 왔을때 방 headCount 업데이트
+            
+
+
+            dispatch(roomTypeAction(chat.type))
             if (chat.messages) {
                 dispatch(messageLengthAction(chat.messages.length))
             }
@@ -227,7 +249,6 @@ const Index = React.forwardRef(({
     };
 
 
-
     const profileActions = (chat) => {
         dispatch(chatInfoAction(chat));
         dispatch(profileAction(true));
@@ -236,7 +257,8 @@ const Index = React.forwardRef(({
 
     const ChatListView = (props) => {
         const {chat} = props;
-        return <li style={ chat.type === "public" ? {color:"yellowgreen"} : null } className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
+        return <li style={chat.type === "public" ? {color: "yellowgreen"} : null}
+                   className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
 
             <div onClick={() => profileActions(chat)}>
                 {chat.avatar}
@@ -244,7 +266,8 @@ const Index = React.forwardRef(({
             <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}
                  ref={ref => {
                      joinRoom && chat.participantNo === participantNo
-                     && chatSelectHandle(chat) && dispatch(joinRoomAction(false))}}>
+                     && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
+                 }}>
                 <h5>{chat.name}</h5>
                 {chat.text}
             </div>
@@ -311,17 +334,19 @@ const Index = React.forwardRef(({
             <div className="sidebar-body">
                 <PerfectScrollbar>
                     <ul className="list-group list-group-flush">
-                        <p style={ {
-                            color:"coral",
-                            marginLeft:25,
+                        <p style={{
+                            color: "coral",
+                            marginLeft: 25,
                         }}>{localStorage.getItem("name")}의 채팅 목록</p>
                         {roomList.filter((chat) => {
-                            if(searchTerm == ""){
+                            if (searchTerm == "") {
                                 return chat
-                            } else if( chat.name?.toLowerCase().includes(searchTerm.toLowerCase())){
+                            } else if (chat.name?.toLowerCase().includes(searchTerm.toLowerCase())) {
                                 return chat
                             }
-                        }).map((chat, i) => {return <ChatListView chat={chat} key={i}/> })
+                        }).map((chat, i) => {
+                            return <ChatListView chat={chat} key={i}/>
+                        })
                         }
                     </ul>
                 </PerfectScrollbar>
