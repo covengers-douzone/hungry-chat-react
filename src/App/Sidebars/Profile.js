@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {profileAction} from "../../Store/Actions/profileAction"
@@ -11,8 +11,12 @@ import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
 function Profile() {
 
     const dispatch = useDispatch();
-
+    const {chatInfo} = useSelector(state => state);
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
+
+    useEffect(()=>{
+        console.log("hi!!!!!!!!!", chatInfo);
+    },[])
 
     const profileActions = (e) => {
         e.preventDefault();

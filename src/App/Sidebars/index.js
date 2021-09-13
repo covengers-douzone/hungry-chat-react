@@ -24,86 +24,167 @@ const Index = React.forwardRef(({history}, scrollRef) => {
 
     const {reload} = useSelector(state => state);
 
-    useEffect( ()=>{
-        try{
-            fetchApi(roomList,setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
-            fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
-            fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
-            fetchApi(openRoomList,setOpenRoomList).getOpenChatRoomList(userNo, localStorage.getItem("Authorization"));
-        }catch (err){
+    useEffect(() => {
+        try {
+            // 비회원 로직
+            if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+                fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
+            } else { // 회원 로직
+                fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+                fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
+                fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList("public", localStorage.getItem("Authorization"));
+            }
+
+        } catch (err) {
             console.log(err);
         }
     }, [reload]);
+    if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
+        openRoomList.map((room, i) => {
+            const openChatHost = room.Participants.filter(participant => {
+                return participant.role === "ROLE_HOST"
+            })[0];
+            const currentParticipant = room.Participants.filter(participant => {
+                return Number(participant.userNo) === Number(userNo)
+            })[0];
+            const otherParticipant = room.Participants.filter(participant => {
+                return Number(participant.userNo) !== Number(userNo)
+            });
 
-    // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
-         openRoomList.map((room,i) => {
-             const openChatHost = room.Participants.filter(participant => {return participant.role === "ROLE_HOST"})[0];
-             const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
-             const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
-
-             userOpenRoomList.push({
-                 id: room.no,
-                 type: room.type,
-                 name : room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
-                 password : room.password ? room.password : null,
-                 openChatHostNo : openChatHost && openChatHost.no,
-                 participantNo : currentParticipant && currentParticipant.no,
-                 otherParticipantNo:otherParticipant && otherParticipant.map( (participant) => participant.no ),
-                 avatar: <figure className="avatar avatar-state-success">
-                     <img src={ openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
-                 </figure>,
-                 text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
-                 date: '03:41 PM',
-                 unread_messages: 1,
-                 messages: [],
-                 openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
-                 headcount : room.headCount
-             });
+            userOpenRoomList.push({
+                id: room.no,
+                type: room.type,
+                name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
+                password: room.password,
+                openChatHostNo: openChatHost && openChatHost.no,
+                participantNo: currentParticipant && currentParticipant.no,
+                otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
+                avatar: <figure className="avatar avatar-state-success">
+                    <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
+                         alt="avatar"/>
+                </figure>,
+                text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
+                date: '03:41 PM',
+                unread_messages: 1,
+                messages: [],
+                openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
+                headcount: room.headCount
+            });
         })
+    } else {
+        openRoomList.map((room, i) => {
+            const openChatHost = room.Participants.filter(participant => {
+                return participant.role === "ROLE_HOST"
+            })[0];
+            const currentParticipant = room.Participants.filter(participant => {
+                return Number(participant.userNo) === Number(userNo)
+            })[0];
+            const otherParticipant = room.Participants.filter(participant => {
+                return Number(participant.userNo) !== Number(userNo)
+            });
 
-        roomList.map((room,i) => {
-            const openChatHost = room.Participants.filter(participant => {return participant.role === "ROLE_HOST"})[0];
-            const currentParticipant = room.Participants.filter(participant => {return Number(participant.userNo) === Number(userNo)})[0];
-            const otherParticipant = room.Participants.filter(participant => {return Number(participant.userNo) !== Number(userNo)});
+            userOpenRoomList.push({
+                id: room.no,
+                type: room.type,
+                name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
+                password: room.password,
+                openChatHostNo: openChatHost && openChatHost.no,
+                participantNo: currentParticipant && currentParticipant.no,
+                otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
+                avatar: <figure className="avatar avatar-state-success">
+                    <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
+                         alt="avatar"/>
+                </figure>,
+                text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
+                date: '03:41 PM',
+                unread_messages: 1,
+                messages: [],
+                openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
+                headcount: room.headCount
+            });
+        })
+    }
+    // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
 
-            if(room.type === "private"){
-                userRoomList.push({
-                    id: room.no,
-                    type: room.type,
-                    name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
-                    password : room.password ? room.password : null,
-                    participantNo : currentParticipant.no, // 이 채팅방의 '나'
-                    otherParticipantNo :  otherParticipant && otherParticipant.filter( participant => { return participant.no }), // 이 채팅방의 '너'
-                    avatar: <figure className="avatar avatar-state-success">
-                        <img src={ otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl} className="rounded-circle" alt="avatar"/>
-                    </figure>,
-                    text: <p>{room.content === "Private Chat" ? 'Private Chat' : room.content}</p>,
-                    date: '03:41 PM',
-                    unread_messages: 1,
-                    messages: [],
-                    openChatHostCheck: false,
-                    headcount : room.headCount
-                });
-            } else if(room.type === "public"){
-                userRoomList.push({
-                    id: room.no,
-                    type: room.type,
-                    name: room.title === '' ? openChatHost && openChatHost.User.name+" 님의 오픈 채팅입니다." : room.title,
-                    password : room.password ? room.password : null,
-                    openChatHostNo : openChatHost && openChatHost.no,
-                    participantNo : currentParticipant && currentParticipant.no,
-                    otherParticipantNo: otherParticipant && otherParticipant.filter( participant => { return participant.no }),
-                    avatar: <figure className="avatar avatar-state-success">
-                        <img  src={ openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle" alt="avatar"/>
-                    </figure>,
-                    text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
-                    date: '03:41 PM',
-                    unread_messages: 1,
-                    messages: [],
-                    openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
-                    headcount : room.headCount
-                });
-            }
+
+    roomList.map((room, i) => {
+        const openChatHost = room.Participants.filter(participant => {
+            return participant.role === "ROLE_HOST"
+        })[0];
+        const currentParticipant = room.Participants.filter(participant => {
+            return Number(participant.userNo) === Number(userNo)
+        })[0];
+        const otherParticipant = room.Participants.filter(participant => {
+            return Number(participant.userNo) !== Number(userNo)
+        });
+
+        if (room.type === "private") {
+            userRoomList.push({
+                id: room.no,
+                type: room.type,
+                name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
+                participantNo: currentParticipant.no, // 이 채팅방의 '나'
+                otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
+                    return participant.no
+                }), // 이 채팅방의 '너'
+                avatar: <figure className="avatar avatar-state-success">
+                    <img src={otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl}
+                         className="rounded-circle" alt="avatar"/>
+                </figure>,
+                text: <p>{room.content === "Private Chat" ? 'Private Chat' : room.content}</p>,
+                date: '03:41 PM',
+                unread_messages: 1,
+                messages: [],
+                openChatHostCheck: false,
+                headcount: room.headCount
+            });
+        } else if (room.type === "public") {
+            userRoomList.push({
+                id: room.no,
+                type: room.type,
+                name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
+                password: room.password,
+                openChatHostNo: openChatHost && openChatHost.no,
+                participantNo: currentParticipant && currentParticipant.no,
+                otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
+                    return participant.no
+                }),
+                avatar: <figure className="avatar avatar-state-success">
+                    <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
+                         alt="avatar"/>
+                </figure>,
+                text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
+                date: '03:41 PM',
+                unread_messages: 1,
+                messages: [],
+                openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
+                headcount: room.headCount
+            });
+        } else if (room.type === "official") {
+            userRoomList.push({
+                id: room.no,
+                type: room.type,
+                name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
+                password: room.password,
+                openChatHostNo: openChatHost && openChatHost.no,
+                participantNo: currentParticipant && currentParticipant.no,
+                otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
+                    return participant.no
+                }),
+                avatar: <figure className="avatar avatar-state-success">
+                    <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
+                         alt="avatar"/>
+                </figure>,
+                text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
+                date: '03:41 PM',
+                unread_messages: 1,
+                messages: [],
+                openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
+                headcount: room.headCount
+            });
+        }
     })
 
 
@@ -145,7 +226,10 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                     } else if (selectedSidebar === 'Favorites') {
                         return <FavoritesIndex/>
                     } else if (selectedSidebar === 'Open-chat') {
-                        return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList} friendList={friendList}
+
+                        return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList}
+                                               friendList={friendList}
+
                                                history={history}/>
                     }
                 })()

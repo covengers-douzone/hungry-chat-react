@@ -6,9 +6,9 @@ export default function (defaultState, setState) {
     const PORT = config.FETCH_API_PORT;
     const domain = config.FETCH_API_IP;
     return {
-        getOpenChatRoomList : async function (token) { // 방 전체 목록을 보여준다.
+        getOpenChatRoomList : async function (type,token) { // 방 전체 목록을 보여준다.
             try {
-                const response = await fetch(`${config.URL}/api/getOpenChatRoomList`, {
+                const response = await fetch(`${config.URL}/api/getOpenChatRoomList/${type}`, {
                     method: 'get',
                     credentials: 'include',
                     headers: {
@@ -18,7 +18,7 @@ export default function (defaultState, setState) {
                         'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
-                    }
+                    },
                 });
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
@@ -350,7 +350,8 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState(json.data);
+                // json.data.length > 0 && setState(json.data);
+                setState(json.data)
                 return json.data
             } catch (err) {
                 console.error(err);
@@ -364,7 +365,7 @@ export default function (defaultState, setState) {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${URL}`,
+                        "Access-Control-Allow-Origin": `${config.URL}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
@@ -381,7 +382,8 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState(json.data);
+                // json.data.length > 0 && setState(json.data);
+                setState(json.data);
                 return json.data
             } catch (err) {
                 console.error(err);

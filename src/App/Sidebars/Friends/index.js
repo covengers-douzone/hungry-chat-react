@@ -11,6 +11,8 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {participantNoAction} from "../../../Store/Actions/participantNoAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import {sidebarAction} from "../../../Store/Actions/sidebarAction";
+import {profileAction} from "../../../Store/Actions/profileAction";
+import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
 function Index({roomList, friendList, followerList, history, mobileSidebar }) {
 
@@ -62,6 +64,11 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
         }
     }
 
+    const profileActions = () => {
+        dispatch(profileAction(true));
+        dispatch(mobileProfileAction(true))
+    };
+
     return (
         <div className="sidebar active">
             <header>
@@ -95,7 +102,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                             color:"coral",
                             marginLeft:25,
                         }}>친구 목록</p>
-                        {friendList.filter((item) => {
+                        {friendList && friendList.filter((item) => {
                             if(searchTerm == ""){
                                 return item
                             } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -103,7 +110,9 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                             }
                         }).map((item, i) => {
                                 return <li key={i} className="list-group-item">
-                                    {item.avatar}
+                                    <div onClick={profileActions}>
+                                        {item.avatar}
+                                    </div>
                                     <div className="users-list-body">
                                         <div>
                                             <h5>{item.name}</h5>
@@ -122,7 +131,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                 color:"coral",
                                 marginLeft:25,
                             }}>나를 친구 추가한 사람들</p>
-                            {followerList.filter((item) => {
+                            {followerList && followerList.filter((item) => {
                                 if(searchTerm == ""){
                                     return item
                                 } else if( item.name.toLowerCase().includes(searchTerm.toLowerCase())){
@@ -130,7 +139,9 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                 }
                             }).map((item, i) => {
                                 return <li key={i} className="list-group-item">
-                                    {item.avatar}
+                                    <div onClick={profileActions}>
+                                        {item.avatar}
+                                    </div>
                                     <div className="users-list-body">
                                         <div>
                                             <h5>{item.name}</h5>

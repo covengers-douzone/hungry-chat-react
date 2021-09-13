@@ -74,7 +74,7 @@ function SignIn({history}) {
                                             window.localStorage.setItem("username", response.username);
                                             window.localStorage.setItem("userNo", response.no.toString());
                                             window.localStorage.setItem("name", response.name);
-                        
+                                            window.localStorage.setItem("role", response.role);
                                             console.log(localStorage.getItem("name"));
                                             console.log(response.Authorization);
                                             history.push('/chat');
@@ -90,7 +90,6 @@ function SignIn({history}) {
                     }
                 }
             })
-
                 .catch(error => {
                 alert("Error: "+error.message);
                 history.push("/");
@@ -101,31 +100,59 @@ function SignIn({history}) {
         }
     }
 
-    const unknownLoginHandler = (e) => {
+    const unknownLoginHandler = async (e) => {
         e.preventDefault();
-            fetch("http://localhost:8888/api/user/unknownLogin",{
+        try {
+            await fetch("http://localhost:8888/api/user/unknownLogin", {
                 method: "get",
                 headers: {
-                    "Accept":"application/json",
+                    "Accept": "application/json",
                 },
             }).then(response => {
-                if(response.ok) {
+                if (response.ok) {
                     return response.json();
                 } else {
                     throw new Error("unknownLoginHandler error occured");
-
                 }
             }).then(response => {
-                    console.log(response)
+                fetch("http://localhost:8888/api/user/login", {
+                    method: "POST",
+                    headers: {
+                        "Access-Control-Allow-Headers": "Authorization",
+                        "Access-Control-Allow-Origin": "http://localhost:8888",
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: response.data.username,
+                        password: "Unknown"
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("Unknown login Error")
+                    }
+                }).then(response => {
+                    window.localStorage.setItem("Authorization", response.Authorization);
                     window.localStorage.setItem("username", response.username);
-                    window.localStorage.setItem("userNo", response.no);
+                    window.localStorage.setItem("userNo", response.no.toString());
                     window.localStorage.setItem("name", response.name);
+                    window.localStorage.setItem("role", response.role);
                     console.log(localStorage.getItem("name"));
-                    history.push('/chat/'+response.no);
-            }).catch(error => {
+                    console.log(localStorage.getItem("Authorization"));
+                    history.push('/chat');
+                }).catch(error => {
                     alert("Error: " + error.message);
                     history.push("/");
                 })
+            }).catch(e => {
+                console.log(e);
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
     }
 
     useEffect(() => document.body.classList.add('form-membership'), []);

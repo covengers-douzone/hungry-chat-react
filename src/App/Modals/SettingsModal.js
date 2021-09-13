@@ -40,6 +40,9 @@ function SettingsModal(props) {
     const [ username, setUsername ] = useState();
     const [ phoneNumber, setPhoneNumber ]  = useState();
     const [alertOpen, setAlertOpen] = useState(false);
+    const [validationOpen, setValidationOpen] = useState(false);
+
+
     let history = useHistory();
 
     useEffect( () => {
@@ -98,8 +101,15 @@ function SettingsModal(props) {
     }
 
     const changePasswordHandler = async (e) => {
-        e.preventDefault();
+        setValidationOpen(false);
         setAlertOpen(false);
+
+        if(!/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/.test(password)){
+            setValidationOpen(!validationOpen);
+            console.log(password)
+            return false
+        }
+        e.preventDefault();
         console.log(username);
         console.log(password);
 
@@ -122,7 +132,7 @@ function SettingsModal(props) {
                     },
                 }).then(res => {
                     if (res.ok){
-                        setAlertOpen(true);
+                        setAlertOpen(!alertOpen);
                     }
                 }).catch(err => {
                     console.log(err);
@@ -270,9 +280,11 @@ function SettingsModal(props) {
                         <TabPane tabId="2">
                             <div className="setting-account">
                                 <Alert isOpen={alertOpen} color="info">비밀번호가 변경되었습니다.</Alert>
+                                <Alert isOpen={validationOpen} color="info">문자,숫자,특수문자포함 8~15자리를 사용해야합니다.</Alert>
+
                                 <div className="setting-account">
                                     <label htmlFor="password" id="password"> 비밀번호 </label>
-                                    <input type="password" name="password" onChange={ (event) => {
+                                    <input type="password" name="password"  onChange={ (event) => {
                                         const { value } = event.target;
                                         setPassword(value);
                                     }}/>
@@ -280,6 +292,7 @@ function SettingsModal(props) {
                             </div> 
                         </TabPane>
                         <TabPane tabId="3">
+
                             <div className="setting-account">
                                 <label htmlFor="name" id="Background"> 배경화면 </label>
                                 <input type="file" name="backgroundImageUrl" />
