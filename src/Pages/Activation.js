@@ -155,11 +155,11 @@ function Activation({location}) {
                     <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
                     <button onClick={ smsApiHandler } disabled={ disabledSendBtn} style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">번호 전송</button>
                 </div>
+                <Alert isOpen={alertOpen} color="info">잘못된 인증 번호입니다.</Alert>
                 <div className="form-group">
                     <input disabled={ disabledCode } id="userNum" name="code" type="number" className="form-control form-control-lg" placeholder="인증번호 입력" required/>
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
-                    <Alert isOpen={alertOpen} color="info">잘못된 인증 번호입니다.</Alert>
                 <button className="btn btn-primary btn-block btn-lg">제출하기</button>
             </form>
         </div>

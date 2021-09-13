@@ -63,8 +63,7 @@ const Index = React.forwardRef(({
     const callback = async ({socketUserNo, chatNo}) => {
 
         //await fetchList(localStorage.getItem("Authorization")).receiveChat(chatNo);
-
-        await fetchApi(null, null).updateSendNotReadCount(chatNo);
+        await fetchApi(null, null).updateSendNotReadCount(chatNo, localStorage.getItem("Authorization"));
 
         // 챗 no값을 통해 리스트를 불러 온다
         const chat = await fetchApi(null, null).getChat(chatNo, localStorage.getItem("Authorization"));
