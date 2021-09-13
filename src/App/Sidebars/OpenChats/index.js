@@ -42,7 +42,7 @@ function Index({roomList, openRoomList, history,}) {
             console.log("chat", chat);
             if (chat.password){
                 setEnterPasswordChat(chat);
-                setModal(!modal);
+                    setModal(!modal);
             } else {
                 const result = roomList && roomList.filter(room => {
                     return room.type === "public" && room.participantNo === chat.participantNo;
