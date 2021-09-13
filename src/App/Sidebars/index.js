@@ -31,6 +31,8 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 console.log("권한:" , localStorage.getItem("role"))
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
+                fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+                fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
             } else { // 회원 로직
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
