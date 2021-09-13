@@ -236,6 +236,7 @@ const Index = React.forwardRef(({
             }
             otherUserProfile = participant.User
         })
+        console.log(otherUserProfile.length)
         // 개인톡(내가 방장일 경우)
         hostProfile === undefined ? dispatch(chatInfoAction(otherUserProfile)) : dispatch(chatInfoAction(hostProfile));
         dispatch(profileAction(true));

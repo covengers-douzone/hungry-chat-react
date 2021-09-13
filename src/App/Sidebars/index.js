@@ -60,6 +60,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
+                openChatHost:openChatHost && openChatHost.User,
                 participantNo: currentParticipant && currentParticipant.no,
                 otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
                 avatar: <figure className="avatar avatar-state-success">
