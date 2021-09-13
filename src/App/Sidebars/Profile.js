@@ -1,17 +1,46 @@
+<<<<<<< HEAD
+import React, {useState, useEffect} from 'react'
+=======
 import React, {useEffect} from 'react'
+>>>>>>> b480da89353bc421440027d1279b5b2106a758ec
 import {useDispatch, useSelector} from "react-redux"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {profileAction} from "../../Store/Actions/profileAction"
 import {mobileProfileAction} from "../../Store/Actions/mobileProfileAction"
-import WomenAvatar5 from "../../assets/img/women_avatar5.jpg"
-import WomenAvatar1 from "../../assets/img/women_avatar1.jpg"
-import WomenAvatar3 from "../../assets/img/women_avatar3.jpg"
-import WomenAvatar4 from "../../assets/img/women_avatar4.jpg"
+import * as config from "../../config/config";
+import fetchApi from "../Module/fetchApi";
 
 function Profile() {
 
     const dispatch = useDispatch();
+
+    const userNo = Number(localStorage.getItem("userNo"));
+    const userFriendList = [];
+    const {reload} = useSelector(state => state);
+    const [friendList, setFriendList] = useState([]);
+    useEffect( ()=>{
+        try{
+            fetchApi(friendList,setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+        }catch (err){
+            console.log(err);
+        }
+    }, [reload]);
+    friendList.map((friend, i) => {
+        userFriendList.push({
+            no: friend.no,
+            name: friend.name,
+            email: friend.email,
+            comments: friend.comments,
+            phoneNumber: friend.phoneNumber,
+            avatar: <figure className="avatar">
+                <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
+            </figure>
+        })
+    });
+    console.log(friendList);
+
     const {chatInfo} = useSelector(state => state);
+
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
 
     useEffect(()=>{
@@ -23,13 +52,16 @@ function Profile() {
         dispatch(profileAction(false));
         dispatch(mobileProfileAction(false))
     };
-
+    
     return (
         <div className={`sidebar-group ${mobileProfileSidebar ? "mobile-open" : ""}`}>
             <div className={profileSidebar ? 'sidebar active' : 'sidebar'}>
+                {true &&
+                friendList.map((item, i) => 
+                
                 <header>
-                    <span>About</span>
-                    <ul className="list-inline">
+                    <span>{item.name}의 정보</span>
+                    <ul className="list-inline" key={i}>
                         <li className="list-inline-item">
                             <a href="/#/" onClick={(e) => profileActions(e)}
                                className="btn btn-light">
@@ -38,26 +70,37 @@ function Profile() {
                         </li>
                     </ul>
                 </header>
-                <div className="sidebar-body">
+                
+                )
+                }
+
+                {true && friendList.map((item, i) => 
+                
+                <div className="sidebar-body" key={i}>
                     <PerfectScrollbar>
                         <div className="text-center">
                             <figure className="avatar avatar-state-danger avatar-xl mb-4">
-                                <img src={WomenAvatar5} className="rounded-circle" alt="avatar"/>
+                                <img src={item.profileImageUrl} className="rounded-circle" alt="avatar"/>
                             </figure>
-                            <h5 className="text-primary mb-1">Frans Hanscombe</h5>
-                            <small className="text-muted">Last seen: Today</small>
+                            <h5 className="text-primary mb-1">{item.name}</h5>
+                            <small className="text-muted">계정 생성일: {item.createdAt}</small><br/>
+                            <small className="text-muted">최근 로그인: {item.lastLoginAt}</small>
                         </div>
                         <hr/>
                         <div className="pl-4 pr-4">
-                            <h6>About</h6>
-                            <p className="text-muted">I love reading, traveling and discovering new things.
-                                You need to be happy in life.</p>
+                            <h6>이메일</h6>
+                            <p className="text-muted">{item.username}</p>
                         </div>
                         <div className="pl-4 pr-4">
-                            <h6>Phone</h6>
-                            <p className="text-muted">(555) 555 55 55</p>
+                            <h6>나의상태</h6>
+                            <p className="text-muted">{item.comments}</p>
                         </div>
-                        <hr/>
+                        <div className="pl-4 pr-4">
+                            <h6>휴대폰</h6>
+                            <p className="text-muted">{item.phoneNumber}</p>
+                        </div>
+                      
+                        {/*<hr/>
                         <div className="pl-4 pr-4">
                             <h6>Media</h6>
                             <PerfectScrollbar>
@@ -195,9 +238,12 @@ function Profile() {
                                         notification</label>
                                 </div>
                             </div>
-                        </div>
+                            
+                        </div>*/}
                     </PerfectScrollbar>
                 </div>
+                )
+                }
             </div>
         </div>
     )

@@ -13,6 +13,8 @@ import {reloadAction} from "../../../Store/Actions/reloadAction";
 import {sidebarAction} from "../../../Store/Actions/sidebarAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
+import {followAction} from "../../../Store/Actions/followAction";
+import {mobilefollowAction} from "../../../Store/Actions/mobilefollowAction";
 
 function Index({roomList, friendList, followerList, history, mobileSidebar }) {
 
@@ -67,6 +69,11 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
     const profileActions = () => {
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
+    };
+
+    const followActions = () => {
+        dispatch(followAction(true));
+        dispatch(mobilefollowAction(true))
     };
 
     return (
@@ -139,7 +146,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                                 }
                             }).map((item, i) => {
                                 return <li key={i} className="list-group-item">
-                                    <div onClick={profileActions}>
+                                    <div onClick={followActions}>
                                         {item.avatar}
                                     </div>
                                     <div className="users-list-body">
