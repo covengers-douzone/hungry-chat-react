@@ -1,11 +1,13 @@
-import React, {useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
+import {Alert} from "reactstrap";
 
 
 function SignIn({history}) {
-
+    const [alertOpen, setAlertOpen] = useState(false);
     function loginHandler(e){
         e.preventDefault();
+        setAlertOpen(false);
         const username = e.target.email.value;
         const password = e.target.password.value;
         if(e.target.email.value !== '' || e.target.password.value !== ''){
@@ -19,28 +21,24 @@ function SignIn({history}) {
                     "Content-Type":"application/json"
                 },
                 body: JSON.stringify({
-                    username: e.target.email.value,
+                    username: username,
+                    password: password
                 })
             }). then(response => {
-                console.log(response.status);
-                if(response.status === 401){
-                    alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
-                    console.log("중복된 데이터가 있는지 확인할것.")
-                    history.push("/");
-                }else if (response.status === 500){
-                    history.push("/");
-                    console.log("500 Error, 서버를 재시작해주세요.");
+                if(!response.ok){
+                    setAlertOpen(true);
                 }else {
-                    if(response.ok){
-                        response.json().then(data => {
-                            if(data.data === true){
+                    return response.json();
+                }
+              }).then(response => {
+                    if(response.data){
                                 history.push({
                                     pathname: '/activation', 
                                     username: username,
                                     password: password,
-                                    isDeleted: data.data
-                                });
-                            }else {
+                                    isDeleted: response.data
+                                })
+                    }else {
                                     fetch("http://localhost:8888/api/user/login",{
                                         method: "POST",
                                         headers: {
@@ -55,21 +53,12 @@ function SignIn({history}) {
                                             password: password
                                         })
                                     }). then(response => {
-                                        console.log(response.status);
-                                        if(response.status === 401){
-                                            alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
-                                            console.log("중복된 데이터가 있는지 확인할것.")
-                                            history.push("/");
-                                        }else if (response.status === 500){
-                                            history.push("/");
-                                            console.log("500 Error, 서버를 재시작해주세요.");
-                                        }else {
-                                            if(response.ok){
-                                                return response.json();
+                                            if(!response.ok){
+                                                setAlertOpen(true);
+                                                history.push('/');
                                             }
-                                        }
-                                    })
-                                        .then(response => {
+                                                return response.json();
+                                    }).then(response => {
                                             window.localStorage.setItem("Authorization", response.Authorization);
                                             window.localStorage.setItem("username", response.username);
                                             window.localStorage.setItem("userNo", response.no.toString());
@@ -80,22 +69,17 @@ function SignIn({history}) {
                                             history.push('/chat');
                                         })
                                         .catch(error => {
-                                        alert("Error: "+error.message);
-                                        history.push("/");
+                                            console.info("Error: "+ error.message);
+                                            history.push("/");
                                     })
                             }
-                        });
-                        console.log("res: ", Promise.resolve);
-                        
-                    }
-                }
-            })
-                .catch(error => {
-                alert("Error: "+error.message);
-                history.push("/");
-            })
+                        }).catch(error => {
+                                console.info("Error: "+ error.message);
+                                history.push("/");
+                        })
+                        // console.log("res: ", Promise.resolve);
         } else{
-            alert("아이디/패스워드를 입력하세요.");
+            setAlertOpen(true);
             history.push("/");
         }
     }
@@ -163,6 +147,7 @@ function SignIn({history}) {
                 <Logo/>
             </div>
             <h5>로그인</h5>
+            <Alert isOpen={alertOpen} color="info">아이디/패스워드를 다시 확인해주세요.</Alert>
             <form onSubmit={ loginHandler }>
                 <div className="form-group input-group-lg">
                     <input type="text" name="email" className="form-control" placeholder="이메일"/>

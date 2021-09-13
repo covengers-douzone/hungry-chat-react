@@ -80,6 +80,7 @@ function SettingsModal(props) {
         event.preventDefault();
         try{
             const formData = new FormData();
+            console.log(localStorage.getItem("Authorization"));
             formData.append("file", file);
             formData.append("Authorization", localStorage.getItem("Authorization"));
             formData.append("userNo", localStorage.getItem("userNo"));
@@ -246,7 +247,7 @@ function SettingsModal(props) {
                                     <input className="browse-input" type="file" name="UploadedFile"
                                            id="UploadedFile" onChange={(event) => {
                                                const file = event.target.files[0];
-                                               setFile(file);
+                                            setFile(file);
                                     }}/>
                                 </div>
                                 <span className="Error"/>

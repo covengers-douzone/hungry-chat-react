@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 import { func } from "prop-types";
+import {Alert} from "reactstrap";
 
 function Activation({location}) {
     
@@ -15,6 +16,7 @@ function Activation({location}) {
     let [ disabledCode, setDisabledCode ] = useState(true);
     let [ disabledSendBtn, setDisabledSendBtn ] = useState(true);
     let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
+    const [alertOpen, setAlertOpen] = useState(false);
     let history = useHistory();
 
     function getNumHandler(e){
@@ -50,11 +52,9 @@ function Activation({location}) {
                 recipients : userPhoneNumber,
                 text: authCode,
             })
-        })
-            .then(response =>  {
+        }).then(response =>  {
                 return response.json();
-            })
-            .then(response => {
+        }).then(response => {
                 if(response.result === "success") { // 성공
                     alert("인증 코드 발송 완료");
                     setDisabledCode(false);
@@ -63,11 +63,10 @@ function Activation({location}) {
                 }else { // 서버 문제
                     alert("인증 코드 발송 실패");
                 }
-            })
-            .catch(error => {
+        }).catch(error => {
                 alert("Error: " + error.message);
                 history.push("/");
-            })
+        })
     }
 
     function handleSubmit(e) {
@@ -90,8 +89,7 @@ function Activation({location}) {
                     phoneNumber: e.target.number.value,
                     isDeleted: isDeleted
                 })
-            })
-                .then(response =>  {
+            }).then(response =>  {
                     if(response.status === 200) {
                         fetch("http://localhost:8888/api/user/login",{
                                         method: "POST",
@@ -106,22 +104,12 @@ function Activation({location}) {
                                             username: username,
                                             password: password
                                         })
-                                    }). then(response => {
-                                        console.log(response.status);
-                                        if(response.status === 401){
-                                            alert("계정 정보가 일치하지 않습니다. 다시 시도해주세요");
-                                            console.log("중복된 데이터가 있는지 확인할것.")
-                                            history.push("/");
-                                        }else if (response.status === 500){
-                                            history.push("/");
-                                            console.log("500 Error, 서버를 재시작해주세요.");
-                                        }else {
-                                            if(response.ok){
-                                                return response.json();
+                                     }). then(response => {
+                                            if(!response.ok){
+                                                history.push('/');
                                             }
-                                        }
-                                    })
-                                        .then(response => {
+                                            return response.json();
+                                     }).then(response => {
                                             window.localStorage.setItem("Authorization", response.Authorization);
                                             window.localStorage.setItem("username", response.username);
                                             window.localStorage.setItem("userNo", response.no.toString());
@@ -132,18 +120,17 @@ function Activation({location}) {
                                             history.push('/chat');
                                         })
                                         .catch(error => {
-                                        alert("Error: "+error.message);
+                                        console.error("Error: "+error.message);
                                         history.push("/");
                                     })
                     }else{
-                        alert("이름과 휴대폰번호를 다시 확인해주세요")
                         history.push("/")
                     }
                 })
             
         }else{
-            alert("인증 실패");
-            history.push("/")
+            setAlertOpen(true);
+            // history.push("/")
         }
     }
 
@@ -172,6 +159,7 @@ function Activation({location}) {
                     <input disabled={ disabledCode } id="userNum" name="code" type="number" className="form-control form-control-lg" placeholder="인증번호 입력" required/>
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
+                <Alert isOpen={alertOpen} color="info">잘못된 인증 번호입니다.</Alert>
                 <button className="btn btn-primary btn-block btn-lg">제출하기</button>
             </form>
         </div>
