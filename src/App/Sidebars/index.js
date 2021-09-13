@@ -28,6 +28,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         try {
             // 비회원 로직
             if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+                console.log("권한:" , localStorage.getItem("role"))
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
             } else { // 회원 로직
@@ -41,7 +42,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             console.log(err);
         }
     }, [reload]);
-    if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
+
         openRoomList.map((room, i) => {
             const openChatHost = room.Participants.filter(participant => {
                 return participant.role === "ROLE_HOST"
@@ -59,6 +60,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
+                openChatHost:openChatHost && openChatHost.User,
                 participantNo: currentParticipant && currentParticipant.no,
                 otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
                 avatar: <figure className="avatar avatar-state-success">
@@ -73,39 +75,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 headcount: room.headCount
             });
         })
-    } else {
-        openRoomList.map((room, i) => {
-            const openChatHost = room.Participants.filter(participant => {
-                return participant.role === "ROLE_HOST"
-            })[0];
-            const currentParticipant = room.Participants.filter(participant => {
-                return Number(participant.userNo) === Number(userNo)
-            })[0];
-            const otherParticipant = room.Participants.filter(participant => {
-                return Number(participant.userNo) !== Number(userNo)
-            });
-
-            userOpenRoomList.push({
-                id: room.no,
-                type: room.type,
-                name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
-                password: room.password,
-                openChatHostNo: openChatHost && openChatHost.no,
-                participantNo: currentParticipant && currentParticipant.no,
-                otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
-                avatar: <figure className="avatar avatar-state-success">
-                    <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
-                         alt="avatar"/>
-                </figure>,
-                text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
-                date: '03:41 PM',
-                unread_messages: 1,
-                messages: [],
-                openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
-                headcount: room.headCount
-            });
-        })
-    }
     // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
 
 
@@ -121,10 +90,24 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         });
 
         if (room.type === "private") {
+            // (방 제목) 다른 유저들의 이름
+            let otherParticipantsName;
+
+            // 방제가 없고, 그룹톡인 경우
+            if(room.title === '' && room.headCount > 2){
+                otherParticipantsName = otherParticipant && otherParticipant.map(other => {return other.User.name}).join(',');
+            // 그룹톡이고 방제가 있는 경우
+            } else if(room.headCount > 2){
+                otherParticipantsName = room.title;
+            // 1:1톡인 경우
+            } else {
+                otherParticipantsName = otherParticipant && otherParticipant[0] && otherParticipant[0].User.name;
+            }
+
             userRoomList.push({
                 id: room.no,
                 type: room.type,
-                name: otherParticipant && otherParticipant[0] && otherParticipant[0].User.name,
+                name: otherParticipantsName,
                 participantNo: currentParticipant.no, // 이 채팅방의 '나'
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
@@ -167,6 +150,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 id: room.no,
                 type: room.type,
                 name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
+                phoneNumber: openChatHost && openChatHost.User.phoneNumber,
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,
@@ -192,23 +176,31 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         userFriendList.push({
             no: friend.no,
             name: friend.name,
-            email: friend.email,
+            username: friend.username,
             comments: friend.comments,
             avatar: <figure className="avatar">
                 <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
-            </figure>
+            </figure>,
+            createdAt: friend.createdAt,
+            lastLoginAt:friend.lastLoginAt,
+            profileImageUrl: friend.profileImageUrl,
+            phoneNumber: friend.phoneNumber
         })
     });
 
     followerList.map((follower, i) => {
         userFollowerList.push({
             no: follower.no,
-            email: follower.username,
+            username: follower.username,
             name: follower.name,
             comments: follower.comments,
             avatar: <figure className="avatar">
                 <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
-            </figure>
+            </figure>,
+            createdAt: follower.createdAt,
+            lastLoginAt:follower.lastLoginAt,
+            profileImageUrl: follower.profileImageUrl,
+            phoneNumber: follower.phoneNumber
         })
     });
 

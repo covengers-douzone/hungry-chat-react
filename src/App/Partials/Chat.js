@@ -7,6 +7,7 @@ import myFetch from "../Module/fetchApi";
 import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
 import {chatForm, chatMessageForm} from "../Module/chatForm";
+import OpenImageModal from "../Modals/OpenImageModal";
 /*오른쪽 마우스 눌렸을 때 나오는 메뉴*/
 import {ContextMenu, MenuItem, ContextMenuTrigger} from "react-contextmenu";
 import {reloadAction} from "../../Store/Actions/reloadAction";
@@ -16,6 +17,7 @@ import {lastReadNoAction} from "../../Store/Actions/lastReadNoAction";
 import {headCountAction} from "../../Store/Actions/headCountAction";
 import {messageAllLengthAction} from "../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../Store/Actions/joinOKAction";
+import UploadFileModal from "../Modals/UploadFileModal";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -52,6 +54,18 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
+
+    // image 클릭 시 image 크게 보이게 하는 modal
+    const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+    // modal에서 사용; modal 닫을 때 실행되는 함수
+    const editOpenImageModalToggle = () => {
+        // openImageModalOpen : false로 설정
+        setOpenImageModalOpen(!openImageModalOpen);
+        // image file 없애기
+        setImage(null);
+    }
+
     const inputRef = useRef();
 
     useEffect(() => {
@@ -63,14 +77,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
     }, [sendOk])
 
     useEffect(() => {
-
-
         socket.emit("deleteMessage", ({roomNo , chatNo}) , async (response) => {
             if (response.status === 'ok') {
             }
         })
-
-
     }, [deleteOk])
 
     useEffect(() => {
@@ -135,7 +145,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         //     console.log("handlePaging")
         //     setLastPage(lastPage - config.CHAT_LIMIT)
         // }
-
     }
 
     // 스크롤이 맨 위에 위치 했을때 실행되는 핸들러
@@ -180,15 +189,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // console.log(  data , '번 채팅 선택');
     }
+
+    const handleClickMessage = (message) => {
+        // image가 있는 message인 경우
+        if(message && message.text && message.text.props && message.text.type){
+            // image source(이미지 저장 위치: localhost:9999/assets/~~~)
+            const imgSource = message.text.props.src
+            // open image modal
+            setImage(imgSource);
+            setOpenImageModalOpen(true);
+        }
+    }
+
     const MessagesView = (props) => {
         const {message} = props;
+        //console.log(message.text.type);
 
         if (message.type === 'divider') {
             return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
         } else {
             return (
 
-                <div className={"message-item " + message.type} ref={messageRef}>
+                <div className={"message-item " + message.type} ref={messageRef} onClick={() => handleClickMessage(message)}>
                     <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
                         <div className={"message-content " + (message.file ? 'message-file' : null)}>
                             {message.file ? message.file : message.text}
@@ -219,7 +241,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     <div>
                         {message.participantNo}
                     </div>
-
                 </div>);
         }
     };
@@ -294,6 +315,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         </div>
                     </div>
             }
+            <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} />
         </div>
     )
 })

@@ -27,8 +27,6 @@ function OpenChatPasswordModal({modal, setModal, enterPasswordChat, roomList}) {
     const [password, setPassword] = useState("");
     const [wrongPasswordAlert, setWrongPasswordAlert] = useState(false);
 
-
-
     // // Create Button Event
     // const modalToggle = () => {
     //     setModal(!modal);
