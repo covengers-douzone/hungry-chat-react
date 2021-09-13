@@ -124,10 +124,12 @@ function Navigation() {
                     {/*        <i className="ti ti-pencil" style={opacity}></i>*/}
                     {/*    </a>*/}
                     {/*</li>*/}
-                    <li>
-                        <a onClick={settingsModalToggle}>
-                                <i className="ti ti-settings" style={opacity}></i>
-                        </a>
+                    <li className="brackets">
+                        <li>
+                            <a onClick={settingsModalToggle}>
+                                    <i className="ti ti-settings" style={opacity}></i>
+                            </a>
+                        </li>
                     </li>
                     <li>
                         <a href="/" onClick={() => {

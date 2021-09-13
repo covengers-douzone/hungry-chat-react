@@ -108,7 +108,7 @@ function EditProfileModal(props) {
                                         <Input type="text" name="city" id="city" placeholder="Ex: Columbia"/>
                                     </InputGroup>
                                 </FormGroup>
-                                {/*<FormGroup>
+                                <FormGroup>
                                     <Label for="phone">Phone</Label>
                                     <InputGroup>
                                         <InputGroupAddon addonType="prepend">
@@ -221,7 +221,7 @@ function EditProfileModal(props) {
                                         </InputGroupAddon>
                                         <Input type="text" name="whatsapp" id="whatsapp" placeholder="Username"/>
                                     </InputGroup>
-                                </FormGroup>*/}
+                                </FormGroup>
                             </TabPane>
                         </TabContent>
                     </Form>
