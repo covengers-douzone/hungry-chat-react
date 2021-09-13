@@ -38,7 +38,7 @@ function ResetPassword({location}) {
             <div className="logo">
                 <Logo/>
             </div>
-            <h5>Reset password</h5>
+            <h5>비밀번호 초기화</h5>
             <form onSubmit={ handleSubmit(onSubmit) }>
                 <div className="form-group">
                     <input id="username" name="username" className="form-control form-control-lg" type="hidden" value={foundUsername} />
@@ -53,12 +53,12 @@ function ResetPassword({location}) {
                     })} id="password" name="password" type="password" className="form-control form-control-lg" placeholder="문자,숫자,특수문자포함 8~15자리" required autoFocus/>
                     <span >{errors.password && errors.password.message}</span>
                 </div>
-                <button type="submit" className="btn btn-primary btn-block btn-lg">Submit</button>
+                <button type="submit" className="btn btn-primary btn-block btn-lg">비밀번호 변경</button>
 
                 <hr/>
-                <p className="text-muted">Take a different action.</p>
-                or
-                <a href="/" className="btn btn-sm btn-outline-light ml-1">Login!</a>
+
+            
+                <a href="/" className="btn btn-sm btn-outline-light ml-1">로그인하기</a>
             </form>
         </div>
     )
