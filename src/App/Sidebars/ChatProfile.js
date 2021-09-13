@@ -2,30 +2,31 @@ import React, {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {chatProfileAction} from "../../Store/Actions/chatProfileAction"
-import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction"
+//import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction"
 import fetchApi from "../Module/fetchApi";
 
 function ChatProfile() {
 
     const dispatch = useDispatch();
 
-    const {chatInfo} = useSelector(state => state);
+    const {profileInfo} = useSelector(state => state);
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
     const {reload} = useSelector(state => state);
 
     useEffect( ()=>{
-        console.log(chatInfo);
+        console.log(profileInfo);
     }, []);
 
     const profileActions = (e) => {
         e.preventDefault();
         dispatch(chatProfileAction(false));
-        dispatch(mobileChatProfileAction(false))
+        //dispatch(mobileChatProfileAction(false))
     };
-    ( mobileChatProfileSidebar || chatProfileSidebar ) && console.log('chatProfile',chatInfo);
+    ( mobileChatProfileSidebar || chatProfileSidebar ) && console.log('chatProfile',profileInfo);
 
     return (
-        <div className={`sidebar-group ${mobileChatProfileSidebar ? "mobile-open" : ""}`}>
+        // <div className={`sidebar-group ${mobileChatProfileSidebar ? "mobile-open" : ""}`}>
+        <div className={`sidebar-group ${chatProfileSidebar ? "mobile-open" : ""}`}>
                 <div className={chatProfileSidebar ? 'sidebar active' : 'sidebar'}>
                     <header>
                         <span>방 정보</span>
@@ -42,21 +43,21 @@ function ChatProfile() {
                         <PerfectScrollbar>
                             <div className="text-center">
                                 <figure className="avatar avatar-state-danger avatar-xl mb-4">
-                                    <img src={chatInfo.profileImageUrl} id="profile-avatar" className="rounded-circle" alt="avatar"/>
+                                    <img src={profileInfo.profileImageUrl} id="profile-avatar" className="rounded-circle" alt="avatar"/>
                                 </figure>
-                                <h5 className="text-primary mb-1">{chatInfo.name}</h5>
-                                <small className="text-muted">계정 생성일: {chatInfo.createdAt}</small><br/>
-                                <small className="text-muted">최근 로그인: {chatInfo.lastLoginAt}</small>
+                                <h5 className="text-primary mb-1">{profileInfo.name}</h5>
+                                <small className="text-muted">계정 생성일: {profileInfo.createdAt}</small><br/>
+                                <small className="text-muted">최근 로그인: {profileInfo.lastLoginAt}</small>
                             </div>
                             <hr/>
                             <div className="pl-4 pr-4">
                                 <h6>인원 수</h6>
-                                <p className="text-muted">{chatInfo.headcount} 명</p>
+                                <p className="text-muted">{profileInfo.headcount} 명</p>
                             </div>
                             <div className="pl-4 pr-4">
                                 <h6>참여자 정보</h6>
                                 {
-                                    chatInfo.otherParticipantNo.map(participant => {
+                                    profileInfo.otherParticipantNo.map(participant => {
                                         return (
                                             <span>
                                                 <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left'}}/>
@@ -68,7 +69,7 @@ function ChatProfile() {
                             </div>
                             <div className="pl-4 pr-4">
                                 <h6>휴대폰</h6>
-                                <p className="text-muted">{chatInfo.phoneNumber}</p>
+                                <p className="text-muted">{profileInfo.phoneNumber}</p>
                             </div>
 
                             {/*/!*<hr/>*/}

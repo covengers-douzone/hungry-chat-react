@@ -14,14 +14,16 @@ import {participantNoAction} from "../../Store/Actions/participantNoAction";
 import {roomNoAction} from "../../Store/Actions/roomNoAction";
 import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
 import {chatProfileAction} from "../../Store/Actions/chatProfileAction";
-import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
+//import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
+import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
+import fetchApi from "../Module/fetchApi";
 
 function ChatHeader(props) {
 
     const dispatch = useDispatch();
-    const {chatInfo} = useSelector(state => state);
+    const {profileInfo} = useSelector(state => state);
     const {reload} = useSelector(state => state);
-
+    const {roomNo} = useSelector(state=>state)
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -33,21 +35,22 @@ function ChatHeader(props) {
 
     const chatProfileActions = () => {
         dispatch(chatProfileAction(true));
-        dispatch(mobileChatProfileAction(true));
+        //dispatch(mobileChatProfileAction(true));
     }
 
     const chatDeleteAction = async () => {
-        console.log(chatInfo);
         try {
             await axios.post(`${config.URL}/api/deleteChat`, {
-                openChatHostCheck: chatInfo.openChatHostCheck,
-                participantNo: chatInfo.participantNo,
-                roomNo: chatInfo.id,
+                openChatHostCheck: profileInfo.openChatHostCheck,
+                participantNo: profileInfo.participantNo,
+                roomNo: profileInfo.id,
                 Authorization: localStorage.getItem("Authorization"),
             }).then(res => {
+                fetchApi(null, null).updateHeadCount("exit",roomNo, localStorage.getItem("Authorization"))
                 dispatch(reloadAction(!reload));
                 dispatch(participantNoAction(false))
                 dispatch(roomNoAction(false))
+                dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
                 dispatch(sidebarAction('Chat'));
 

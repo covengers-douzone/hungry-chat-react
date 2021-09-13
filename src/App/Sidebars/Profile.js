@@ -3,20 +3,14 @@ import {useDispatch, useSelector} from "react-redux"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {profileAction} from "../../Store/Actions/profileAction"
 import {mobileProfileAction} from "../../Store/Actions/mobileProfileAction"
-import fetchApi from "../Module/fetchApi";
 
 function Profile() {
 
     const dispatch = useDispatch();
 
-    const {chatInfo} = useSelector(state => state);
+    const {profileInfo} = useSelector(state => state);
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
     const {reload} = useSelector(state => state);
-
-    useEffect( ()=>{
-        console.log(chatInfo);
-    }, []);
-
 
     const profileActions = (e) => {
         e.preventDefault();
@@ -28,7 +22,7 @@ function Profile() {
         <div className={`sidebar-group ${mobileProfileSidebar ? "mobile-open" : ""}`}>
             <div className={profileSidebar ? 'sidebar active' : 'sidebar'}>
                     <header>
-                        <span>{chatInfo.name}의 정보</span>
+                        <span>{profileInfo.name}의 정보</span>
                         <ul className="list-inline">
                             <li className="list-inline-item">
                                 <a href="/#/" onClick={(e) => profileActions(e)}
@@ -42,24 +36,24 @@ function Profile() {
                         <PerfectScrollbar>
                             <div className="text-center">
                                 <figure className="avatar avatar-state-danger avatar-xl mb-4">
-                                    <img src={chatInfo.profileImageUrl} id="profile-avatar" className="rounded-circle" alt="avatar"/>
+                                    <img src={profileInfo.profileImageUrl} id="profile-avatar" className="rounded-circle" alt="avatar"/>
                                 </figure>
-                                <h5 className="text-primary mb-1">{chatInfo.name}</h5>
-                                <small className="text-muted">계정 생성일: {chatInfo.createdAt}</small><br/>
-                                <small className="text-muted">최근 로그인: {chatInfo.lastLoginAt}</small>
+                                <h5 className="text-primary mb-1">{profileInfo.name}</h5>
+                                <small className="text-muted">계정 생성일: {profileInfo.createdAt}</small><br/>
+                                <small className="text-muted">최근 로그인: {profileInfo.lastLoginAt}</small>
                             </div>
                             <hr/>
                             <div className="pl-4 pr-4">
                                 <h6>이메일</h6>
-                                <p className="text-muted">{chatInfo.username}</p>
+                                <p className="text-muted">{profileInfo.username}</p>
                             </div>
                             <div className="pl-4 pr-4">
                                 <h6>나의상태</h6>
-                                <p className="text-muted">{chatInfo.comments}</p>
+                                <p className="text-muted">{profileInfo.comments}</p>
                             </div>
                             <div className="pl-4 pr-4">
                                 <h6>휴대폰</h6>
-                                <p className="text-muted">{chatInfo.phoneNumber}</p>
+                                <p className="text-muted">{profileInfo.phoneNumber}</p>
                             </div>
 
                             {/*/!*<hr/>*/}

@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import axios from "axios";
 import * as config from "../../../config/config";
+import fetchApi from "../../Module/fetchApi";
 
 const ChatsDropdown = ({chat}) => {
 
@@ -30,6 +31,7 @@ const ChatsDropdown = ({chat}) => {
                 roomNo: chat.id,
                 Authorization: localStorage.getItem("Authorization"),
             }).then(res => {
+                fetchApi(null, null).updateHeadCount("exit",chat.id, localStorage.getItem("Authorization"))
                 dispatch(reloadAction(!reload));
             }).catch(err => {
                 console.log(`${err.message}`)

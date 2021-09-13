@@ -31,6 +31,8 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 console.log("권한:" , localStorage.getItem("role"))
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
+                fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+                fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
             } else { // 회원 로직
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
@@ -60,6 +62,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
+                openChatHost:openChatHost && openChatHost.User,
                 participantNo: currentParticipant && currentParticipant.no,
                 otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
                 avatar: <figure className="avatar avatar-state-success">
@@ -175,23 +178,31 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         userFriendList.push({
             no: friend.no,
             name: friend.name,
-            email: friend.email,
+            username: friend.username,
             comments: friend.comments,
             avatar: <figure className="avatar">
                 <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
-            </figure>
+            </figure>,
+            createdAt: friend.createdAt,
+            lastLoginAt:friend.lastLoginAt,
+            profileImageUrl: friend.profileImageUrl,
+            phoneNumber: friend.phoneNumber
         })
     });
 
     followerList.map((follower, i) => {
         userFollowerList.push({
             no: follower.no,
-            email: follower.username,
+            username: follower.username,
             name: follower.name,
             comments: follower.comments,
             avatar: <figure className="avatar">
                 <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
-            </figure>
+            </figure>,
+            createdAt: follower.createdAt,
+            lastLoginAt:follower.lastLoginAt,
+            profileImageUrl: follower.profileImageUrl,
+            phoneNumber: follower.phoneNumber
         })
     });
 
@@ -212,7 +223,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
 
                         return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList}
                                                friendList={friendList}
-
                                                history={history}/>
                     }
                 })()
