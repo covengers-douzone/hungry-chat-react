@@ -17,6 +17,7 @@ function Activation({location}) {
     let [ disabledSendBtn, setDisabledSendBtn ] = useState(true);
     let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
     const [alertOpen, setAlertOpen] = useState(false);
+    const [successAlertOpen, setSuccessAlertOpen] = useState(false);
     let history = useHistory();
 
     function getNumHandler(e){
@@ -56,15 +57,13 @@ function Activation({location}) {
                 return response.json();
         }).then(response => {
                 if(response.result === "success") { // 성공
-                    alert("인증 코드 발송 완료");
+                    setSuccessAlertOpen(true);
                     setDisabledCode(false);
-                }else if(response.status === 400){ // 이미 등록된 번호
-                    alert(response.message);
-                }else { // 서버 문제
-                    alert("인증 코드 발송 실패");
+                }else {
+                    setAlertOpen(true);
                 }
         }).catch(error => {
-                alert("Error: " + error.message);
+                console.error("Error: " + error.message);
                 history.push("/");
         })
     }
@@ -152,6 +151,7 @@ function Activation({location}) {
                 </div>
 
                 <div className="form-group">
+                    <Alert isOpen={successAlertOpen} color="info">인증 코드 발송 성공</Alert>
                     <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
                     <button onClick={ smsApiHandler } disabled={ disabledSendBtn} style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">번호 전송</button>
                 </div>
@@ -159,7 +159,7 @@ function Activation({location}) {
                     <input disabled={ disabledCode } id="userNum" name="code" type="number" className="form-control form-control-lg" placeholder="인증번호 입력" required/>
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
-                <Alert isOpen={alertOpen} color="info">잘못된 인증 번호입니다.</Alert>
+                    <Alert isOpen={alertOpen} color="info">잘못된 인증 번호입니다.</Alert>
                 <button className="btn btn-primary btn-block btn-lg">제출하기</button>
             </form>
         </div>
