@@ -228,8 +228,8 @@ const Index = React.forwardRef(({
 
     const profileActions = (chat) => {
         dispatch(chatInfoAction(chat));
-        dispatch(profileAction(true));
-        dispatch(mobileProfileAction(true))
+        //dispatch(profileAction(true));
+        //dispatch(mobileProfileAction(true))
     };
 
     const ChatListView = (props) => {

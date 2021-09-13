@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, {useState, useEffect} from 'react'
-=======
-import React, {useEffect} from 'react'
->>>>>>> b480da89353bc421440027d1279b5b2106a758ec
 import {useDispatch, useSelector} from "react-redux"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import {profileAction} from "../../Store/Actions/profileAction"
