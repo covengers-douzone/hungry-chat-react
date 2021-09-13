@@ -7,6 +7,7 @@ import ChatProfile from './Sidebars/ChatProfile';
 
 import Chat from "./Partials/Chat";
 import DisconnectedModal from "./Modals/DisconnectedModal";
+import {useSelector} from "react-redux";
 
 
 function Layout({history}) {
@@ -15,7 +16,9 @@ function Layout({history}) {
     let upOffset = 0;
     let downOffset = 0;
 
-    const scrollRef = useRef()
+    const scrollRef = useRef();
+    const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
+    const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
 
     useEffect(() => {
         document.querySelector('*').addEventListener('click', (e) => {
@@ -33,8 +36,12 @@ function Layout({history}) {
             <div className="content">
                 <SidebarIndex history={history}  ref = {scrollRef}  upOffset = {upOffset}  downOffset={downOffset}/>
                 <Chat history={history}  ref = {scrollRef} upOffset = {upOffset} downOffset ={downOffset} />
-                <Profile/>
-                <ChatProfile/>
+                {
+                    (profileSidebar || mobileProfileSidebar) ? <Profile/> : null
+                }
+                {
+                    (chatProfileSidebar || mobileChatProfileSidebar) ? <ChatProfile/> : null
+                }
                 <DisconnectedModal/>
             </div>
         </div>

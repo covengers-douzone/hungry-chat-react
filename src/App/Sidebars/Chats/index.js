@@ -24,7 +24,7 @@ import {func} from "prop-types";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 import {chatForm, chatMessageForm} from "../../Module/chatForm";
-import {chatprofileAction} from "../../../Store/Actions/chatprofileAction";
+import {chatProfileAction} from "../../../Store/Actions/chatProfileAction";
 import {mobileChatProfileAction} from "../../../Store/Actions/mobileChatProfileAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
