@@ -39,11 +39,9 @@ function ChatHeader(props) {
                 Authorization: localStorage.getItem("Authorization"),
             }).then(res => {
                 dispatch(reloadAction(!reload));
-
                 dispatch(participantNoAction(false))
                 dispatch(roomNoAction(false))
                 dispatch(selectedChatAction(false));
-                // dispatch(mobileSidebarAction(true));
                 dispatch(sidebarAction('Chat'));
 
             }).catch(err => {

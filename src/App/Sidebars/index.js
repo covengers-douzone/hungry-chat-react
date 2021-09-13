@@ -135,6 +135,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 id: room.no,
                 type: room.type,
                 name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
+                phoneNumber: openChatHost && openChatHost.User.phoneNumber,
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,

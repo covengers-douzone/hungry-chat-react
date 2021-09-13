@@ -14,7 +14,7 @@ function ChatProfile() {
     const userChatProfileList = [];
     const {reload} = useSelector(state => state);
     const [chatProfileList, setChatProfileList] = useState([]);
-    
+
     useEffect( ()=>{
         try{
             fetchApi(chatProfileList,setChatProfileList).getRoomList(userNo, localStorage.getItem("Authorization"))
@@ -22,7 +22,7 @@ function ChatProfile() {
             console.log(err);
         }
     }, [reload]);
-    
+
     chatProfileList.map((partner, i) => {
         userChatProfileList.push({
             no: partner.no,
@@ -36,7 +36,7 @@ function ChatProfile() {
         })
     });
     console.log(userChatProfileList);
-   
+
     JSON.stringify(chatProfileList[1], ["Participants"])
 
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
@@ -46,14 +46,14 @@ function ChatProfile() {
         dispatch(chatprofileAction(false));
         dispatch(mobileChatProfileAction(false))
     };
-    
+
     return (
         <div className={`sidebar-group ${mobileChatProfileSidebar ? "mobile-open" : ""}`}>
             <div className={chatProfileSidebar ? 'sidebar active' : 'sidebar'}>
                 {
-                
-                chatProfileList.map((item, i) => 
-                
+
+                chatProfileList.map((item, i) =>
+
                 <header>
                     <span>{item.name}의 정보</span>
                     <ul className="list-inline" key={i}>
@@ -66,11 +66,11 @@ function ChatProfile() {
                     </ul>
                 </header>
                 )
-                
+
                 }
 
-                {true && chatProfileList.map((item, i) => 
-                
+                {true && chatProfileList.map((item, i) =>
+
                 <div className="sidebar-body" key={i}>
                     <PerfectScrollbar>
                         <div className="text-center">
@@ -94,8 +94,8 @@ function ChatProfile() {
                             <h6>휴대폰</h6>
                             <p className="text-muted">{item.phoneNumber}</p>
                         </div>
-                      
-                       
+
+
                     </PerfectScrollbar>
                 </div>
                 )
