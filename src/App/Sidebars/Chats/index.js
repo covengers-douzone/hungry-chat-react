@@ -26,6 +26,8 @@ import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 import {chatForm, chatMessageForm} from "../../Module/chatForm";
 import {chatprofileAction} from "../../../Store/Actions/chatprofileAction";
 import {mobileChatProfileAction} from "../../../Store/Actions/mobileChatProfileAction";
+import {profileAction} from "../../../Store/Actions/profileAction";
+import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
 
 const Index = React.forwardRef(({
