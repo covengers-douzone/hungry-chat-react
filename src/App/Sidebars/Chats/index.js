@@ -6,7 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import AddGroupModal from "../../Modals/AddGroupModal"
 import ChatsDropdown from "./ChatsDropdown"
 import {sidebarAction} from "../../../Store/Actions/sidebarAction"
-import {chatInfoAction} from "../../../Store/Actions/chatInfoAction";
+import {profileInfoAction} from "../../../Store/Actions/profileInfoAction";
 //import {chatLists} from "./Data";
 import fetchApi from "../../Module/fetchApi";
 import fetchList from "../../Module/fetchList";
@@ -20,12 +20,9 @@ import * as config from "../../../config/config"
 import {headCountAction} from "../../../Store/Actions/headCountAction";
 import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
-import {func} from "prop-types";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
 import {chatForm, chatMessageForm} from "../../Module/chatForm";
-import {chatprofileAction} from "../../../Store/Actions/chatprofileAction";
-import {mobileChatProfileAction} from "../../../Store/Actions/mobileChatProfileAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 
@@ -204,7 +201,7 @@ const Index = React.forwardRef(({
 
     const chatSelectHandle = async (chat) => {
         try {
-            dispatch(chatInfoAction(chat));
+            dispatch(profileInfoAction(chat));
             chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
@@ -236,9 +233,8 @@ const Index = React.forwardRef(({
             }
             otherUserProfile = participant.User
         })
-        console.log(otherUserProfile.length)
         // 개인톡(내가 방장일 경우)
-        hostProfile === undefined ? dispatch(chatInfoAction(otherUserProfile)) : dispatch(chatInfoAction(hostProfile));
+        hostProfile === undefined ? dispatch(profileInfoAction(otherUserProfile)) : dispatch(profileInfoAction(hostProfile));
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
     };
