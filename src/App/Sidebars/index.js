@@ -28,6 +28,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         try {
             // 비회원 로직
             if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+                console.log("권한:" , localStorage.getItem("role"))
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
             } else { // 회원 로직
@@ -41,7 +42,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             console.log(err);
         }
     }, [reload]);
-    if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
+
         openRoomList.map((room, i) => {
             const openChatHost = room.Participants.filter(participant => {
                 return participant.role === "ROLE_HOST"
@@ -73,39 +74,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 headcount: room.headCount
             });
         })
-    } else {
-        openRoomList.map((room, i) => {
-            const openChatHost = room.Participants.filter(participant => {
-                return participant.role === "ROLE_HOST"
-            })[0];
-            const currentParticipant = room.Participants.filter(participant => {
-                return Number(participant.userNo) === Number(userNo)
-            })[0];
-            const otherParticipant = room.Participants.filter(participant => {
-                return Number(participant.userNo) !== Number(userNo)
-            });
-
-            userOpenRoomList.push({
-                id: room.no,
-                type: room.type,
-                name: room.title === '' ? openChatHost && openChatHost.User.name + " 님의 오픈 채팅입니다." : room.title,
-                password: room.password,
-                openChatHostNo: openChatHost && openChatHost.no,
-                participantNo: currentParticipant && currentParticipant.no,
-                otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
-                avatar: <figure className="avatar avatar-state-success">
-                    <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
-                         alt="avatar"/>
-                </figure>,
-                text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
-                date: '03:41 PM',
-                unread_messages: 1,
-                messages: [],
-                openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
-                headcount: room.headCount
-            });
-        })
-    }
     // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
 
 
