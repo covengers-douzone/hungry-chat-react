@@ -7,6 +7,7 @@ import * as config from "../../config/config";
 import fetchApi from "../Module/fetchApi";
 
 function Profile() {
+
     const dispatch = useDispatch();
 
     const userNo = Number(localStorage.getItem("userNo"));
@@ -59,6 +60,7 @@ function Profile() {
                         </li>
                     </ul>
                 </header>
+                
                 )
                 }
 

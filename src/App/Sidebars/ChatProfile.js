@@ -37,7 +37,6 @@ function ChatProfile() {
     });
     console.log(userChatProfileList);
    
-    console.log(    JSON.stringify(chatProfileList[1], ["Participants"]));
     JSON.stringify(chatProfileList[1], ["Participants"])
 
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
