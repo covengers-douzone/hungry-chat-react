@@ -6,6 +6,16 @@ figure {
 		width: $default-avatar-size;
 		border-radius: 50%;
 
+		#profile-avatar{
+			padding:20px;
+			&:active{
+				position: absolute;
+				top: 200px;
+				right: 1px;
+				transition: .10s;
+				transform: scale(5);
+			}
+		}
 		.avatar-title {
 			color: rgba(white, .8);
 			background: white - 40;

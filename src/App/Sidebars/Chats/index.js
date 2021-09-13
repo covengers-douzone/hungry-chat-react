@@ -227,9 +227,17 @@ const Index = React.forwardRef(({
     };
 
 
-
     const profileActions = (chat) => {
-        dispatch(chatInfoAction(chat));
+        let hostProfile;
+        let otherUserProfile;
+        chat.otherParticipantNo.map(participant => {
+            if(participant.role === "ROLE_HOST"){
+                hostProfile = participant.User
+            }
+            otherUserProfile = participant.User
+        })
+        // 개인톡(내가 방장일 경우)
+        hostProfile === undefined ? dispatch(chatInfoAction(otherUserProfile)) : dispatch(chatInfoAction(hostProfile));
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
     };
