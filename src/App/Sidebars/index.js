@@ -5,6 +5,7 @@ import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
 import fetchApi from "../Module/fetchApi";
+import * as config from "../../config/config";
 
 const Index = React.forwardRef(({history}, scrollRef) => {
 
@@ -81,6 +82,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
 
 
     roomList.map((room, i) => {
+
         const openChatHost = room.Participants.filter(participant => {
             return participant.role === "ROLE_HOST"
         })[0];
@@ -92,6 +94,8 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         });
 
         if (room.type === "private") {
+
+
             // (방 제목) 다른 유저들의 이름
             let otherParticipantsName;
 
