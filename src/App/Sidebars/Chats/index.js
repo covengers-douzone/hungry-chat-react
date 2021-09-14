@@ -119,6 +119,16 @@ const Index = React.forwardRef(({
 
                 if (users[users.length - 1].id !== socket.id) { //  내꺼를 업데이트 시킨다.
                     // chat list update
+                    // lastPage가 -로 들어 갈때 처리 해주는 조건문
+
+                    //쳇 리스트 갯수 구하기
+                    const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+
+                    if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
+                        lastPage = 0;
+                    } else {
+                        lastPage = chatListCount.count - config.CHAT_LIMIT
+                    }
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                     const chats = chatlist.map((chat) => chatForm(chat, participantNo));
                     selectedChat.messages = chats;
