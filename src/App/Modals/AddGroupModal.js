@@ -38,40 +38,53 @@ function AddGroupModal({friendList}) {
 
     const [completeInvite , setCompleteInvite] = useState(false)
 
+
+
     const callbackSetItem = (checkItems) => {
-        setCheckedItems(checkItems)
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
+            setCheckedItems(checkItems)
+
     }
 
     const callbackComplete = () => {
-        setCompleteInvite(!completeInvite)
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
+            setCompleteInvite(!completeInvite)
+
     }
     const callbackAddItem = (value) => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
         checkedItems.add(value)
     }
     const callbackDeleteItem = (value) => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
         checkedItems.delete(value)
     }
 
 
     const openInviteModal = async () => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
         setOpenInvite(!openInvite)
     }
 
     // Create Button Event
     const modalToggle = () => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
         setModal(!modal);
     }
 
     const createRoom = async () => {
-        const headcount = checkedItems.size + 1
-        const roomNo = await fetchApi(null, null).createRoom(title,content === '' ? "Private Chat" : content, headcount ,"private", null , localStorage.getItem("Authorization"));
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+            const headcount = checkedItems.size + 1
+            const roomNo = await fetchApi(null, null).createRoom(title,content === '' ? "Private Chat" : content, headcount ,"private", null , localStorage.getItem("Authorization"));
 
-        await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
+            await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
 
-        Array.from(checkedItems).map(async (item, index) => (
-            await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
-        ))
-        setModal(!modal);
+            Array.from(checkedItems).map(async (item, index) => (
+                await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+            ))
+            setModal(!modal);
+        }
+
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
