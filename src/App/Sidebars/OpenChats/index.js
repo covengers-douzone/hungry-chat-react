@@ -15,8 +15,11 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {profileInfoAction} from "../../../Store/Actions/profileInfoAction";
+import roleStyle from "../../Module/roleStyle";
 
 function Index({roomList, openRoomList, history,}) {
+    let opacity = roleStyle().opacity()
+
     const dispatch = useDispatch();
     const inputRef = useRef();
     const {selectedChat} = useSelector(state => state);
@@ -136,7 +139,7 @@ function Index({roomList, openRoomList, history,}) {
                     {/*        오픈 채팅*/}
                     {/*    </Tooltip>*/}
                     {/*</li>*/}
-                    <li className="list-inline-item">
+                    <li className="list-inline-item" style={opacity} >
                         <AddOpenChatModal/>
                         {/*<AddGroupModal friendList={friendList}/>*/}
                     </li>
