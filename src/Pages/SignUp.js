@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import { useForm } from "react-hook-form";
+import {Alert} from "reactstrap";
 
 function SignUp({history}) {
     let [ color, setColor ] = useState("deeppink");
@@ -8,6 +9,17 @@ function SignUp({history}) {
     let [ disabledCode, setDisabledCode ] = useState(true);
     let [ disabledSendBtn, setDisabledSendBtn ] = useState(true);
     let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
+    const [successAlertOpen, setSuccessAlertOpen] = useState(false);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [failAlertOpen, setFailAlertOpen] = useState(false);
+    const [errorAlertOpen, setErrorAlertOpen] = useState(false);
+    const [codeErrorAlertOpen, setCodeErrorAlertOpen] = useState(false);
+    const [emailErrorAlertOpen, setEmailErrorAlertOpen] = useState(false);
+
+    const [userName, setUserName] = useState();
+
+    const [inputCode, setInputCode] = useState();
+
 
     const { register, handleSubmit, errors } = useForm();
 
@@ -51,16 +63,16 @@ function SignUp({history}) {
             })
             .then(response => {
                 if(response.result === "success") { // 성공
-                    alert("인증 코드 발송 완료");
+                    setSuccessAlertOpen(true)
                     setDisabledCode(false);
                 }else if(response.status === 400){ // 이미 등록된 번호
-                    alert(response.message);
+                    setFailAlertOpen(true);
                 }else { // 서버 문제
-                    alert("인증 코드 발송 실패");
+                    setErrorAlertOpen(true);
                 }
             })
             .catch(error => {
-                alert("Error: " + error.message);
+                console.error("Error: " + error.message);
                 history.push("/");
             })
     }
@@ -71,40 +83,63 @@ function SignUp({history}) {
 
     const onSubmit = function handleSubmit(errors, e){
         e.preventDefault();
-        fetch("http://localhost:8888/api/user/join", {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": "http://localhost:8888",
-                "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                'Accept': 'application/json, text/plain',
-                'Content-Type': 'application/json;charset=UTF-8'
-            },
-            body: JSON.stringify({
-                username: e.target.email.value,
-                password: e.target.password.value,
-                name: e.target.name.value,
-                phoneNumber: e.target.number.value,
+
+        if(code.toString() === inputCode){
+            fetch("http://localhost:8888/api/user/join", {
+                method: "POST",
+                credentials: 'include',
+                headers: {
+                    "Access-Control-Allow-Headers" : "Content-Type",
+                    "Access-Control-Allow-Origin": "http://localhost:8888",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    'Accept': 'application/json, text/plain',
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    username: e.target.email.value,
+                    password: e.target.password.value,
+                    name: e.target.name.value,
+                    phoneNumber: e.target.number.value,
+                })
             })
-        })
-            .then(response =>  {
-                return response.json();
-            })
-            .then(response => {
-                console.log(response.result);
-                if(response.result === "success"){
-                    alert(`${response.data.name}님 회원 가입을 축하합니다.`);
+                .then(response =>  {
+                    return response.json();
+                })
+                .then(response => {
+                    if(response.result === "success"){
+                        setEmailErrorAlertOpen(false);
+                        setCodeErrorAlertOpen(false);
+                        setSuccessAlertOpen(false);
+                        setFailAlertOpen(false);
+                        setErrorAlertOpen(false);
+                        setAlertOpen(true);
+                        setUserName(response.data.name);
+                        setTimeout(()=>  history.push("/"), 5000);
+
+                        // alert(`${response.data.name}님 회원 가입을 축하합니다.`);
+
+                    }else{
+                        setEmailErrorAlertOpen(false);
+                        setCodeErrorAlertOpen(false);
+                        setSuccessAlertOpen(false);
+                        setFailAlertOpen(false);
+                        setErrorAlertOpen(false);
+                        setEmailErrorAlertOpen(true);
+                        history.push("/sign-up");
+                    }
+                }).catch(error => {
+                    alert("Error: " + error.message);
                     history.push("/");
-                }else{
-                    alert("이미 존재하는 이메일입니다.");
-                    history.push("/sign-up");
-                }
-            })
-            .catch(error => {
-                alert("Error: " + error.message);
-                history.push("/");
-            })
+                })
+        } else {
+            setEmailErrorAlertOpen(false);
+            setCodeErrorAlertOpen(false);
+            setSuccessAlertOpen(false);
+            setFailAlertOpen(false);
+            setErrorAlertOpen(false);
+
+            setCodeErrorAlertOpen(true);
+        }
     }
 
     useEffect(() => document.body.classList.add('form-membership'), []);
@@ -115,13 +150,17 @@ function SignUp({history}) {
                 <Logo/>
             </div>
             <h5>회원가입</h5>
+            <Alert isOpen={alertOpen} color="info">{userName}님 회원가입을 축하합니다. 5초 뒤에 로그인 화면으로 이동합니다.</Alert>
             <form onSubmit={ handleSubmit(onSubmit) }>
                 <div className="form-group">
                     <input name="name" type="text" className="form-control form-control-lg" placeholder="이름" required autoFocus/>
                 </div>
+
+                <Alert isOpen={emailErrorAlertOpen} color="info">이미 존재하는 이메일입니다.</Alert>
                 <div className="form-group">
                     <input name="email" type="email" className="form-control form-control-lg" placeholder="이메일" required/>
                 </div>
+
                 <div className="form-group">
                     <input ref={register({
                         required:"Required",
@@ -132,12 +171,21 @@ function SignUp({history}) {
                     })} name="password" type="password" className="form-control form-control-lg" placeholder="문자,숫자,특수문자포함 8~15자리"  required/>
                     <span >{errors.password && errors.password.message}</span>
                 </div>
+
+                <Alert isOpen={successAlertOpen} color="info">인증 코드 발송 성공</Alert>
+                <Alert isOpen={failAlertOpen} color="info">이미 존재하는 번호입니다.</Alert>
+                <Alert isOpen={errorAlertOpen} color="info">인증 코드 발송 실패</Alert>
                 <div className="form-group">
                     <input onChange={ getNumHandler } value={ userPhoneNumber } id="number" name="number" type="number" className="form-control form-control-lg" placeholder="01012345678" required/>
                     <button onClick={ smsApiHandler } disabled={ disabledSendBtn } style={{backgroundColor:color}} className="btn btn-primary btn-block btn-lg">번호 전송</button>
                 </div>
+
+                <Alert isOpen={codeErrorAlertOpen} color="info">인증 코드가 일치하지 않습니다.</Alert>
                 <div className="form-group">
-                    <input disabled={ disabledCode } id="code" name="code" type="number" className="form-control form-control-lg" placeholder="인증번호 입력" required/>
+                    <input onChange={(e) => {
+                        let {value} = e.target;
+                        setInputCode(value);
+                    }} disabled={ disabledCode } id="code" name="code" type="number" className="form-control form-control-lg" placeholder="인증번호 입력" required/>
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
                 <button type="submit" className="btn btn-primary btn-block btn-lg">회원가입</button>
