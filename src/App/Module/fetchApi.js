@@ -598,8 +598,7 @@ export default function (defaultState, setState) {
         // type 은 join  , exit 만 가능 ,
         updateHeadCount: async function (type,roomNo, token) {
             try {
-                console.log("updateHeadCount" , type,roomNo , token)
-                const response = await fetch(`${domain}:${PORT}/api/updateHeadCount/`, {
+                const response = await fetch(`${domain}:${PORT}/api/updateHeadCount`, {
                     method: 'post',
                     credentials: 'include',
                     headers: {
@@ -638,7 +637,7 @@ export default function (defaultState, setState) {
                         "Access-Control-Allow-Headers": "Content-Type",
                         "Access-Control-Allow-Origin": `${config.URL}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                         'Accept': 'application/json',
                         Authorization: token
                     },

@@ -14,11 +14,11 @@ function Navigation() {
     const {selectedSidebar} = useSelector(state => state);
 
     const dispatch = useDispatch();
-
+    const [roomList, setRoomList] = useState([]);
     const [editModalOpen, setEditModalOpen] = useState(false);
 
     const editModalToggle = () => {
-        if(localStorage.getItem("role") !== "ROLE_UNKNOWN" ){
+        if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
             setEditModalOpen(!editModalOpen)
         }
 
@@ -27,7 +27,7 @@ function Navigation() {
     const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
     const settingsModalToggle = () => {
-        if(localStorage.getItem("role") !== "ROLE_UNKNOWN" ){
+        if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
             setSettingsModalOpen(!settingsModalOpen)
         }
     };
@@ -35,17 +35,16 @@ function Navigation() {
     let opacity = roleStyle().opacity()
 
 
-        //이게  < 가 틀리면 > 로 간다
+    //이게  < 가 틀리면 > 로 간다
     // ((1 === 1) && (opacity = {opacity : 0.1} )|| (opacity = {opacity : 1.0}))
     // ㅍ
-     //  const value =  ((1 === 1) && (opacity = {opacity : 0.1} ))
-
+    //  const value =  ((1 === 1) && (opacity = {opacity : 0.1} ))
 
 
     const navigationItems = [
         {
             name: 'Chats',
-            icon: <i className="ti ti-comment-alt"  />
+            icon: <i className="ti ti-comment-alt"/>
         },
         {
             name: 'Friends',
@@ -64,10 +63,21 @@ function Navigation() {
 
     const handlePageExit = async () => {
         if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
-            console.log("유저 삭제!!!")
+
+            // 룸 정보를 다 불러오고
+            const myRoomList = await fetchApi(roomList, setRoomList).getRoomList(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))
+
+            // 룸 마다 헤드카운터 - 1  감소 후
+            myRoomList.map(async (e, i) => {
+                console.log(myRoomList[i].no)
+                await fetchApi(null, null).updateHeadCount("exit", (myRoomList[i].no).toString(), localStorage.getItem("Authorization"))
+            })
+
+            // db에 날린다.
             await fetchApi(null, null).deleteUnknown(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))
-            window.location.href = "/"
+
         }
+        window.location.href = "/"
         localStorage.clear();
     }
     const NavigationItemView = (props) => {
@@ -81,14 +91,13 @@ function Navigation() {
 
         const linkDispatch = (e, name) => {
             e.preventDefault();
-            if(localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat")){
+            if (localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat")) {
                 dispatch(sidebarAction(name));
                 dispatch(mobileSidebarAction(true))
-            }
-            else if(localStorage.getItem("role") !== "ROLE_UNKNOWN") {
+            } else if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
                 dispatch(sidebarAction(name));
                 dispatch(mobileSidebarAction(true))
-            }else{
+            } else {
             }
 
 
@@ -120,7 +129,7 @@ function Navigation() {
             <div className="nav-group">
                 <ul>
                     <li>
-                        <a href={"/chat/"+ localStorage.getItem("userNo")} className="logo">
+                        <a href={"/chat/" + localStorage.getItem("userNo")} className="logo">
                             <Logo/>
                         </a>
                     </li>
@@ -136,7 +145,7 @@ function Navigation() {
                     <li className="brackets">
                         <li>
                             <a onClick={settingsModalToggle}>
-                                    <i className="ti ti-settings" style={opacity}></i>
+                                <i className="ti ti-settings" style={opacity}></i>
                             </a>
                         </li>
                     </li>

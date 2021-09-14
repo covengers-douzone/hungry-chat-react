@@ -156,7 +156,7 @@ const Index = React.forwardRef(({
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
-            participantNo: selectedChat.participantNo,
+            participantNo: selectedChat.participantNo
         }, async (response) => {
             if (response.status === 'ok') {
                 // update status
