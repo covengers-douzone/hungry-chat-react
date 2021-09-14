@@ -63,9 +63,13 @@ function Navigation() {
     ];
 
     const handlePageExit = async () => {
+
         if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
+            console.log("유저 삭제!!!")
             await fetchApi(null, null).deleteUnknown(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))
+            window.location.href = "/"
         }
+
         localStorage.clear();
     }
     const NavigationItemView = (props) => {
@@ -139,7 +143,7 @@ function Navigation() {
                         </li>
                     </li>
                     <li>
-                        <a href="/" onClick={handlePageExit}>
+                        <a onClick={handlePageExit}>
                             <i className="ti ti-power-off"></i>
                         </a>
                     </li>
