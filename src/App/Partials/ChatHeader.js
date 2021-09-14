@@ -28,10 +28,10 @@ function ChatHeader(props) {
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
-    const profileActions = () => {
-        dispatch(profileAction(true));
-        dispatch(mobileProfileAction(true))
-    };
+    // const profileActions = () => {
+    //     dispatch(profileAction(true));
+    //     dispatch(mobileProfileAction(true))
+    // };
 
     const chatProfileActions = () => {
         dispatch(chatProfileAction(true));
@@ -99,7 +99,7 @@ function ChatHeader(props) {
                             <DropdownMenu right>
                                 <DropdownItem onClick={chatProfileActions} title="프로필">채팅방 정보</DropdownItem>
                                 <DropdownItem divider/>
-                                <DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>
+                                {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
                                 <DropdownItem divider/>
                                 <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
                                 {/*<DropdownItem>Add to archive</DropdownItem>*/}
