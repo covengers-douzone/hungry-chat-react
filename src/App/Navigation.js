@@ -6,6 +6,8 @@ import {sidebarAction} from '../Store/Actions/sidebarAction'
 import EditProfileModal from './Modals/EditProfileModal'
 import SettingsModal from "./Modals/SettingsModal"
 import {mobileSidebarAction} from "../Store/Actions/mobileSidebarAction"
+import roleStyle from "./Module/roleStyle";
+import fetchApi from "./Module/fetchApi";
 
 function Navigation() {
 
@@ -30,8 +32,7 @@ function Navigation() {
         }
     };
 
-    let opacity
-    (localStorage.getItem("role") === "ROLE_UNKNOWN") ? opacity = {opacity : 0.2} : opacity = {opacity : 1.0}
+    let opacity = roleStyle().opacity()
 
 
         //이게  < 가 틀리면 > 로 간다
@@ -61,6 +62,12 @@ function Navigation() {
         }
     ];
 
+    const handlePageExit = async () => {
+        if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
+            await fetchApi(null, null).deleteUnknown(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))
+        }
+        localStorage.clear();
+    }
     const NavigationItemView = (props) => {
 
         const {item, tooltipName} = props;
@@ -132,10 +139,8 @@ function Navigation() {
                         </li>
                     </li>
                     <li>
-                        <a href="/" onClick={() => {
-                            localStorage.clear();
-                        }}>
-                            <i className="ti ti-power-off" style={opacity}></i>
+                        <a href="/" onClick={handlePageExit}>
+                            <i className="ti ti-power-off"></i>
                         </a>
                     </li>
                 </ul>

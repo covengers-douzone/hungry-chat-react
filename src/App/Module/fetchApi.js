@@ -562,20 +562,23 @@ export default function (defaultState, setState) {
                 console.error(e);
             }
         },
-        deleteUnknown: async function (chatNo, token) {
+        deleteUnknown: async function (userNo, token) {
             try {
 
-                const response = await fetch(`${domain}:${PORT}/api/deleteChatNo/${chatNo}`, {
+                const response = await fetch(`${domain}:${PORT}/api/deleteUnknown/`, {
                     method: 'post',
                     credentials: 'include',
                     headers: {
-                        "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${config.URL}`,
-                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                        'Content-Type': 'text/plain',
+                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         Authorization: token
                     },
+                    body: JSON.stringify({
+                        userNo
+                    }),
 
                 });
 
@@ -635,7 +638,7 @@ export default function (defaultState, setState) {
                         "Access-Control-Allow-Headers": "Content-Type",
                         "Access-Control-Allow-Origin": `${config.URL}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                        'Content-Type': 'text/plain',
+                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         Authorization: token
                     },
@@ -654,35 +657,6 @@ export default function (defaultState, setState) {
                 console.error(e);
             }
         },
-        deleteChatNo: async function (chatNo, token) {
-            try {
 
-                const response = await fetch(`${domain}:${PORT}/api/deleteChatNo/${chatNo}`, {
-                    method: 'post',
-                    credentials: 'include',
-                    headers: {
-                        "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Origin": `${config.URL}`,
-                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-                        'Content-Type': 'text/plain',
-                        'Accept': 'application/json',
-                        Authorization: token
-                    },
-
-                });
-
-                if (!response.ok) {
-                    throw new Error(`${response.status} ${response.statusText}`);
-                }
-
-                const json = await response.json();
-                if (json.result !== 'success') {
-                    throw json.message;
-                }
-                return json.data
-            } catch (e) {
-                console.error(e);
-            }
-        }
     }
 }
