@@ -32,11 +32,15 @@ function AddOpenChatModal() {
 
     // Create Button Event
     const modalToggle = () => {
+        if(!localStorage.getItem("role") === "ROLE_UNKNOWN"){
         setModal(!modal);
+        }
     }
 
     const createRoom = async () => {
         // const headcount = checkedItems.size + 1
+        if(!localStorage.getItem("role") === "ROLE_UNKNOWN")
+        {
         roomPassword === "" ? setRoomPassword(null) : setRoomPassword(roomPassword);
         console.log(roomPassword==="");
         const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", roomPassword , localStorage.getItem("Authorization"));
@@ -44,6 +48,7 @@ function AddOpenChatModal() {
             // await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
         setModal(!modal);
         dispatch(reloadAction(!reload));
+        }
     }
 
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
@@ -107,7 +112,7 @@ function AddOpenChatModal() {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={createRoom}>방 만들기</Button>
+                    <Button color="primary" onClick={createRoom} >방 만들기</Button>
                 </ModalFooter>
             </Modal>
         </div>

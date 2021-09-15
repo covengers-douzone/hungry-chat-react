@@ -15,6 +15,7 @@ import {roomNoAction} from "../../Store/Actions/roomNoAction";
 import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
 import {chatProfileAction} from "../../Store/Actions/chatProfileAction";
 import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
+
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
 
@@ -24,14 +25,15 @@ function ChatHeader(props) {
     const {profileInfo} = useSelector(state => state);
     const {reload} = useSelector(state => state);
     const {roomNo} = useSelector(state=>state)
+    const {userNo} = useSelector(state=>state)
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
-    const profileActions = () => {
-        dispatch(profileAction(true));
-        dispatch(mobileProfileAction(true))
-    };
+    // const profileActions = () => {
+    //     dispatch(profileAction(true));
+    //     dispatch(mobileProfileAction(true))
+    // };
 
     const chatProfileActions = () => {
         dispatch(chatProfileAction(true));
@@ -45,14 +47,16 @@ function ChatHeader(props) {
                 participantNo: profileInfo.participantNo,
                 roomNo: profileInfo.id,
                 Authorization: localStorage.getItem("Authorization"),
-            }).then(res => {
-                fetchApi(null, null).updateHeadCount("exit",roomNo, localStorage.getItem("Authorization"))
+            }).then(async res => {
+                await fetchApi(null, null).updateHeadCount("exit", roomNo, localStorage.getItem("Authorization"))
                 dispatch(reloadAction(!reload));
                 dispatch(participantNoAction(false))
                 dispatch(roomNoAction(false))
                 dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
                 dispatch(sidebarAction('Chat'));
+
+
 
             }).catch(err => {
                 console.log(`${err.message}`)
@@ -99,7 +103,7 @@ function ChatHeader(props) {
                             <DropdownMenu right>
                                 <DropdownItem onClick={chatProfileActions} title="프로필">채팅방 정보</DropdownItem>
                                 <DropdownItem divider/>
-                                <DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>
+                                {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
                                 <DropdownItem divider/>
                                 <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
                                 {/*<DropdownItem>Add to archive</DropdownItem>*/}

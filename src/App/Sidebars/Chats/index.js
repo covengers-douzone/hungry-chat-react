@@ -27,6 +27,7 @@ import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
+import roleStyle from "../../Module/roleStyle";
 
 
 const Index = React.forwardRef(({
@@ -46,7 +47,7 @@ const Index = React.forwardRef(({
     const {participantNo} = useSelector(state => state);
     const {joinRoom} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
-    const {reload} = useSelector(state=> state)
+    const {reload} = useSelector(state => state)
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
@@ -59,6 +60,8 @@ const Index = React.forwardRef(({
     const [searchTerm, setSearchTerm] = useState("");
 
     let lastPage = 0
+    let opacity = roleStyle().opacity()
+
 
     const toggle1 = () => setTooltipOpen1(!tooltipOpen1);
     const toggle2 = () => setTooltipOpen2(!tooltipOpen2);
@@ -116,11 +119,21 @@ const Index = React.forwardRef(({
 
                 if (users[users.length - 1].id !== socket.id) { //  내꺼를 업데이트 시킨다.
                     // chat list update
+                    // lastPage가 -로 들어 갈때 처리 해주는 조건문
+
+                    //쳇 리스트 갯수 구하기
+                    const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+
+                    if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
+                        lastPage = 0;
+                    } else {
+                        lastPage = chatListCount.count - config.CHAT_LIMIT
+                    }
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                     const chats = chatlist.map((chat) => chatForm(chat, participantNo));
                     selectedChat.messages = chats;
-                    selectedChat.headcount =  await fetchApi(chatList, setChatList).getHeadCount(participantNo)
-                    console.log("selectedChat.headcount" , selectedChat.headcount)
+                    selectedChat.headcount = await fetchApi(chatList, setChatList).getHeadCount(participantNo, localStorage.getItem("Authorization"))
+                    console.log("selectedChat.headcount", selectedChat.headcount)
 
 
                     dispatch(reloadAction(!reload))
@@ -214,14 +227,13 @@ const Index = React.forwardRef(({
 
     const chatSelectHandle = async (chat) => {
         try {
-            console.log("chatSelectHandle" , chat.type)
+            console.log("chatSelectHandle", chat.type)
             dispatch(profileInfoAction(chat));
             chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
 
             // 방 들어 왔을때 방 headCount 업데이트
-            
 
 
             dispatch(roomTypeAction(chat.type))
@@ -249,7 +261,7 @@ const Index = React.forwardRef(({
         let hostProfile;
         let otherUserProfile;
         chat.otherParticipantNo.map(participant => {
-            if(participant.role === "ROLE_HOST"){
+            if (participant.role === "ROLE_HOST") {
                 hostProfile = participant.User
             }
             otherUserProfile = participant.User
@@ -302,11 +314,11 @@ const Index = React.forwardRef(({
                             오픈 채팅
                         </Tooltip>
                     </li>
-                    <li className="list-inline-item">
+                    <li className="list-inline-item" style={opacity}>
                         <AddGroupModal friendList={friendList}/>
                     </li>
-                    <li className="list-inline-item">
-                        <button onClick={() => dispatch(sidebarAction('Friends'))} className="btn btn-light"
+                    <li className="list-inline-item" style={opacity}>
+                        <button onClick={() => localStorage.getItem("role") !== "ROLE_UNKNOWN" && dispatch(sidebarAction('Friends'))} className="btn btn-light"
                                 id="Tooltip-New-Chat">
                             <i className="ti ti-comment-alt"></i>
                         </button>
