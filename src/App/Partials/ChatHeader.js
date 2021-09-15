@@ -14,8 +14,8 @@ import {participantNoAction} from "../../Store/Actions/participantNoAction";
 import {roomNoAction} from "../../Store/Actions/roomNoAction";
 import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
 import {chatProfileAction} from "../../Store/Actions/chatProfileAction";
+import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
 
-//import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
 
@@ -37,7 +37,7 @@ function ChatHeader(props) {
 
     const chatProfileActions = () => {
         dispatch(chatProfileAction(true));
-        //dispatch(mobileChatProfileAction(true));
+        dispatch(mobileChatProfileAction(true));
     }
 
     const chatDeleteAction = async () => {

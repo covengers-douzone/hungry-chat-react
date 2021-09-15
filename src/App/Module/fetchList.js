@@ -61,6 +61,12 @@ export default function (token) {
                 chatNo
             });
             return await fetchAction('receiveChat','post', body);
+        },
+        getFileListInRoom: async function(roomNo,type){
+            const body = JSON.stringify({
+                roomNo,type
+            });
+            return await fetchAction('getFileListInRoom','post', body);
         }
     }
 }
