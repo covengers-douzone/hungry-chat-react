@@ -124,7 +124,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 400, searchTerm, localStorage.getItem("Authorization"))
             const chats = await chatlist.map((chat) => chatForm(chat, participantNo));
             selectedChat.messages = chats;
-            dispatch(reloadAction(!setReload))
+         //d   dispatch(reloadAction(!setReload))
 
 
         }
