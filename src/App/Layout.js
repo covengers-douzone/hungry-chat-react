@@ -28,7 +28,6 @@ function Layout({history}) {
         });
     }, []);
 
-
     return (
 
         <div className="layout">

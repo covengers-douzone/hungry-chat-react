@@ -111,6 +111,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 type: room.type,
                 name: otherParticipantsName,
                 participantNo: currentParticipant.no, // 이 채팅방의 '나'
+                participant: currentParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }), // 이 채팅방의 '너'
@@ -133,6 +134,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,
+                participant: currentParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }),
@@ -156,6 +158,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,
+                participant: currentParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }),
