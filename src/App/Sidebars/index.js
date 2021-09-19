@@ -4,6 +4,7 @@ import ChatsIndex from "./Chats"
 import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
+import GameIndex from "./Game"
 import fetchApi from "../Module/fetchApi";
 import io from "socket.io-client";
 import * as config from "../../config/config";
@@ -238,6 +239,10 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                         return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList}
                                                friendList={friendList}
                                                history={history}/>
+                    }
+                    else if (selectedSidebar === 'Game') {
+
+                        return <GameIndex />
                     }
                 })()
             }
