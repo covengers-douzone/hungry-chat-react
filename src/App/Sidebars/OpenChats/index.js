@@ -16,6 +16,7 @@ import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {profileInfoAction} from "../../../Store/Actions/profileInfoAction";
 import roleStyle from "../../Module/roleStyle";
+import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
 
 function Index({roomList, openRoomList, history,}) {
     let opacity = roleStyle().opacity()
@@ -43,40 +44,38 @@ function Index({roomList, openRoomList, history,}) {
 
     const chatSelectHandle = async (chat) => {
         try {
-            console.log("chat", chat);
+            console.log("chatSelectHandle 오픈챗 클릮@@@@@@@@@@@@@@@@@@@@@@");
             if (chat.password) {
                 setEnterPasswordChat(chat);
-                    setModal(!modal);
+                setModal(!modal);
             } else {
 
 
                 const result = roomList && roomList.filter(room => {
-                    return (room.type === "public" || room.type === "official")&& room.participantNo === chat.participantNo;
+                    return (room.type === "public" || room.type === "official") && room.participantNo === chat.participantNo;
                 })
 
                 if (result.length === 0) {
                     const roomNo = chat.id
-                    const joinChecked = await fetchApi(null, null).getJoinOk(roomNo, participantNo, localStorage.getItem("Authorization"));
-                    if (joinChecked == null) {
-                        const participantNo = (await fetchApi(null, null).createParticipant(localStorage.getItem("userNo"), chat.id, "ROLE_MEMBER",
-                            localStorage.getItem("Authorization"))).no;
-                        dispatch(participantNoAction(participantNo));
-                        dispatch(reloadAction(!reload));
-                        await fetchApi(null, null).updateHeadCount("join",roomNo, localStorage.getItem("Authorization"))
 
-                        console.log(participantNo , "가 " ,  chat.id , "방에 처음으로 오픈 채팅을 입장")
-                    } else {
-                        dispatch(participantNoAction(participantNo));
-                        dispatch(reloadAction(!reload));
-                        console.log("원래 이미 오픈 채팅에 입장 되어 있을 경우")
-                    }
+                    const participantNo = (await fetchApi(null, null).createParticipant(localStorage.getItem("userNo"), chat.id, "ROLE_MEMBER",
+                        localStorage.getItem("Authorization"))).no;
+                    //  dispatch(messageLengthAction(selectedChat.messages.length))
+                    dispatch(participantNoAction(participantNo));
+                    dispatch(reloadAction(!reload));
+                    await fetchApi(null, null).updateHeadCount("join", roomNo, localStorage.getItem("Authorization"))
+
+                    console.log(participantNo, "가 ", chat.id, "방에 처음으로 오픈 채팅을 입장")
+
+
                 } else {
                     dispatch(participantNoAction(result[0].participantNo));
+                    console.log("원래 이미 오픈 채팅에 입장 되어 있을 경우")
                 }
 
-
-                dispatch(joinRoomAction(true));
                 dispatch(sidebarAction('Chats'));
+                dispatch(joinRoomAction(true));
+
             }
         } catch (e) {
             console.log(e.message);
@@ -139,7 +138,7 @@ function Index({roomList, openRoomList, history,}) {
                     {/*        오픈 채팅*/}
                     {/*    </Tooltip>*/}
                     {/*</li>*/}
-                    <li className="list-inline-item" style={opacity} >
+                    <li className="list-inline-item" style={opacity}>
                         <AddOpenChatModal/>
                         {/*<AddGroupModal friendList={friendList}/>*/}
                     </li>

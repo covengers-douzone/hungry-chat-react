@@ -25,13 +25,19 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     // const [content, setContent] = useState('');
 
     const {reload} = useSelector(state => state);
-    const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
+    const socket = io(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {
+        transports: ['websocket'] ,
+        forceNew : true,
+        upgrade : true       });
 
 
     useEffect(() => {
         try {
             // 비회원 로직
             if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+                console.log(localStorage.getItem("role"))
+
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
                 socket.emit("unknown", (localStorage.getItem("userNo")) , false)
