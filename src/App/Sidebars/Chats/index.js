@@ -48,6 +48,8 @@ const Index = React.forwardRef(({
     const {joinRoom} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {reload} = useSelector(state => state)
+    const {joinOk} = useSelector(state => state)
+
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
@@ -55,7 +57,7 @@ const Index = React.forwardRef(({
 
     const [chatList, setChatList] = useState([]);
 
-    const [joinOk, setJoinOk] = useState(true)
+
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -159,11 +161,15 @@ const Index = React.forwardRef(({
             participantNo: selectedChat.participantNo
         }, async (response) => {
             if (response.status === 'ok') {
+
+                console.log("callback ok@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
+
                 // update status
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
 
-                const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
+                let lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
                 if (lastReadNo !== undefined) {
                     dispatch(lastReadNoAction(lastReadNo))
                 }
@@ -186,7 +192,6 @@ const Index = React.forwardRef(({
                     lastPage = chatListCount.count - config.CHAT_LIMIT
                 }
 
-
                 //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
@@ -199,12 +204,13 @@ const Index = React.forwardRef(({
                     selectedChat.messages = chats;
                 }
 
-
+            //    console.log("chatListCount @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" , chatListCount)
                 // selectedChat.messages = chats;
                 dispatch(messageAllLengthAction(chatListCount))
+        //        dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
-                setJoinOk(!joinOk)
-                dispatch(joinOKAction(joinOk))
+
+                dispatch(joinOKAction(!joinOk))
             }
         });
         socket.on('message', callback);
@@ -214,6 +220,7 @@ const Index = React.forwardRef(({
                 const results = await fetchList(localStorage.getItem("Authorization")).leftRoom(selectedChat.participantNo);
 
                 socket.disconnect();
+                socket.destroy()
             }
         }
 

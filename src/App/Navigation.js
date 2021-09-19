@@ -58,6 +58,10 @@ function Navigation() {
         {
             name: 'Open-chat',
             icon: <i className="ti ti-themify-favicon"></i>,
+        },
+        {
+            name: 'Game',
+            icon: <i className="ti ti-game"></i>,
         }
     ];
 
@@ -95,7 +99,7 @@ function Navigation() {
 
         const linkDispatch = (e, name) => {
             e.preventDefault();
-            if (localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat")) {
+            if (localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat" || name === "Game")) {
                 dispatch(sidebarAction(name));
                 dispatch(mobileSidebarAction(true))
             } else if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
