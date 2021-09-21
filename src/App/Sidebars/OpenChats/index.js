@@ -64,10 +64,7 @@ function Index({roomList, openRoomList, history,}) {
                     dispatch(participantNoAction(participantNo));
                     dispatch(reloadAction(!reload));
                     await fetchApi(null, null).updateHeadCount("join", roomNo, localStorage.getItem("Authorization"))
-
                     console.log(participantNo, "가 ", chat.id, "방에 처음으로 오픈 채팅을 입장")
-
-
                 } else {
                     dispatch(participantNoAction(result[0].participantNo));
                     console.log("원래 이미 오픈 채팅에 입장 되어 있을 경우")
@@ -75,6 +72,8 @@ function Index({roomList, openRoomList, history,}) {
 
                 dispatch(sidebarAction('Chats'));
                 dispatch(joinRoomAction(true));
+                console.log(" dispatch(joinRoomAction(true))")
+
 
             }
         } catch (e) {

@@ -141,6 +141,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const handleSearch = async (e) => {
             setSearchTerm(e.target.value)
             const searchList = async () => {
+                console.log("handleSearch")
                 const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
                 const chats = await chatlist.map((chat) => chatForm(chat, participantNo));
                 selectedChat.messages = chats;
@@ -168,7 +169,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
 
-
+                console.log("getChatListUp@@@@@@@@@@@@@@@@@@@")
                     if (lastPage && lastPage >= 0) {
                         if (lastPage < config.CHAT_LIMIT) {
                             const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
