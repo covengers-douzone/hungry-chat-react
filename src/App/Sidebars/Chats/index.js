@@ -81,7 +81,6 @@ const Index = React.forwardRef(({
 
         selectedChat.messages && selectedChat.messages.push(message);
 
-        console.log(message)
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
     }
 
@@ -212,7 +211,7 @@ const Index = React.forwardRef(({
         return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
                 const results = await fetchList(localStorage.getItem("Authorization")).leftRoom(selectedChat.participantNo);
-
+                dispatch(reloadAction(!reload));
                 socket.disconnect();
             }
         }
@@ -227,7 +226,6 @@ const Index = React.forwardRef(({
 
     const chatSelectHandle = async (chat) => {
         try {
-            console.log("chatSelectHandle", chat.type)
             dispatch(profileInfoAction(chat));
             chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
