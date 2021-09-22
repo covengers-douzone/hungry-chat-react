@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import styles from "../../../assets/scss/game.scss"
 
 
 class Player extends PureComponent {
