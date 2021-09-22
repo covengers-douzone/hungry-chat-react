@@ -32,14 +32,15 @@ function AddOpenChatModal() {
 
     // Create Button Event
     const modalToggle = () => {
-        if(!localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         setModal(!modal);
         }
     }
 
     const createRoom = async () => {
         // const headcount = checkedItems.size + 1
-        if(!localStorage.getItem("role") !== "ROLE_UNKNOWN")
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
         {
             roomPassword === "" ? setRoomPassword(null) : setRoomPassword(roomPassword);
             const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", roomPassword , localStorage.getItem("Authorization"));

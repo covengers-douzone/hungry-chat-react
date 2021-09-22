@@ -51,7 +51,7 @@ function ChatFooter(props) {
                                   alt="avatar"
                             />
                         :
-                        <Input type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
+                        <input type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
                 <div className="form-buttons">
