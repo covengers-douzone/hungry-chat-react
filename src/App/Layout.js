@@ -19,6 +19,7 @@ function Layout({history}) {
     const scrollRef = useRef();
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
+    const {selectedChat} = useSelector(state => state);
 
     useEffect(() => {
         document.querySelector('*').addEventListener('click', (e) => {

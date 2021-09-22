@@ -23,7 +23,6 @@ const ChatsDropdown = ({chat}) => {
     };
 
     const chatDeleteAction = async () => {
-        console.log(chat);
         try {
             await axios.post(`${config.URL}/api/deleteChat`, {
                 openChatHostCheck: chat.openChatHostCheck,
