@@ -106,7 +106,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             setTimeout ( () => {
                 if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                    scrollEl.scrollTop = scrollEl.scrollTop + 10
+                    scrollEl.scrollTop = scrollEl.scrollTop + 50
                     console.log("스코롤 최상단")
                 } else if (scrollEl) {
                     scrollEl.scrollTop = scrollEl.scrollHeight

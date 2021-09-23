@@ -48,6 +48,7 @@ const Index = React.forwardRef(({
     const {joinRoom} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {reload} = useSelector(state => state)
+    const {joinOk} = useSelector(state => state)
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
@@ -55,7 +56,7 @@ const Index = React.forwardRef(({
 
     const [chatList, setChatList] = useState([]);
 
-    const [joinOk, setJoinOk] = useState(true)
+   // const [joinOk, setJoinOk] = useState(true)
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -206,8 +207,8 @@ const Index = React.forwardRef(({
                 // selectedChat.messages = chats;
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
-                setJoinOk(!joinOk)
-                dispatch(joinOKAction(joinOk))
+              //  setJoinOk(!joinOk)
+                dispatch(joinOKAction(!joinOk))
             }
         });
         socket.on('message', callback);
