@@ -44,7 +44,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
 
         const userSocket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
         setUserSocket(userSocket);
-        console.log('userSocket connect')
 
         // 사이트 접속시, 사이트에 접속해있는 user 정보를 서버에 전달
         // 서버의 경우 user 정보를 토대로 user가 참여한 방 모두를 구독시킴
@@ -63,7 +62,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         });
 
         return (() => {
-            console.log('userSocket disconnect')
             userSocket.disconnect();
         })
 
