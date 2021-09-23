@@ -1,55 +1,33 @@
-import React, {useEffect, useRef, useState} from 'react'
-import Phaser from 'phaser'
-import { IonPhaser } from '@ion-phaser/react'
-import io from "socket.io-client";
-import * as config from "../../../config/config";
 
-const test = (padding) => {
-    
-    const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_GAME_PORT}`, {transports: ['websocket']});
+import React, { PureComponent } from "react";
+import { GameEngine } from "react-game-engine";
+import { Box } from "./Box";
+import { MoveBox } from "./MoveBox"
+import { Player } from "./Player"
+class SimpleGame extends PureComponent {
 
-    const game = {
-        width: "100%",
-        height: "100%",
-        type: Phaser.AUTO,
-        scene: {
-            init: function() {
-                this.cameras.main.setBackgroundColor('#24252A')
-                if(socket.isConnected){
-                    socket.emit("join" , ("test"))
-                }
-    
-            },
-            create: function() {
-                this.helloWorld = this.add.image(
-                    1,
-                    1,
-                    "User", {
-                        font: "40px Arial",
-                        fill: "#ffffff",
-                        images : "../../../assets/img/game/73014-OE8255-20.jpg"
-                    }
-                );
-                this.helloWorld.setOrigin(0.5);
-            },
-            update: function() {
-                // this.helloWorld.angle += 1;
-            }
-        }
+    render() {
+        const userNo  = localStorage.getItem("userNo")
+        const userName = localStorage.getItem("name")
+        const userColor = "green"
+
+        return (
+            <GameEngine
+                style={{ width: 1024, height: 768, backgroundColor: "white" }}
+                systems={[MoveBox]}
+                entities={{
+                    //-- Notice that each entity has a unique id (required)
+                    //-- and a renderer property (optional). If no renderer
+                    //-- is supplied with the entity - it won't get displayed.
+                     box1: { x: 200,  y: 200, renderer: <Box />},
+                    player: { x: 200,  y: 200, userColor : userColor , userName : userName, renderer: <Player />},
+
+
+                }}>
+
+            </GameEngine>
+        );
     }
-    
-
-    return (
-        <div className="sidebar-game active">
-            <header>
-                <span>게임</span>
-            </header>
-            <div className="sidebar-body">
-                <IonPhaser game={game} />
-            </div>
-        </div>
-        
-    )
 }
+export default SimpleGame
 
-export default test;

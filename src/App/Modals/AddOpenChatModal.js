@@ -32,6 +32,7 @@ function AddOpenChatModal() {
 
     // Create Button Event
     const modalToggle = () => {
+
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         setModal(!modal);
         }
@@ -41,13 +42,12 @@ function AddOpenChatModal() {
         // const headcount = checkedItems.size + 1
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
         {
-        roomPassword === "" ? setRoomPassword(null) : setRoomPassword(roomPassword);
-        console.log(roomPassword==="");
-        const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", roomPassword , localStorage.getItem("Authorization"));
-        await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
-            // await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
-        setModal(!modal);
-        dispatch(reloadAction(!reload));
+            roomPassword === "" ? setRoomPassword(null) : setRoomPassword(roomPassword);
+            const roomNo = await fetchApi(null, null).createRoom(title, content === '' ? "Open Chat" : content,1 ,"public", roomPassword , localStorage.getItem("Authorization"));
+            await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
+                // await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+            setModal(!modal);
+            dispatch(reloadAction(!reload));
         }
     }
 

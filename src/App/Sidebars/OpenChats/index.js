@@ -16,7 +16,6 @@ import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {profileInfoAction} from "../../../Store/Actions/profileInfoAction";
 import roleStyle from "../../Module/roleStyle";
-import {messageLengthAction} from "../../../Store/Actions/messageLengthAction";
 
 function Index({roomList, openRoomList, history,}) {
     let opacity = roleStyle().opacity()
@@ -44,37 +43,31 @@ function Index({roomList, openRoomList, history,}) {
 
     const chatSelectHandle = async (chat) => {
         try {
-            console.log("chatSelectHandle 오픈챗 클릮@@@@@@@@@@@@@@@@@@@@@@");
             if (chat.password) {
                 setEnterPasswordChat(chat);
                 setModal(!modal);
             } else {
-
-
                 const result = roomList && roomList.filter(room => {
                     return (room.type === "public" || room.type === "official") && room.participantNo === chat.participantNo;
                 })
 
                 if (result.length === 0) {
-                    const roomNo = chat.id
 
+                    const roomNo = chat.id
                     const participantNo = (await fetchApi(null, null).createParticipant(localStorage.getItem("userNo"), chat.id, "ROLE_MEMBER",
                         localStorage.getItem("Authorization"))).no;
                     //  dispatch(messageLengthAction(selectedChat.messages.length))
                     dispatch(participantNoAction(participantNo));
                     dispatch(reloadAction(!reload));
                     await fetchApi(null, null).updateHeadCount("join", roomNo, localStorage.getItem("Authorization"))
-
-                    console.log(participantNo, "가 ", chat.id, "방에 처음으로 오픈 채팅을 입장")
-
-
                 } else {
                     dispatch(participantNoAction(result[0].participantNo));
-                    console.log("원래 이미 오픈 채팅에 입장 되어 있을 경우")
                 }
 
                 dispatch(sidebarAction('Chats'));
                 dispatch(joinRoomAction(true));
+                console.log(" dispatch(joinRoomAction(true))")
+
 
             }
         } catch (e) {

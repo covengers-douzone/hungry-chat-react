@@ -48,8 +48,6 @@ const Index = React.forwardRef(({
     const {joinRoom} = useSelector(state => state);
     const {roomNo} = useSelector(state => state);
     const {reload} = useSelector(state => state)
-    const {joinOk} = useSelector(state => state)
-
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
@@ -57,7 +55,7 @@ const Index = React.forwardRef(({
 
     const [chatList, setChatList] = useState([]);
 
-
+    const [joinOk, setJoinOk] = useState(true)
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -83,7 +81,6 @@ const Index = React.forwardRef(({
 
         selectedChat.messages && selectedChat.messages.push(message);
 
-        console.log(message)
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
     }
 
@@ -109,6 +106,8 @@ const Index = React.forwardRef(({
             return;
         }
 
+        console.log('selectedChat',selectedChat);
+
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
 
@@ -116,6 +115,7 @@ const Index = React.forwardRef(({
         socket.on('roomUsers', async ({room, users}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
+
                 //console.log("selectedChat.headcount" , selectedChat.headcount)
 
 
@@ -136,8 +136,6 @@ const Index = React.forwardRef(({
                     selectedChat.messages = chats;
                     selectedChat.headcount = await fetchApi(chatList, setChatList).getHeadCount(participantNo, localStorage.getItem("Authorization"))
                     console.log("selectedChat.headcount", selectedChat.headcount)
-
-
                     dispatch(reloadAction(!reload))
                 }
             }, 1000)
@@ -161,15 +159,14 @@ const Index = React.forwardRef(({
             participantNo: selectedChat.participantNo
         }, async (response) => {
             if (response.status === 'ok') {
-
-                console.log("callback ok@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
-
                 // update status
+
+
+
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
 
 
-                let lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
+                const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
                 if (lastReadNo !== undefined) {
                     dispatch(lastReadNoAction(lastReadNo))
                 }
@@ -185,12 +182,14 @@ const Index = React.forwardRef(({
                 //쳇 리스트 갯수 구하기
                 const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
+
                 // lastPage가 -로 들어 갈때 처리 해주는 조건문
                 if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
                     lastPage = 0;
                 } else {
                     lastPage = chatListCount.count - config.CHAT_LIMIT
                 }
+
 
                 //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
@@ -204,23 +203,21 @@ const Index = React.forwardRef(({
                     selectedChat.messages = chats;
                 }
 
-            //    console.log("chatListCount @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" , chatListCount)
                 // selectedChat.messages = chats;
                 dispatch(messageAllLengthAction(chatListCount))
-        //        dispatch(messageLengthAction(selectedChat.messages.length - 1))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
-
-                dispatch(joinOKAction(!joinOk))
+                setJoinOk(!joinOk)
+                dispatch(joinOKAction(joinOk))
             }
         });
         socket.on('message', callback);
 
         return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
+                console.log('left Room -------------------------------------------------------',selectedChat)
                 const results = await fetchList(localStorage.getItem("Authorization")).leftRoom(selectedChat.participantNo);
-
+                dispatch(reloadAction(!reload));
                 socket.disconnect();
-                socket.destroy()
             }
         }
 
@@ -234,7 +231,6 @@ const Index = React.forwardRef(({
 
     const chatSelectHandle = async (chat) => {
         try {
-            console.log("chatSelectHandle", chat.type)
             dispatch(profileInfoAction(chat));
             chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
