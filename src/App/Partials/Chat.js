@@ -276,10 +276,17 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
             } else {
                 return (
-
                     <div className={"message-item " + message.type} ref={messageRef}
-                         onClick={() => handleClickMessage(message)}>
+                         onClick={() => handleClickMessage(message)} style={{marginTop:1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
+                            {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
+                                height:20,
+                                width:20,
+                                borderRadius:50,
+                                float: "left",
+                                marginRight:7
+                            }}/>}
+                            <p>{message.nickname}</p>
                             <div className={"message-content " + (message.file ? 'message-file' : null)}>
                                 {message.file ? message.file : message.text}
                             </div>
@@ -293,15 +300,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                           disabled={(message.participantNo !== participantNo)}>
                                     <button> 메세지 삭제</button>
                                 </MenuItem>
-
                             </ContextMenu>
                         </ContextMenuTrigger>
                         <div className="message-action">
                             {message.date}
                             {message.type ? <i className="ti-double-check text-info"></i> : null}
-                        </div>
-                        <div>
-                            {(roomType === "official") ? "" : message.notReadCount}
+                            <div style={{float:"right", marginLeft: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{(roomType === "official") ? "" : message.notReadCount}</div>
                         </div>
 
                     </div>);
