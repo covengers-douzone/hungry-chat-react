@@ -1,14 +1,18 @@
 import React ,{useState,useRef,useEffect} from 'react'
 import {Button, Input} from 'reactstrap'
 import UploadFileModal from "../Modals/UploadFileModal";
+import MarkdownFileModal from "../Modals/MarkdownFileModal";
 
 function ChatFooter(props) {
 
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
+    const [markdownModalOpen, setMarkdownModalOpen] = useState(false);
+
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
 
     const editModalToggle = () => setUploadModalOpen(!uploadModalOpen);
+    const editMarkdownModalToggle = () => setMarkdownModalOpen(!markdownModalOpen);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -30,6 +34,10 @@ function ChatFooter(props) {
 
     const selectFile = (e) => {
         setUploadModalOpen(true);
+    }
+
+    const markdownFile = (e) => {
+        setMarkdownModalOpen(true);
     }
 
     const handleFile = (userFile,previewURL) => {
@@ -58,15 +66,17 @@ function ChatFooter(props) {
                     <Button color="light" className="btn-floating" onClick={selectFile}>
                         <i className="fa fa-paperclip"></i>
                     </Button>
-                    <Button color="light" className="btn-floating">
-                        <i className="fa fa-microphone"></i>
+                    <Button color="light" className="btn-floating" onClick={markdownFile}>
+                        <i class="ti ti-html5"></i>
                     </Button>
+                    
                     <Button color="primary" className="btn-floating">
                         <i className="fa fa-send"></i>
                     </Button>
                 </div>
             </form>
             <UploadFileModal modal={uploadModalOpen} toggle={editModalToggle} handleFile={handleFile}/>
+            <MarkdownFileModal modal={markdownModalOpen} toggle={editMarkdownModalToggle} />
         </div>
     )
 }
