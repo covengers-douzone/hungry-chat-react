@@ -32,6 +32,8 @@ import {lastPageAction} from "../../../Store/Actions/lastPageAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
+                                    handleNotReadCount,
+                                    notReadCount,
                                     history
                                 }, scrollRef) => {
 
@@ -147,7 +149,7 @@ const Index = React.forwardRef(({
         socket.on('deleteMessage', async ({room, users, chatNo}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
-                // chat list updateㄴ
+                // chat list update
                 const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
                 selectedChat.messages && (selectedChat.messages.splice(idx, 1));
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
@@ -234,15 +236,16 @@ const Index = React.forwardRef(({
     };
 
 
-    const chatSelectHandle = async (chat) => {
+    const chatSelectHandle = async (chat,i) => {
         try {
             dispatch(profileInfoAction(chat));
-            chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
 
             // 방 들어 왔을때 방 headCount 업데이트
-
+            let updateNotReadCount = [...notReadCount];
+            updateNotReadCount[i] = 0;
+            handleNotReadCount(updateNotReadCount);
 
             dispatch(roomTypeAction(chat.type))
             if (chat.messages) {
@@ -281,14 +284,14 @@ const Index = React.forwardRef(({
     };
 
     const ChatListView = (props) => {
-        const {chat} = props;
+        const {chat,i} = props;
         return <li style={chat.type === "public" ? {color: "yellowgreen"} : null}
                    className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
 
             <div onClick={() => profileActions(chat)}>
                 {chat.avatar}
             </div>
-            <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}
+            <div className="users-list-body" onClick={() => chatSelectHandle(chat,i)} id={chat.id}
                  ref={ref => {
                      joinRoom && chat.participantNo === participantNo
                      && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
@@ -298,7 +301,7 @@ const Index = React.forwardRef(({
             </div>
             <div className="users-list-body">
                 <div className="users-list-action action-toggle">
-                    {/*{chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}
                     <ChatsDropdown chat={chat}/>
                 </div>
             </div>
@@ -370,7 +373,7 @@ const Index = React.forwardRef(({
                                 return chat
                             }
                         }).map((chat, i) => {
-                            return <ChatListView chat={chat} key={i}/>
+                            return <ChatListView chat={chat} key={i} i={i}/>
                         })
                         }
                     </ul>

@@ -25,7 +25,9 @@ import lastPageReducer from "./Reducers/lastPageReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
+    selectedGameSidebar: sidebarReducer,
     mobileSidebar: mobileSidebarReducer,
+    mobileGameSidebar: mobileSidebarReducer,
     profileSidebar: profileSidebarReducer,
     chatProfileSidebar : chatProfileSidebarReducer,
     mobileProfileSidebar: mobileProfileSidebarReducer,

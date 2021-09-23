@@ -257,7 +257,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             // console.log(  data , '번 채팅 선택');
         }
-
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
             if (message && message.text && message.text.props && message.text.type) {
