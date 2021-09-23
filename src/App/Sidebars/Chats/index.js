@@ -28,8 +28,7 @@ import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import roleStyle from "../../Module/roleStyle";
-
-
+import {lastPageAction} from "../../../Store/Actions/lastPageAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
@@ -134,10 +133,11 @@ const Index = React.forwardRef(({
                     }
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                     const chats = chatlist.map((chat) => chatForm(chat, participantNo));
+
                     selectedChat.messages = chats;
                     selectedChat.headcount = await fetchApi(chatList, setChatList).getHeadCount(participantNo, localStorage.getItem("Authorization"))
                     console.log("selectedChat.headcount", selectedChat.headcount)
-                    dispatch(reloadAction(!reload))
+                   // dispatch(reloadAction(!reload))
                 }
             }, 1000)
 
@@ -153,11 +153,15 @@ const Index = React.forwardRef(({
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
             }, 1000)
         })
+      /*  if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
+            socket.emit("unknown", (localStorage.getItem("userNo")) , false)
+        }*/
 
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
-            participantNo: selectedChat.participantNo
+            participantNo: selectedChat.participantNo,
+            userNo : Number(localStorage.getItem("userNo"))
         }, async (response) => {
             if (response.status === 'ok') {
                 // update status
@@ -185,7 +189,7 @@ const Index = React.forwardRef(({
 
 
                 // lastPage가 -로 들어 갈때 처리 해주는 조건문
-                if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
+                if ((chatListCount.count < config.CHAT_LIMIT) || chatListCount >= 0) {
                     lastPage = 0;
                 } else {
                     lastPage = chatListCount.count - config.CHAT_LIMIT
@@ -203,7 +207,7 @@ const Index = React.forwardRef(({
                     const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
                     selectedChat.messages = chats;
                 }
-
+                dispatch(lastPageAction(lastPage))
                 // selectedChat.messages = chats;
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))

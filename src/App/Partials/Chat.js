@@ -18,6 +18,7 @@ import {headCountAction} from "../../Store/Actions/headCountAction";
 import {messageAllLengthAction} from "../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
+import {lastPageAction} from "../../Store/Actions/lastPageAction";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -36,7 +37,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {messageAllLength} = useSelector(state => state)
         const {joinOk} = useSelector(state => state)
         const {lastReadNo} = useSelector(state => state)
-
+        const {lastPage} = useSelector(state => state)
         const [inputMsg, setInputMsg] = useState('');
 
         const [scrollEl, setScrollEl] = useState();
@@ -45,8 +46,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const messageRef = useRef(null);
 
-        const [lastPage, setLastPage] = useState(0)
-
+     //   const [lastPage, setLastPage] = useState(0)
+        const [lp, setLp] = useState(0);
         const [sendOk, setSendOk] = useState(true)
 
         const [deleteOk, setDeleteOk] = useState(true)
@@ -104,9 +105,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setScrollSwitch(true)
             } , 3000)
 
+
             setTimeout ( () => {
                 if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                    scrollEl.scrollTop = scrollEl.scrollTop + 50
+                  //  scrollEl.scrollTop = scrollEl.scrollTop
                     console.log("스코롤 최상단")
                 } else if (scrollEl) {
                     scrollEl.scrollTop = scrollEl.scrollHeight
@@ -114,11 +116,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }, 100)
 
-            scrOnOff = false
             console.log("messageAllLength.count" , messageAllLength.count)
+            console.log("config.CHAT_LIMIT" , config.CHAT_LIMIT)
 
-            setLastPage(messageAllLength.count - config.CHAT_LIMIT)
-            console.log("lastPage" , lastPage)
+            console.log("lastPage",lastPage)
+            setLp(lastPage)
+            // setLastPage(messageAllLength.count - config.CHAT_LIMIT)
+            // console.log("lastPage" , lastPage)
 
             setTestOk(0)
         }, [joinOk])
@@ -169,23 +173,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
 
-                console.log("getChatListUp@@@@@@@@@@@@@@@@@@@")
-                    if (lastPage && lastPage >= 0) {
-                        if (lastPage < config.CHAT_LIMIT) {
+                console.log("getChatListUp " , lp)
+                    if (lp && scrollEl && scrollSwitch === true) {
+
+                        if (lp < config.CHAT_LIMIT ) {
                             const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
                             const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
                             selectedChat.messages = chats;
+                            setScrollSwitch(false)
                         } else {
-                            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, messageAllLength.count, localStorage.getItem("Authorization"))
+                            console.log("getChatListUp " , lp)
+                            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength.count, localStorage.getItem("Authorization"))
                             const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
                             selectedChat.messages = chats;
+                       //     scrollEl.scrollTop = scrollEl.scrollHeight;
+
                         }
                     }
 
 
             }
             getChatListUp()
-        }, [lastPage])
+        }, [lp])
 
 
         // 스코롤을 위로 이동시 발동하는 핸들러
@@ -204,11 +213,15 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // 맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
             if(searchTerm === "" && scrollSwitch) {
                 console.log("페이징 실행 가능한 영역")
-                if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop === 0)) {
+
+                if (scrollRef && lp >=  0 && (scrollEl.scrollTop === 0)) {
                     setTimeout(() => {
                         setTestOk(testOk + 1)
                         // scrollEl.scrollTop = scrollEl.scrollTop
-                        setLastPage(lastPage - config.CHAT_LIMIT)
+                        setLp(lp - config.CHAT_LIMIT)
+                  //      dispatch(lastPageAction(lastPage - config.CHAT_LIMIT))
+
+                        console.log("lp", lp)
                     }, 1000)
                 } else {
 

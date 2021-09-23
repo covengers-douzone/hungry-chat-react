@@ -9,6 +9,7 @@ import fetchApi from "../Module/fetchApi";
 import io from "socket.io-client";
 import * as config from "../../config/config";
 
+
 const Index = React.forwardRef(({history}, scrollRef) => {
 
     const dispatch = useDispatch;
@@ -28,9 +29,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     const {reload} = useSelector(state => state);
 
     const socket = io(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {
-        transports: ['websocket'] ,
-        forceNew : true,
-        upgrade : true       });
+        transports: ['websocket']});
 
 
     useEffect(() => {
