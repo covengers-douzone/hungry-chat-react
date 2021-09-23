@@ -5,7 +5,7 @@ import {Tooltip} from 'reactstrap'
 import {sidebarAction} from '../Store/Actions/sidebarAction'
 import EditProfileModal from './Modals/EditProfileModal'
 import SettingsModal from "./Modals/SettingsModal"
-import GameModal from "./Modals/GameModal"
+import GameModal from "./Modals/gameModal"
 import {mobileSidebarAction} from "../Store/Actions/mobileSidebarAction"
 import roleStyle from "./Module/roleStyle";
 import fetchApi from "./Module/fetchApi";
