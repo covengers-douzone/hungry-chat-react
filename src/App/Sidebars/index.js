@@ -4,6 +4,7 @@ import ChatsIndex from "./Chats"
 import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
+import GameIndex from "./Game"
 import fetchApi from "../Module/fetchApi";
 import io from "socket.io-client";
 import * as config from "../../config/config";
@@ -27,7 +28,10 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     // const [content, setContent] = useState('');
 
     const {reload} = useSelector(state => state);
-    const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+    const socket = io(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {
+            transports: ['websocket'] ,
+            forceNew : true,
+            upgrade : true       });
     const [userSocket,setUserSocket] = useState();
 
 
@@ -258,6 +262,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     });
 
     return (
+   
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
                 (() => {
@@ -278,7 +283,9 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                     }
                 })()
             }
-        </div>
+        </div>    
+        
+     
     )
 })
 export default Index

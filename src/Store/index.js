@@ -24,7 +24,9 @@ import chatProfileSidebarReducer from "./Reducers/chatProfileSidebarReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
+    selectedGameSidebar: sidebarReducer,
     mobileSidebar: mobileSidebarReducer,
+    mobileGameSidebar: mobileSidebarReducer,
     profileSidebar: profileSidebarReducer,
     chatProfileSidebar : chatProfileSidebarReducer,
     mobileProfileSidebar: mobileProfileSidebarReducer,

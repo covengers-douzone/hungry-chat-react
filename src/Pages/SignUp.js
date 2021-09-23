@@ -15,6 +15,7 @@ function SignUp({history}) {
     const [errorAlertOpen, setErrorAlertOpen] = useState(false);
     const [codeErrorAlertOpen, setCodeErrorAlertOpen] = useState(false);
     const [emailErrorAlertOpen, setEmailErrorAlertOpen] = useState(false);
+    // const [count, setCount] = useState(5);
 
     const [userName, setUserName] = useState();
 
@@ -114,10 +115,17 @@ function SignUp({history}) {
                         setErrorAlertOpen(false);
                         setAlertOpen(true);
                         setUserName(response.data.name);
-                        setTimeout(()=>  history.push("/"), 5000);
-
-                        // alert(`${response.data.name}님 회원 가입을 축하합니다.`);
-
+                        setTimeout(()=>  {
+                            history.push("/")
+                        }, 5000);
+                       //
+                       // let interval = setInterval(()=>{
+                       //
+                       //     if(count === 1){
+                       //      clearInterval(interval)
+                       //     }
+                       //     console.log(count);
+                       // }, 1000)
                     }else{
                         setEmailErrorAlertOpen(false);
                         setCodeErrorAlertOpen(false);
