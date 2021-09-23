@@ -32,7 +32,6 @@ function AddOpenChatModal() {
 
     // Create Button Event
     const modalToggle = () => {
-
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         setModal(!modal);
         }
