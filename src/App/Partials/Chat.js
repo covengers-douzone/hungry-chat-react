@@ -180,10 +180,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const splitData = putChatNo.split(",")
         const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
         const chatNo =  Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
-        // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
-        // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
-        // const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
-        // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
         setChatNo(chatNo)
         setDeleteOk(!deleteOk)
 
