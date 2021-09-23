@@ -273,7 +273,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 float: "left",
                                 marginRight:7
                             }}/>}
-                            <p>{message.nickname}</p>
+                            <p style={{fontWeight:"bold", color:"#9e9e9e"}}>{message.nickname}</p>
                             <div className={"message-content " + (message.file ? 'message-file' : null)}>
                                 {message.file ? message.file : message.text}
                             </div>
