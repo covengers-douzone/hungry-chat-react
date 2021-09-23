@@ -73,11 +73,11 @@ function Navigation() {
         if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
 
             // 룸 정보를 다 불러오고
-            const myRoomList = await fetchApi(roomList, setRoomList).getRoomList(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))
+            const myRoomList = (await fetchApi(roomList, setRoomList).getRoomList(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))).results;
+
 
             // 룸 마다 헤드카운터 - 1  감소 후
             myRoomList.map(async (e, i) => {
-                console.log(myRoomList[i].no)
                 await fetchApi(null, null).updateHeadCount("exit", (myRoomList[i].no).toString(), localStorage.getItem("Authorization"))
             })
 
@@ -86,7 +86,10 @@ function Navigation() {
 
         }
         window.location.href = "/"
+
         localStorage.clear();
+
+
     }
     const NavigationItemView = (props) => {
 

@@ -56,7 +56,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             // roomList update (for unread count)
             // 현재 있는 방이 아니라면
             if(Number(roomNo) !== Number(selectedChat.id)){
-                const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                const notReadCount_ = (await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"))).unreadChatCount;
                 setNotReadCount(notReadCount_);
             }
         });
@@ -72,13 +72,13 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             try {
                 // 비회원 로직
                 if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
-                    const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                    const notReadCount_ = (await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"))).unreadChatCount;
                     setNotReadCount(notReadCount_);
                     await fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
-                    socket.emit("unknown", (localStorage.getItem("userNo")) , false)
+
 
                 } else { // 회원 로직
-                    const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                    const notReadCount_ = (await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"))).unreadChatCount;
                     setNotReadCount(notReadCount_);
                     await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
                     await fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
@@ -89,6 +89,13 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             }
         })()
     }, [reload]);
+
+    useEffect( () => {
+        if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+            socket.emit("unknown", (localStorage.getItem("userNo")) , false)
+        }
+
+    } , [])
 
     openRoomList.map((room, i) => {
         const openChatHost = room.Participants.filter(participant => {
