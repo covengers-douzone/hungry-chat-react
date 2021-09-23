@@ -15,6 +15,8 @@ const chatMessageForm = (chat , index ) => {
                                               alt="avatar"
                                         />)
     const chatMessage = {
+        profileImageUrl: chat.Participant && chat.Participant.User.profileImageUrl,
+        nickname: chat.Participant && chat.Participant.User.nickname,
         text: contents,
         date: chat.createdAt,
         notReadCount: chat.notReadCount,
@@ -26,12 +28,13 @@ const chatMessageForm = (chat , index ) => {
 }
 
 const chatForm = (chat,participantNo,i) => {
-
    const chatMessage = chatMessageForm(chat , i);
-
    if (chat.Participant.no !== Number(participantNo)) {
        return chatMessage;
    } else {
+       // 내가 보낸 메세지
+       chatMessage.profileImageUrl=""
+       chatMessage.nickname=""
        chatMessage.type = 'outgoing-message'
        return chatMessage;
    }
