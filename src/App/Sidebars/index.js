@@ -225,6 +225,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     });
 
     return (
+   
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
                 (() => {
@@ -243,13 +244,11 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                                                friendList={friendList}
                                                history={history}/>
                     }
-                    else if (selectedSidebar === 'Game') {
-
-                        return <GameIndex />
-                    }
                 })()
             }
-        </div>
+        </div>    
+        
+     
     )
 })
 export default Index

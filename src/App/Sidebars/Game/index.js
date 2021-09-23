@@ -1,3 +1,4 @@
+
 import React, { PureComponent } from "react";
 import { GameEngine } from "react-game-engine";
 import { Box } from "./Box";
@@ -12,7 +13,6 @@ class SimpleGame extends PureComponent {
 
         return (
             <GameEngine
-                style={{ width: 1024, height: 768, backgroundColor: "white" }}
                 systems={[MoveBox]}
                 entities={{
                     //-- Notice that each entity has a unique id (required)
@@ -29,3 +29,4 @@ class SimpleGame extends PureComponent {
     }
 }
 export default SimpleGame
+
