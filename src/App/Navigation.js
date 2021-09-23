@@ -70,7 +70,6 @@ function Navigation() {
     ];
 
     const handlePageExit = async () => {
-
         if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
 
             // 룸 정보를 다 불러오고
@@ -85,11 +84,8 @@ function Navigation() {
             // db에 날린다.
             await fetchApi(null, null).deleteUnknown(localStorage.getItem("userNo").toString(), localStorage.getItem("Authorization"))
 
-
         }
-
         window.location.href = "/"
-
         localStorage.clear();
     }
     const NavigationItemView = (props) => {
