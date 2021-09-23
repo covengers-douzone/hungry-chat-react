@@ -1,3 +1,4 @@
+
 import React, { PureComponent } from "react";
 import { GameEngine } from "react-game-engine";
 import { Box } from "./Box";
@@ -28,3 +29,4 @@ class SimpleGame extends PureComponent {
     }
 }
 export default SimpleGame
+
