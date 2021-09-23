@@ -48,7 +48,13 @@ function UploadFileModal(props) {
     const handleSubmit = async event => {
         event.preventDefault();
 
+        // chatFooter에 파일 받은거 올림
         props.handleFile(file,previewURL);
+
+        // 데이터 비우기
+        setReader(null);
+        setFile(null);
+        setPreviewUrl(null);
         props.toggle();
     }
 

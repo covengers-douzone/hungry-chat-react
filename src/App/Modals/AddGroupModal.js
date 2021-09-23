@@ -20,6 +20,7 @@ import fetchApi from "../Module/fetchApi";
 import {useDispatch, useSelector} from "react-redux";
 import InviteModal from "./InviteModal";
 import {friendListAction} from "../../Store/Actions/friendListAction";
+import {reloadAction} from "../../Store/Actions/reloadAction";
 
 function AddGroupModal({friendList}) {
 
@@ -34,11 +35,11 @@ function AddGroupModal({friendList}) {
 
     const [checkedItems, setCheckedItems] = useState(new Set());
 
-    const dispatch = useDispatch
+    const dispatch = useDispatch();
 
     const [completeInvite , setCompleteInvite] = useState(false)
 
-
+    const {reload} = useSelector(state => state);
 
     const callbackSetItem = (checkItems) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
@@ -81,7 +82,9 @@ function AddGroupModal({friendList}) {
 
             Array.from(checkedItems).map(async (item, index) => (
                 await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
-            ))
+            ));
+            // 그룹 추가 후 reload
+            dispatch(reloadAction(!reload));
             setModal(!modal);
         }
 

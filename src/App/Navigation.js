@@ -5,6 +5,7 @@ import {Tooltip} from 'reactstrap'
 import {sidebarAction} from '../Store/Actions/sidebarAction'
 import EditProfileModal from './Modals/EditProfileModal'
 import SettingsModal from "./Modals/SettingsModal"
+import GameModal from "./Modals/GameModal"
 import {mobileSidebarAction} from "../Store/Actions/mobileSidebarAction"
 import roleStyle from "./Module/roleStyle";
 import fetchApi from "./Module/fetchApi";
@@ -25,10 +26,17 @@ function Navigation() {
     };
 
     const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+    const [gameModalOpen, setGameModalOpen] = useState(false);
 
     const settingsModalToggle = () => {
         if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
             setSettingsModalOpen(!settingsModalOpen)
+        }
+    };
+
+    const gameModalToggle = () => {
+        if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
+            setGameModalOpen(!gameModalOpen)
         }
     };
 
@@ -91,7 +99,7 @@ function Navigation() {
 
         const linkDispatch = (e, name) => {
             e.preventDefault();
-            if (localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat")) {
+            if (localStorage.getItem("role") === "ROLE_UNKNOWN" && (name === "Chats" || name === "Open-chat" || name === "Game")) {
                 dispatch(sidebarAction(name));
                 dispatch(mobileSidebarAction(true))
             } else if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
@@ -126,6 +134,7 @@ function Navigation() {
         <nav className="navigation">
             <EditProfileModal modal={editModalOpen} toggle={editModalToggle}/>
             <SettingsModal modal={settingsModalOpen} toggle={settingsModalToggle}/>
+            <GameModal modal={gameModalOpen} toggle={gameModalToggle}/>
             <div className="nav-group">
                 <ul>
                     <li>
@@ -142,6 +151,13 @@ function Navigation() {
                     {/*        <i className="ti ti-pencil" style={opacity}></i>*/}
                     {/*    </a>*/}
                     {/*</li>*/}
+                    <li >
+                        <li>
+                            <a onClick={gameModalToggle}>
+                                <i className="ti ti-game" style={opacity}></i>
+                            </a>
+                        </li>
+                    </li>
                     <li className="brackets">
                         <li>
                             <a onClick={settingsModalToggle}>

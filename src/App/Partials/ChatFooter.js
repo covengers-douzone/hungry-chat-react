@@ -13,12 +13,15 @@ function ChatFooter(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // Chat.js에 메세지 관련 데이터 보내기
         props.onSubmit({
             file: file,
             text: props.inputMsg
         });
 
+        // file: 보내고 데이터 비우기
         setPreviewUrl(null);
+        setFile(null);
     };
 
     const handleChange = (e) => {
@@ -48,7 +51,7 @@ function ChatFooter(props) {
                                   alt="avatar"
                             />
                         :
-                        <Input type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
+                        <input type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
                 <div className="form-buttons">

@@ -19,12 +19,18 @@ import joinOkReducer from "./Reducers/joinOkReducer";
 import joinRoomReducer from "./Reducers/joinRoomReducer";
 import roomTypeReducer from "./Reducers/roomTypeReducer";
 import profileInfoReducer from "./Reducers/profileInfoReducer";
+import mobileChatProfileSidebarReducer from "./Reducers/mobileChatProfileSidebarReducer";
+import chatProfileSidebarReducer from "./Reducers/chatProfileSidebarReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
+    selectedGameSidebar: sidebarReducer,
     mobileSidebar: mobileSidebarReducer,
+    mobileGameSidebar: mobileSidebarReducer,
     profileSidebar: profileSidebarReducer,
+    chatProfileSidebar : chatProfileSidebarReducer,
     mobileProfileSidebar: mobileProfileSidebarReducer,
+    mobileChatProfileSidebar : mobileChatProfileSidebarReducer,
     selectedChat: selectedChatReducer,
     messageLength : messageLengthReducer,
     messageAllLength : messageAllLengthReducer,
@@ -38,7 +44,7 @@ const reducers = combineReducers({
     joinRoom : joinRoomReducer,
     lastReadNo : lastReadNoReducer,
     joinOk  : joinOkReducer,
-    profileInfo : profileInfoReducer
+    profileInfo : profileInfoReducer,
 });
 
 const store = createStore(reducers, composeWithDevTools());

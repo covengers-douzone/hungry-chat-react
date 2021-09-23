@@ -4,6 +4,7 @@ import ChatsIndex from "./Chats"
 import FriendsIndex from "./Friends"
 import FavoritesIndex from "./Favorites"
 import OpenChatsIndex from "./OpenChats"
+import GameIndex from "./Game"
 import fetchApi from "../Module/fetchApi";
 import io from "socket.io-client";
 import * as config from "../../config/config";
@@ -25,13 +26,19 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     // const [content, setContent] = useState('');
 
     const {reload} = useSelector(state => state);
-    const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
+    const socket = io(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {
+        transports: ['websocket'] ,
+        forceNew : true,
+        upgrade : true       });
 
 
     useEffect(() => {
         try {
             // 비회원 로직
             if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+                console.log(localStorage.getItem("role"))
+
                 fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
                 fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
                 socket.emit("unknown", (localStorage.getItem("userNo")) , false)
@@ -119,6 +126,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 type: room.type,
                 name: otherParticipantsName,
                 participantNo: currentParticipant.no, // 이 채팅방의 '나'
+                participant: currentParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }), // 이 채팅방의 '너'
@@ -141,6 +149,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,
+                participant: currentParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }),
@@ -164,6 +173,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 password: room.password,
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,
+                participant: currentParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }),
@@ -215,6 +225,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     });
 
     return (
+   
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
                 (() => {
@@ -235,7 +246,9 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                     }
                 })()
             }
-        </div>
+        </div>    
+        
+     
     )
 })
 export default Index

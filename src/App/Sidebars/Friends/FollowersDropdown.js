@@ -28,7 +28,6 @@ const FollowersDropdown = ({friendNo, friendName, friendEmail, createRoom}) => {
     }
 
     const AddFriendHandler = async (event) => {
-        console.log(friendEmail)
         event.preventDefault();
         try{
             await axios.post(`${config.URL}/api/addFriend`, {
