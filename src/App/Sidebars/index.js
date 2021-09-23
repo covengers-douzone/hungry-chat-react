@@ -57,6 +57,10 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             // 현재 있는 방이 아니라면
             if(Number(roomNo) !== Number(selectedChat.id)){
                 const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                const room = roomList.map((room,i) => {
+                    if(Number(room.no) === Number(roomNo)) return i;
+                })
+                console.log(room);
                 setNotReadCount(notReadCount_);
             }
         });
@@ -85,7 +89,15 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                     await fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList("public", localStorage.getItem("Authorization"));
                 }
             } catch (err) {
-                console.log(err);
+                console.log('sidebar err',err);
+                if (err === "System Error") {
+                    history.push("/error/500") // 500 Page(DB error) // 수정 필요
+                } else {
+                    // Token 문제 발생 시 -> return null -> length error -> catch
+                    alert("Token invalid or Token expired. Please login again");
+                    history.push("/");
+                    console.log("Error : {}", err.message);
+                }
             }
         })()
     }, [reload]);
