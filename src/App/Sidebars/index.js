@@ -243,10 +243,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                                                friendList={friendList}
                                                history={history}/>
                     }
-                    else if (selectedSidebar === 'Game') {
-
-                        return <GameIndex />
-                    }
                 })()
             }
         </div>

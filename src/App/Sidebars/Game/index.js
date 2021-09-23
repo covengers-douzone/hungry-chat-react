@@ -12,7 +12,6 @@ class SimpleGame extends PureComponent {
 
         return (
             <GameEngine
-                style={{ width: 1024, height: 768, backgroundColor: "white" }}
                 systems={[MoveBox]}
                 entities={{
                     //-- Notice that each entity has a unique id (required)
