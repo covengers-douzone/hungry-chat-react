@@ -7,12 +7,14 @@ import OpenChatsIndex from "./OpenChats"
 import GameIndex from "./Game"
 import fetchApi from "../Module/fetchApi";
 import io from "socket.io-client";
+import "../../assets/scss/responsive-game.scss"
 import * as config from "../../config/config";
 
 const Index = React.forwardRef(({history}, scrollRef) => {
 
     const dispatch = useDispatch;
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
+    const {selectedGameSidebar, mobileGameSidebar} = useSelector(state => state);
     const userRoomList = [];
     const userOpenRoomList = [];
     const userFriendList = [];
@@ -225,6 +227,17 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     });
 
     return (
+    <div>
+        <div className={`sidebar-group-game ${mobileGameSidebar ? "mobile-open" : ""}`}>
+        {
+            (() => {
+                if (selectedGameSidebar === 'Game') {
+                
+                    return <GameIndex className="Game" />
+                }
+            })()
+        }
+        </div>
         <div className={`sidebar-group ${mobileSidebar ? "mobile-open" : ""}`}>
             {
                 (() => {
@@ -243,13 +256,12 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                                                friendList={friendList}
                                                history={history}/>
                     }
-                    else if (selectedSidebar === 'Game') {
-
-                        return <GameIndex />
-                    }
+                    
                 })()
             }
-        </div>
+        </div>    
+        
+    </div>    
     )
 })
 export default Index

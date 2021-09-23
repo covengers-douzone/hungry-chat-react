@@ -1,8 +1,7 @@
 .sidebar-group {
 
 	display: flex;
-	flex-direction: column;
-
+	/** flex-direction: column; **/
 	.sidebar {
 		&:not(.active) {
 			display: none;
@@ -167,4 +166,42 @@
 			}
 		}
 	}
+
+	.sidebar-game {
+		&:not(.active) {
+			display: none;
+		}
+		
+		margin-right: 30px;
+		background: white;
+		border-radius: 5px;
+		overflow:visible;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+
+		& > header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 20px;
+			height: 30px;
+			font-weight: 700;
+			border-radius: 0;
+			width: 100%;
+			& > span {
+				font-size: 22px;
+			}
+
+		}
+
+
+		& .sidebar-body {
+			flex: 1;
+			overflow: visible;
+		}
+	}
 }
+
+
