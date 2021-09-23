@@ -56,9 +56,9 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState(json.data);
+                json.data.results.length > 0 && setState(json.data.results);
                 // setState(json.data);
-                return json.data;
+                return json.data.unreadChatCount;
             } catch (err) {
                 // Access Denied or System Error or Fetch Error(Cors ... )
                 console.error("Error From React-Fetch: " + err.message);

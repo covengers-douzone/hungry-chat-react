@@ -10,8 +10,9 @@ import * as config from "../../config/config";
 
 const Index = React.forwardRef(({history}, scrollRef) => {
 
-    const dispatch = useDispatch;
+    const dispatch = useDispatch();
     const {selectedSidebar, mobileSidebar} = useSelector(state => state);
+    const {selectedChat} = useSelector(state => state);
     const userRoomList = [];
     const userOpenRoomList = [];
     const userFriendList = [];
@@ -20,32 +21,72 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     const [roomList, setRoomList] = useState([]);
     const [openRoomList, setOpenRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
+    const [notReadCount, setNotReadCount] = useState([]);
     const userNo = Number(localStorage.getItem("userNo"));
     // const [title, setTitle] = useState('');
     // const [content, setContent] = useState('');
 
     const {reload} = useSelector(state => state);
     const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+    const [userSocket,setUserSocket] = useState();
 
+
+    const handleNotReadCount = (notReadCount) => {
+        setNotReadCount(notReadCount);
+    }
+
+    // user가 사이트에 입장했을 때
+    useEffect(()=>{
+        if(localStorage === null) return;
+
+        const userSocket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+        setUserSocket(userSocket);
+        console.log('userSocket connect')
+
+        // 사이트 접속시, 사이트에 접속해있는 user 정보를 서버에 전달
+        // 서버의 경우 user 정보를 토대로 user가 참여한 방 모두를 구독시킴
+        userSocket.emit('joinUser',{
+            user: localStorage
+        })
+
+        // 사이트 접속해있는 유저에 한해서 참여한 방에서 누군가 메세지를 보낸 경우, roomList 를 업데이트 시킴
+        userSocket.on('getMessage', async ({socketUserNo, roomNo}) => {
+            // roomList update (for unread count)
+            // 현재 있는 방이 아니라면
+            if(Number(roomNo) !== Number(selectedChat.id)){
+                const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                setNotReadCount(notReadCount_);
+            }
+        });
+
+        return (() => {
+            console.log('userSocket disconnect')
+            userSocket.disconnect();
+        })
+
+    },[localStorage,selectedChat]); // selectedChat 보다는 room 생성시마다 변경되도록 하면 좋을 듯
 
     useEffect(() => {
-        try {
-            // 비회원 로직
-            if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
-                fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
-                fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
-                socket.emit("unknown", (localStorage.getItem("userNo")) , false)
+        (async () => {
+            try {
+                // 비회원 로직
+                if (localStorage.getItem("role") === "ROLE_UNKNOWN") { // 비회원 로직
+                    const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                    setNotReadCount(notReadCount_);
+                    await fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
+                    socket.emit("unknown", (localStorage.getItem("userNo")) , false)
 
-            } else { // 회원 로직
-                fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
-                fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
-                fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
-                fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList("public", localStorage.getItem("Authorization"));
+                } else { // 회원 로직
+                    const notReadCount_ = await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"));
+                    setNotReadCount(notReadCount_);
+                    await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+                    await fetchApi(followerList, setFollowerList).getFollowerList(userNo, localStorage.getItem("Authorization"))
+                    await fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList("public", localStorage.getItem("Authorization"));
+                }
+            } catch (err) {
+                console.log(err);
             }
-
-        } catch (err) {
-            console.log(err);
-        }
+        })()
     }, [reload]);
 
     openRoomList.map((room, i) => {
@@ -81,8 +122,6 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         });
     })
     // 오픈 채팅은 생성한 사람의 프로필 이미지가 나오도록 해야한다.
-
-
     roomList.map((room, i) => {
 
         const openChatHost = room.Participants.filter(participant => {
@@ -95,8 +134,9 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             return Number(participant.userNo) !== Number(userNo)
         });
 
-        if (room.type === "private") {
+        const unread_message_count = notReadCount && notReadCount[i];
 
+        if (room.type === "private") {
 
             // (방 제목) 다른 유저들의 이름
             let otherParticipantsName;
@@ -129,7 +169,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 </figure>,
                 text: <p>{room.content === "Private Chat" ? 'Private Chat' : room.content}</p>,
                 date: '03:41 PM',
-                unread_messages: 1,
+                unread_messages: unread_message_count,
                 messages: [],
                 openChatHostCheck: false,
                 headcount: room.headCount
@@ -152,7 +192,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 </figure>,
                 text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
                 date: '03:41 PM',
-                unread_messages: 1,
+                unread_messages: unread_message_count,
                 messages: [],
                 openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
                 headcount: room.headCount
@@ -176,7 +216,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 </figure>,
                 text: <p>{room.content === "Open Chat" ? 'Open Chat' : room.content}</p>,
                 date: '03:41 PM',
-                unread_messages: 1,
+                unread_messages: unread_message_count,
                 messages: [],
                 openChatHostCheck: currentParticipant && openChatHost && openChatHost.no === currentParticipant.no,
                 headcount: room.headCount
@@ -223,7 +263,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 (() => {
                     if (selectedSidebar === 'Chats') {
                         return <ChatsIndex roomList={userRoomList} friendList={friendList}
-                                           history={history} ref={scrollRef}/>
+                                           history={history} handleNotReadCount={handleNotReadCount} notReadCount={notReadCount} ref={scrollRef}/>
                     } else if (selectedSidebar === 'Friends') {
                         return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList}
                                              friendList={userFriendList}
