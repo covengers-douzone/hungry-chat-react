@@ -6,6 +6,11 @@ import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import * as config from "../../../config/config";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
+import {participantNoAction} from "../../../Store/Actions/participantNoAction";
+import {roomNoAction} from "../../../Store/Actions/roomNoAction";
+import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
+import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
+import {sidebarAction} from "../../../Store/Actions/sidebarAction";
 
 const ChatsDropdown = ({chat}) => {
 
@@ -30,6 +35,11 @@ const ChatsDropdown = ({chat}) => {
                 Authorization: localStorage.getItem("Authorization"),
             }).then(res => {
                 dispatch(reloadAction(!reload));
+                dispatch(participantNoAction(false))
+                dispatch(roomNoAction(false))
+                dispatch(roomTypeAction(false))
+                dispatch(selectedChatAction(false));
+                dispatch(sidebarAction('Chats'));
             }).catch(err => {
                 console.log(`${err.message}`)
             })

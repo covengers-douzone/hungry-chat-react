@@ -54,7 +54,7 @@ function ChatHeader(props) {
                 dispatch(roomNoAction(false))
                 dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
-                dispatch(sidebarAction('Chat'));
+                dispatch(sidebarAction('Chats'));
 
 
 

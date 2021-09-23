@@ -7,6 +7,11 @@ import {reloadAction} from "../../../Store/Actions/reloadAction";
 import axios from "axios";
 import * as config from "../../../config/config";
 import fetchApi from "../../Module/fetchApi";
+import {participantNoAction} from "../../../Store/Actions/participantNoAction";
+import {roomNoAction} from "../../../Store/Actions/roomNoAction";
+import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
+import {selectedChatAction} from "../../../Store/Actions/selectedChatAction";
+import {sidebarAction} from "../../../Store/Actions/sidebarAction";
 
 const ChatsDropdown = ({chat}) => {
 
@@ -32,6 +37,11 @@ const ChatsDropdown = ({chat}) => {
             }).then(res => {
                 fetchApi(null, null).updateHeadCount("exit",chat.id, localStorage.getItem("Authorization"))
                 dispatch(reloadAction(!reload));
+                dispatch(participantNoAction(false))
+                dispatch(roomNoAction(false))
+                dispatch(roomTypeAction(false))
+                dispatch(selectedChatAction(false));
+                dispatch(sidebarAction('Chats'));
             }).catch(err => {
                 console.log(`${err.message}`)
             })
