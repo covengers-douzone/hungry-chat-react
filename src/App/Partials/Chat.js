@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux"
 import myFetch from "../Module/fetchApi";
 import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
-import {chatForm, chatMessageForm} from "../Module/chatForm";
+import {chatForm, chatMessageForm, chatFormList} from "../Module/chatForm";
 import OpenImageModal from "../Modals/OpenImageModal";
 /*오른쪽 마우스 눌렸을 때 나오는 메뉴*/
 import {ContextMenu, MenuItem, ContextMenuTrigger} from "react-contextmenu";
@@ -147,10 +147,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const searchList = async () => {
                 console.log("handleSearch")
                 const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
-                const chats = await chatlist.map((chat) => chatForm(chat, participantNo));
+                const chats = chatFormList(chatlist,participantNo);
                 selectedChat.messages = chats;
-
-
             }
             searchList();
         }
@@ -178,13 +176,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                         if (lp < config.CHAT_LIMIT ) {
                             const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
-                            const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                            const chats = chatFormList(chatlist,participantNo);
                             selectedChat.messages = chats;
                             setScrollSwitch(false)
                         } else {
                             console.log("getChatListUp " , lp)
                             const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength.count, localStorage.getItem("Authorization"))
-                            const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                            const chats = chatFormList(chatlist,participantNo);
                             selectedChat.messages = chats;
                        //     scrollEl.scrollTop = scrollEl.scrollHeight;
 
@@ -268,12 +266,44 @@ const Chat = React.forwardRef((props, scrollRef) => {
             }
         }
 
+        const messageTime = (fullTime) => {
+            // 현재 시각
+            let currentTime = new Date();
+            currentTime.setHours(currentTime.getHours() + 9);
+            currentTime = currentTime.toISOString().replace('T', ' ').substring(0, 19);
+            const currentDate = currentTime.split(' ')[0];
+            const [currentHours,currentMinutes,currentSeconds] = currentTime.split(' ')[1].split(':');
+
+            const modifiedTime = fullTime.split(' ');
+            const date = modifiedTime[0];
+            const [hours,minutes,seconds] = modifiedTime[1].split(':');
+
+            let timeForm = hours + ":" + minutes;
+
+            if(currentDate === date && currentHours === hours){
+                if(currentMinutes === minutes) {
+                    timeForm = '방금 전';
+                } else if (currentMinutes - minutes < 10) { // 보내기 10분 되기 전까지만 이렇게 표시
+                    timeForm = (currentMinutes - minutes) + '분 전';
+                }
+            }
+            return timeForm;
+        }
+
         const MessagesView = (props) => {
             const {message} = props;
-            //console.log(message.text.type);
 
             if (message.type === 'divider') {
-                return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
+                return (
+                    <div style={{marginRight: "auto", marginLeft: "auto", width: '100%'}}>
+                        <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
+                        {/*날짜 관련 divider*/}
+                        <div className="message-item messages-divider sticky-top" data-label={message.text}
+                            style={{ width: '20%', marginRight: 0, textAlign: 'center', maxWidth: '100%', float: 'left', color: '#9e9e9e'}}>{message.text}</div>
+                        <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
+                    </div>
+
+                )
             } else {
                 return (
                     <div className={"message-item " + message.type} ref={messageRef}
@@ -286,7 +316,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 float: "left",
                                 marginRight:7
                             }}/>}
-                            <p style={{fontWeight:"bold", color:"#9e9e9e"}}>{message.nickname}</p>
+                            <p style={{fontWeight:"bold", color:"#9e9e9e", "margin-bottom": "7px", width: 145}}>{message.nickname}</p>
                             <div className={"message-content " + (message.file ? 'message-file' : null)}>
                                 {message.file ? message.file : message.text}
                             </div>
@@ -303,9 +333,18 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </ContextMenu>
                         </ContextMenuTrigger>
                         <div className="message-action">
-                            {message.date}
-                            {message.type ? <i className="ti-double-check text-info"></i> : null}
-                            <div style={{float:"right", marginLeft: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{(roomType === "official") ? "" : message.notReadCount}</div>
+                            {
+                                (roomType === "official") ? "" :
+                                    message.type !== 'outgoing-message' ?
+                                        <div style={{float:"left", marginRight: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{message.notReadCount}</div>
+                                        : <div style={{float:"right", marginLeft: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{message.notReadCount}</div>
+                            }
+                            {
+                                message.type !== 'outgoing-message' ?
+                                    <div style={{float: "left"}}>{messageTime(message.date)}</div>
+                                    : <div style={{float: "right"}}>{messageTime(message.date)}</div>
+                            }
+                            {/*{message.type ? <i className="ti-double-check text-info"></i> : null}*/}
                         </div>
 
                     </div>);

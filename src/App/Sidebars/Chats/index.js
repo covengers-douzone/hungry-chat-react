@@ -22,7 +22,7 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
-import {chatForm, chatMessageForm} from "../../Module/chatForm";
+import {chatForm, chatFormList, chatMessageForm} from "../../Module/chatForm";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
@@ -134,7 +134,7 @@ const Index = React.forwardRef(({
                         lastPage = chatListCount.count - config.CHAT_LIMIT
                     }
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat, participantNo));
+                    const chats = chatFormList(chatlist,participantNo);
 
                     selectedChat.messages = chats;
                     selectedChat.headcount = await fetchApi(chatList, setChatList).getHeadCount(participantNo, localStorage.getItem("Authorization"))
@@ -202,11 +202,11 @@ const Index = React.forwardRef(({
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
 
-                    const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                    const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                 } else {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                    const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                 }
                 dispatch(lastPageAction(lastPage))
