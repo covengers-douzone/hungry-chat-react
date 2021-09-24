@@ -3,18 +3,17 @@ import {useDispatch, useSelector} from "react-redux"
 import {
     Dropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap'
-import {profileAction} from "../../Store/Actions/profileAction"
-import {mobileProfileAction} from "../../Store/Actions/mobileProfileAction";
 import axios from "axios";
 import {reloadAction} from "../../Store/Actions/reloadAction";
 import {sidebarAction} from "../../Store/Actions/sidebarAction";
 import * as config from "../../config/config";
-import {mobileSidebarAction} from "../../Store/Actions/mobileSidebarAction";
 import {participantNoAction} from "../../Store/Actions/participantNoAction";
 import {roomNoAction} from "../../Store/Actions/roomNoAction";
 import {selectedChatAction} from "../../Store/Actions/selectedChatAction";
 import {chatProfileAction} from "../../Store/Actions/chatProfileAction";
 import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileAction";
+import CalendarModal from "../Modals/CalendarModal";
+
 
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
@@ -28,12 +27,11 @@ function ChatHeader(props) {
     const {userNo} = useSelector(state=>state)
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    const toggle = () => setDropdownOpen(prevState => !prevState);
+    const [calenderModalOpen, setCalendarModalOpen] = useState(false);
 
-    // const profileActions = () => {
-    //     dispatch(profileAction(true));
-    //     dispatch(mobileProfileAction(true))
-    // };
+    const calenderModalToggle = () => setCalendarModalOpen(prevState => !prevState);
+
+    const toggle = () => setDropdownOpen(prevState => !prevState);
 
     const chatProfileActions = () => {
         dispatch(chatProfileAction(true));
@@ -55,9 +53,6 @@ function ChatHeader(props) {
                 dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
                 dispatch(sidebarAction('Chat'));
-
-
-
             }).catch(err => {
                 console.log(`${err.message}`)
             })
@@ -69,6 +64,7 @@ function ChatHeader(props) {
 
 
     return (
+
         <div className="chat-header">
             <div className="chat-header-user">
                 {props.selectedChat.avatar}
@@ -81,7 +77,7 @@ function ChatHeader(props) {
             </div>
             <div className="chat-header-action">
                 <ul className="list-inline">
-
+                    {/*<CalendarModal modal={calenderModalOpen} toggle={calenderModalToggle} />*/}
                     {/*<li className="list-inline-item">*/}
                     {/*    <VoiceCallModal/>*/}
                     {/*</li>*/}
@@ -103,9 +99,19 @@ function ChatHeader(props) {
                             <DropdownMenu right>
                                 <DropdownItem onClick={chatProfileActions} title="프로필">채팅방 정보</DropdownItem>
                                 <DropdownItem divider/>
-                                {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
+
+                                <DropdownItem onClick={() => {setCalendarModalOpen(true)}} title="일정">
+                                    <CalendarModal  modal={calenderModalOpen} toggle={calenderModalToggle}/>
+                                    <i className="ti ti-calendar" style={{paddingRight:8}}></i>
+                                    일정
+                                </DropdownItem>
+
                                 <DropdownItem divider/>
                                 <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
+
+
+
+                                {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
                                 {/*<DropdownItem>Add to archive</DropdownItem>*/}
                                 {/*<DropdownItem>Delete</DropdownItem>*/}
                                 {/*<DropdownItem>Block</DropdownItem>*/}

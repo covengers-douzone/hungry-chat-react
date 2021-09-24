@@ -40,6 +40,8 @@ function Navigation() {
         }
     };
 
+
+
     let opacity = roleStyle().opacity()
 
 
@@ -60,13 +62,10 @@ function Navigation() {
             notify_badge: true
         },
         {
-            name: 'Favorites',
-            icon: <i className="ti ti-star" style={opacity}></i>,
-        },
-        {
             name: 'Open-chat',
             icon: <i className="ti ti-themify-favicon"></i>,
-        }
+        },
+
     ];
 
     const handlePageExit = async () => {
@@ -146,11 +145,7 @@ function Navigation() {
                         navigationItems.map((item, i) => <NavigationItemView key={i} item={item}
                                                                              tooltipName={"Tooltip-" + i}/>)
                     }
-                    {/*<li className="brackets">*/}
-                    {/*    <a href="/#/" onClick={editModalToggle}>*/}
-                    {/*        <i className="ti ti-pencil" style={opacity}></i>*/}
-                    {/*    </a>*/}
-                    {/*</li>*/}
+
                     <li >
                         <li>
                             <a onClick={gameModalToggle}>

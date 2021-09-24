@@ -236,10 +236,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                         return <FriendsIndex mobileSidebar={mobileSidebar} roomList={userRoomList}
                                              friendList={userFriendList}
                                              followerList={userFollowerList} history={history}/>
-                    } else if (selectedSidebar === 'Favorites') {
-                        return <FavoritesIndex/>
                     } else if (selectedSidebar === 'Open-chat') {
-
                         return <OpenChatsIndex roomList={userRoomList} openRoomList={userOpenRoomList}
                                                friendList={friendList}
                                                history={history}/>

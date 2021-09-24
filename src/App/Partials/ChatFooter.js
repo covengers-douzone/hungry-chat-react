@@ -1,6 +1,7 @@
 import React ,{useState,useRef,useEffect} from 'react'
 import {Button, Input} from 'reactstrap'
 import UploadFileModal from "../Modals/UploadFileModal";
+import CalendarModal from "../Modals/CalendarModal";
 
 function ChatFooter(props) {
 
@@ -54,6 +55,8 @@ function ChatFooter(props) {
                         <input type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
+
+
                 <div className="form-buttons">
                     <Button color="light" className="btn-floating" onClick={selectFile}>
                         <i className="fa fa-paperclip"></i>
