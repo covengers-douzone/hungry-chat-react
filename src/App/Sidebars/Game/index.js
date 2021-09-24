@@ -4,6 +4,7 @@ import { GameEngine } from "react-game-engine";
 import { Box } from "./Box";
 import { MoveBox } from "./MoveBox"
 import { Player } from "./Player"
+import {CopperCoin} from "./CopperCoin";
 class SimpleGame extends PureComponent {
 
     render() {
@@ -20,8 +21,6 @@ class SimpleGame extends PureComponent {
                     //-- is supplied with the entity - it won't get displayed.
                      box1: { x: 200,  y: 200, renderer: <Box />},
                     player: { x: 200,  y: 200, userColor : userColor , userName : userName, renderer: <Player />},
-
-
                 }}>
 
             </GameEngine>

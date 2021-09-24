@@ -35,9 +35,12 @@ function Navigation() {
     };
 
     const gameModalToggle = () => {
-        if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
-            setGameModalOpen(!gameModalOpen)
-        }
+        // if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
+        //     setGameModalOpen(!gameModalOpen)
+        // }
+        setGameModalOpen(!gameModalOpen)
+
+
     };
 
     let opacity = roleStyle().opacity()
