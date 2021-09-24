@@ -18,6 +18,7 @@ import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileActi
 
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
+import CodeBlockModal from "../Modals/CodeBlockModal";
 
 function ChatHeader(props) {
 
@@ -27,6 +28,7 @@ function ChatHeader(props) {
     const {roomNo} = useSelector(state=>state)
     const {userNo} = useSelector(state=>state)
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
@@ -39,6 +41,9 @@ function ChatHeader(props) {
         dispatch(chatProfileAction(true));
         dispatch(mobileChatProfileAction(true));
     }
+
+
+
 
     const chatDeleteAction = async () => {
         try {
@@ -106,6 +111,13 @@ function ChatHeader(props) {
                                 {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
                                 <DropdownItem divider/>
                                 <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
+
+                                <DropdownItem divider/>
+                                {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
+                                <DropdownItem divider/>
+
+
+
                                 {/*<DropdownItem>Add to archive</DropdownItem>*/}
                                 {/*<DropdownItem>Delete</DropdownItem>*/}
                                 {/*<DropdownItem>Block</DropdownItem>*/}

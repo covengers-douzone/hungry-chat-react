@@ -1,13 +1,14 @@
 import React ,{useState,useRef,useEffect} from 'react'
 import {Button, Input} from 'reactstrap'
 import UploadFileModal from "../Modals/UploadFileModal";
+import CodeBlockModal from "../Modals/CodeBlockModal";
 
 function ChatFooter(props) {
 
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
-
+    const [modalCodeBlock , setModalCodeBlock] = useState(false);
     const editModalToggle = () => setUploadModalOpen(!uploadModalOpen);
 
     const handleSubmit = (e) => {
@@ -23,7 +24,10 @@ function ChatFooter(props) {
         setPreviewUrl(null);
         setFile(null);
     };
-
+    const chatCodeBlock = () => {
+        console.log("chatCodeBlock" , modalCodeBlock)
+        setModalCodeBlock(!modalCodeBlock)
+    }
     const handleChange = (e) => {
         props.onChange(e.target.value)
     };
@@ -55,6 +59,11 @@ function ChatFooter(props) {
                            onChange={handleChange}/>
                 }
                 <div className="form-buttons">
+                    <Button color="light" className="btn-floating" onClick={chatCodeBlock}>
+                        <i className="fa fa-code">
+                            <CodeBlockModal modal = {modalCodeBlock} setModal = {setModalCodeBlock}/>
+                        </i>
+                    </Button>
                     <Button color="light" className="btn-floating" onClick={selectFile}>
                         <i className="fa fa-paperclip"></i>
                     </Button>
