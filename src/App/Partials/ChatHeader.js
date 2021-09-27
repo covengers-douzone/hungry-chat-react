@@ -136,8 +136,10 @@ function ChatHeader(props) {
                                 <DropdownItem onClick={chatProfileActions} title="프로필">채팅방 정보</DropdownItem>
                                 <DropdownItem divider/>
 
-                                <DropdownItem onClick={() => {setCalendarModalOpen(true)}} title="일정">
-                                    <CalendarModal  roomNo={roomNo} modal={calenderModalOpen} toggle={calenderModalToggle}/>
+                                <DropdownItem onClick={() => {
+                                    toggle()
+                                    setCalendarModalOpen(true)}} title="일정">
+                                    <CalendarModal roomNo={roomNo} modal={calenderModalOpen} toggle={calenderModalToggle}/>
                                     <i className="ti ti-calendar" style={{paddingRight:8}}></i>
                                     일정
                                 </DropdownItem>
