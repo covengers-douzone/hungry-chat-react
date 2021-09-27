@@ -23,11 +23,9 @@ import {lastPageAction} from "../../Store/Actions/lastPageAction";
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
-        const dispatch = useDispatch
+        const dispatch = useDispatch();
 
         let scrOnOff = false
-
-        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
         const {selectedChat} = useSelector(state => state);
         const {roomNo} = useSelector(state => state);
@@ -63,6 +61,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {reload} = useSelector(state => state);
 
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
+        const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
 
         const [scrollSwitch , setScrollSwitch] = useState(false)
 
@@ -94,9 +93,15 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [sendOk])
 
         useEffect(() => {
+            const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
             socket.emit("deleteMessage", ({roomNo, chatNo}), async (response) => {
                 if (response.status === 'ok') {
                 }
+            });
+
+            return (() => {
+                socket.disconnect();
             })
         }, [deleteOk])
 
@@ -265,8 +270,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
             if (message && message.text && message.text.props && message.text.type) {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
+                const fileType = message.text.type;
                 // open image modal
                 setImage(imgSource);
+                setFileType(fileType);
                 setOpenImageModalOpen(true);
             }
         }
@@ -285,16 +292,19 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             let timeForm = hours + ":" + minutes;
 
-            if(currentDate === date && currentHours === hours){
-                if(currentMinutes === minutes) {
+            if(currentDate === date){ // 날짜가 같다면(2021-09-09 === 2021-09-09)
+                if(currentHours === hours && currentMinutes === minutes) {
                     timeForm = '방금 전';
-                } else if (currentMinutes - minutes < 10) { // 보내기 10분 되기 전까지만 이렇게 표시
+                    // 보내기 10분 되기 전까지만 이렇게 표시
+                } else if (currentHours === hours && currentMinutes - minutes < 10) {
                     timeForm = (currentMinutes - minutes) + '분 전';
+                } else if (currentHours - hours === 1 && minutes - currentMinutes > 50){
+                    timeForm = (currentMinutes - minutes + 60) + '분 전';
                 }
             }
             return timeForm;
         }
-
+        
         const MessagesView = (props) => {
             const {message} = props;
 
@@ -423,7 +433,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </div>
                         </div>
                 }
-                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image}/>
+                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
             </div>
         )
     }

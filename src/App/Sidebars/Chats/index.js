@@ -220,6 +220,15 @@ const Index = React.forwardRef(({
         });
         socket.on('message', callback);
 
+
+        // 1분 경과시 시간 변경위해 실행
+        setInterval(async ()=>{
+            console.log('1분 경과')
+            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
+            const chats = chatFormList(chatlist,participantNo);
+            selectedChat.messages = chats;
+        },60000);
+
         return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
                 console.log('left Room -------------------------------------------------------',selectedChat)
@@ -228,7 +237,6 @@ const Index = React.forwardRef(({
                 socket.disconnect();
             }
         }
-
     }, [selectedChat]);
 
     const mobileSidebarClose = () => {
