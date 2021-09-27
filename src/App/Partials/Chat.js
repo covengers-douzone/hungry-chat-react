@@ -111,13 +111,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             setTimeout ( () => {
                 if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                  //  scrollEl.scrollTop = scrollEl.scrollTop
+                    scrollEl.scrollTop = scrollEl.scrollTop + 100
                     console.log("스코롤 최상단")
                 } else if (scrollEl) {
                     scrollEl.scrollTop = scrollEl.scrollHeight
                     console.log("스코롤 최하단")
                 }
             }, 100)
+
 
             console.log("messageAllLength.count" , messageAllLength.count)
             console.log("config.CHAT_LIMIT" , config.CHAT_LIMIT)
@@ -198,6 +199,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
             getChatListUp()
         }, [lp])
 
+    useEffect(() => {
+        setLp(lp - config.CHAT_LIMIT)
+    },[testOk])
+
 
         // 스코롤을 위로 이동시 발동하는 핸들러
         const handlePaging = async (a) => {
@@ -220,8 +225,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     setTimeout(() => {
                         setTestOk(testOk + 1)
                         // scrollEl.scrollTop = scrollEl.scrollTop
-                        setLp(lp - config.CHAT_LIMIT)
-                  //      dispatch(lastPageAction(lastPage - config.CHAT_LIMIT))
+
 
                         console.log("lp", lp)
                     }, 1000)
