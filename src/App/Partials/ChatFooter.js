@@ -100,7 +100,7 @@ function ChatFooter(props) {
                               
                         :
 
-                        <input type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
+                        <textarea type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
                 

@@ -38,6 +38,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {joinOk} = useSelector(state => state)
         const {lastReadNo} = useSelector(state => state)
         const {lastPage} = useSelector(state => state)
+        const {markDown} = useSelector(state => state)
+        const {codeBlock} = useSelector(state => state)
         const [inputMsg, setInputMsg] = useState('');
 
         const [scrollEl, setScrollEl] = useState();
@@ -136,8 +138,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("participantNo", participantNo);
             formData.append("headCount", headCount);
             formData.append("text", newValue.text);
+            formData.append("markDown", markDown);
+            formData.append("codeBlock" , codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
             myFetch(null, null).send(formData);
+            console.log(" handleSubmit markDown@@@@@@@@@@@@2" , markDown)
             setInputMsg("");
             setSendOk(!sendOk)
         };

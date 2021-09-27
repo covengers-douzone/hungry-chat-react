@@ -44,6 +44,8 @@ function CodeBlockModal({modal,setModal}) {
         "  <HelloMessage name=\"Taylor\" />, \n" +
         "  mountNode \n" +
         "); "
+
+    const [codeBlockText , setCodeBlockText] = useState("");
     const [content, setContent] = useState("hello");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -64,6 +66,16 @@ function CodeBlockModal({modal,setModal}) {
     const handleSubmit = ()  => {
         setModal(!modal)
     }
+
+    const handleCodeBlockTextChange = (e) =>{
+        setCodeBlockText(e.target.value);
+    }
+
+    useEffect( () => {
+
+        console.log("!!")
+    },[codeBlockText])
+
 
 
 
@@ -110,14 +122,13 @@ function CodeBlockModal({modal,setModal}) {
                     {/*</CodeBlock>*/}
                     <CopyBlock
                         language={language}
-                        text={a}
+                        text={codeBlockText}
                         wrapLines={true}
                         theme={dracula}
                         showLineNumbers={lineNumbers}
                         codeBlock
                     />
-                    <textarea  style = {{width : "100%" , height : height}}>
-
+                    <textarea  onChange={handleCodeBlockTextChange} style = {{width : "100%" , height : height}}>
                     </textarea>
                 </ModalBody>
                 <ModalFooter>
