@@ -1,0 +1,33 @@
+.calendar-setting
+{
+  font-weight: bold;
+  margin: auto 0 20px 10px;
+  #calendar_title {
+    margin: 10px 0 10px 0;
+    color: skyblue;
+  }
+  #calendar_start{
+    margin: 10px 0 10px 0;
+    color: #ffaeff;
+  }
+
+  #calendar_end{
+    margin: 10px 0 10px 0;
+    color: #ffaeff;
+    position: relative;
+  }
+
+  button{
+    position: absolute;
+    right: 50px;
+    bottom: 50px;
+  }
+}
+
+.calendar-setting #Background
+{
+  padding-top : 10px;
+  margin: 0 20px 0 0;
+  font-weight: bold;
+  color: #ff9d36;
+}
