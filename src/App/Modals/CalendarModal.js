@@ -9,6 +9,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {Alert, Modal, ModalBody, ModalHeader, TabContent, TabPane} from 'reactstrap';
 import {addMinutes} from "date-fns";
+import axios from "axios";
+import * as config from "../../config/config";
 
 
 const locales = {
@@ -24,32 +26,27 @@ const localizer = dateFnsLocalizer({
 });
 
 // month 는 -1, date는 +1 시킬것.
-// allDay: true,
-const events = [
-    {
-        title: "Big Meeting",
-        start: new Date(2021, 9-1, 24),
-        end: new Date(2021, 9-1, 26),
-    },
-    {
-        title: "Vacation",
-        start: new Date(2021, 9, 24),
-        end: new Date(2021, 9, 25),
-    },
-    {
-        title: "Conference",
-        start: new Date(2021, 6, 20),
-        end: new Date(2021, 6, 23),
-    },
-];
-
-
-
 function CalendarModal(props){
-    const [allEvents, setAllEvents] = useState(events);
+    const [allEvents, setAllEvents] = useState([]);
     const [newEvent, setNewEvent] = useState({start:"", end:"", title:""})
     const [alertOpen, setAlertOpen] = useState(false);
     const [newTitle, setTitle] = useState("");
+    const [reload, setReload] = useState(false);
+
+    useEffect(() => {
+        try {
+            axios.post(`${config.URL}/api/getCalendarEvents`, {
+                roomNo: props.roomNo,
+                Authorization: localStorage.getItem("Authorization"),
+            }).then(res => {
+                setAllEvents(res.data.data)
+            }).catch(err => {
+                console.log(`${err.message}`)
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
+    }, [reload]);
 
     const handleSelectSlots = ({start, end}) => {
         // const title = window.prompt('New Event name')
@@ -69,8 +66,23 @@ function CalendarModal(props){
     }
 
 
-    const handleAddEvent = () => {
-        setAllEvents([...allEvents, newEvent])
+    const handleAddEvent =async () => {
+        try {
+           await axios.post(`${config.URL}/api/addCalendarEvent`, {
+                title: newEvent.title,
+                start: newEvent.start.toString(),
+                end: newEvent.end.toString(),
+                roomNo: props.roomNo,
+                Authorization: localStorage.getItem("Authorization"),
+            }).then(res => {
+                setReload(prevState => !prevState);
+                setAllEvents([...allEvents, newEvent])
+            }).catch(err => {
+                console.log(`${err.message}`)
+            })
+        } catch (e) {
+            console.log(e.message);
+        }
     }
 
     return (
@@ -104,13 +116,17 @@ function CalendarModal(props){
                         <input type="text" placeholder="일정 제목" style={{ width: "20%", marginRight: "10px", float:"left" }} value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} />
                         <DatePicker placeholderText="시작하는 날" style={{ marginRight: "10px" }} selected={newEvent.start} onChange={(start) => setNewEvent({ ...newEvent, start })} />
                         <DatePicker placeholderText="끝나는 날" selected={newEvent.end} onChange={(end) => {
-                            console.log(end);
                             setNewEvent({ ...newEvent, end })
                         }} />
-                        <button style={{ marginTop: "10px", border:0, borderRadius:30, }} onClick={handleAddEvent}>
-                            <i className="ti ti-pin-alt" style={{color:"lightpink", fontWeight:"bold", marginRight:7}}/>
-                            일정 추가하기
-                        </button>
+                        {newEvent.title !== "" && newEvent.start !== "" && newEvent.end !== "" ?
+                            <button style={{ marginTop: "10px", border:0, borderRadius:30, }} onClick={handleAddEvent}>
+                                <i className="ti ti-pin-alt" style={{color:"lightpink", fontWeight:"bold", marginRight:7}}/>
+                                일정 추가하기
+                            </button> :
+                            <button disabled style={{ marginTop: "10px", border:0, borderRadius:30, }} onClick={handleAddEvent}>
+                                <i className="ti ti-pin-alt" style={{color:"lightpink", fontWeight:"bold", marginRight:7}}/>
+                                일정 추가하기
+                            </button> }
                     </div>
                 </ModalBody>
             </Modal>
