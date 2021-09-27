@@ -361,7 +361,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const toggleMenu = () => {
             setMenu(isOpen => !isOpen); // on,off 개념 boolean
         }
-
+        
+        
         return (
             <div className="chat">
                 {

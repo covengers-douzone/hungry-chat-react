@@ -16,14 +16,15 @@ import {
     Input,
     InputGroup, Dropdown, DropdownMenu, DropdownItem, DropdownToggle,
 } from 'reactstrap';
+import userEvent from '@testing-library/user-event';
 
 
 
 function CodeBlockModal({modal,setModal}) {
 
 
-     const [language, changeLanguage] = useState("jsx");
-     const [languageDemo, changeDemo] = useState(sample["jsx"]);
+    const [language, changeLanguage] = useState("jsx");
+    const [languageDemo, changeDemo] = useState(sample["jsx"]);
     const [lineNumbers, toggleLineNumbers] = useState(true);
 
     let a  = " class HelloMessage extends React.Component {\n" +
@@ -54,8 +55,6 @@ function CodeBlockModal({modal,setModal}) {
 
 
 
-
-
     // Create Button Event
     const modalToggle = () => {
         console.log("modalToggle" , modal)
@@ -75,10 +74,6 @@ function CodeBlockModal({modal,setModal}) {
 
         console.log("!!")
     },[codeBlockText])
-
-
-
-
 
     // 방 제목 변경
     const ContentEvent = (e) => {
@@ -120,6 +115,12 @@ function CodeBlockModal({modal,setModal}) {
                     {/*    wrapLines={true}*/}
                     {/*    codeBlock*/}
                     {/*</CodeBlock>*/}
+                    <div>
+                       
+
+                    <textarea  onChange={handleCodeBlockTextChange} style = {{width : "48%" , height : height, float:"left", overflow:"auto", backgroundColor:"#282a36", color:"white", marginRight:"10px" }}/>
+                    
+                    <div  style={{float: "left" , width:"48%",height:height, overflow:"auto"}}>
                     <CopyBlock
                         language={language}
                         text={codeBlockText}
@@ -127,9 +128,11 @@ function CodeBlockModal({modal,setModal}) {
                         theme={dracula}
                         showLineNumbers={lineNumbers}
                         codeBlock
+
                     />
-                    <textarea  onChange={handleCodeBlockTextChange} style = {{width : "100%" , height : height}}>
-                    </textarea>
+                    </div>
+                    
+                    </div>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onClick={handleSubmit}>코드 호출!!</Button>
