@@ -78,7 +78,6 @@ function OpenImageModal(props) {
         return imageName;
     }
     props.image && splitImageName();
-    console.log("previewUrl",);
 
     return (
         <div>
