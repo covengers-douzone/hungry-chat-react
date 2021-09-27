@@ -21,6 +21,10 @@ import roomTypeReducer from "./Reducers/roomTypeReducer";
 import profileInfoReducer from "./Reducers/profileInfoReducer";
 import mobileChatProfileSidebarReducer from "./Reducers/mobileChatProfileSidebarReducer";
 import chatProfileSidebarReducer from "./Reducers/chatProfileSidebarReducer";
+import lastPageReducer from "./Reducers/lastPageReducer";
+import currentOnlineRoomUsersReducer from "./Reducers/currentOnlineRoomUsersReducer";
+import codeBlockReducer from "./Reducers/codeBlockReducer";
+import markDownReducer from "./Reducers/markDownReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -45,6 +49,10 @@ const reducers = combineReducers({
     lastReadNo : lastReadNoReducer,
     joinOk  : joinOkReducer,
     profileInfo : profileInfoReducer,
+    lastPage : lastPageReducer,
+    currentOnlineRoomUsers : currentOnlineRoomUsersReducer,
+    codeBlock : codeBlockReducer,
+    markDown : markDownReducer,
 });
 
 const store = createStore(reducers, composeWithDevTools());

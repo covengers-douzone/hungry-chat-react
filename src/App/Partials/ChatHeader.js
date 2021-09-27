@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import {
     Dropdown, DropdownToggle, DropdownMenu, DropdownItem
@@ -17,6 +17,9 @@ import CalendarModal from "../Modals/CalendarModal";
 
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
+import CodeBlockModal from "../Modals/CodeBlockModal";
+import {MdCheckBox} from "react-icons/all";
+import {markDownAction} from "../../Store/Actions/markDownAction";
 
 function ChatHeader(props) {
 
@@ -25,7 +28,15 @@ function ChatHeader(props) {
     const {reload} = useSelector(state => state);
     const {roomNo} = useSelector(state=>state)
     const {userNo} = useSelector(state=>state)
+    const {selectedChat, currentOnlineRoomUsers, participantNo} = useSelector(state=>state);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [otherParticipantStatus, setOtherParticipantStatus] = useState(false);
+
+    const {markDown} = useSelector(state => state);
+
+
+
+
 
     const [calenderModalOpen, setCalendarModalOpen] = useState(false);
 
@@ -37,6 +48,13 @@ function ChatHeader(props) {
         dispatch(chatProfileAction(true));
         dispatch(mobileChatProfileAction(true));
     }
+
+    const handleChecked = (e) => {
+        dispatch(markDownAction(!markDown))
+
+    }
+
+
 
     const chatDeleteAction = async () => {
         try {
@@ -52,7 +70,7 @@ function ChatHeader(props) {
                 dispatch(roomNoAction(false))
                 dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
-                dispatch(sidebarAction('Chat'));
+                dispatch(sidebarAction('Chats'));
             }).catch(err => {
                 console.log(`${err.message}`)
             })
@@ -62,17 +80,34 @@ function ChatHeader(props) {
         dispatch(reloadAction(!reload));
     }
 
+    useEffect(()=> {
+        let status = false;
+        currentOnlineRoomUsers && currentOnlineRoomUsers.map(user => {
+            // 나 말고 다른 유저가 있다면
+            if(Number(user.participantNo) !== Number(participantNo)){
+                status = true;
+            }
+        })
+        setOtherParticipantStatus(status);
+    },[currentOnlineRoomUsers])
 
     return (
 
         <div className="chat-header">
             <div className="chat-header-user">
-                {props.selectedChat.avatar}
+                {selectedChat.avatar}
                 <div>
-                    <h5>{props.selectedChat.name}</h5>
-                    <small className="text-muted">
-                        <i>온라인</i>
-                    </small>
+                    <h5>{selectedChat.name}</h5>
+                    {/* 1:1 개인톡인 경우 온라인, 오프라인 여부 알려줌 */}
+                    {
+                        selectedChat.type === 'private' && selectedChat.headcount === 2 ?
+                            <small className="text-muted">
+                                {
+                                    otherParticipantStatus ? <i className={'text-primary'}>온라인</i> : <i>오프라인</i>
+                                }
+                            </small>
+                        : null
+                    }
                 </div>
             </div>
             <div className="chat-header-action">
@@ -81,9 +116,10 @@ function ChatHeader(props) {
                     {/*<li className="list-inline-item">*/}
                     {/*    <VoiceCallModal/>*/}
                     {/*</li>*/}
-                    {/*<li className="list-inline-item">*/}
-                    {/*    <VideoCallModal/>*/}
-                    {/*</li>*/}
+                    <li className="list-inline-item">
+                        <input type="checkbox" checked={markDown} onChange={handleChecked}/> 마크다운 ON/OFF
+
+                    </li>
 
                     <li className="list-inline-item" data-toggle="tooltip">
                         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
@@ -109,13 +145,10 @@ function ChatHeader(props) {
                                 <DropdownItem divider/>
                                 <DropdownItem onClick={chatDeleteAction} title="채팅방나가기" style={{color:"deeppink"}}>채팅방 나가기</DropdownItem>
 
-
-
                                 {/*<DropdownItem onClick={profileActions} title="프로필">프로필</DropdownItem>*/}
                                 {/*<DropdownItem>Add to archive</DropdownItem>*/}
                                 {/*<DropdownItem>Delete</DropdownItem>*/}
                                 {/*<DropdownItem>Block</DropdownItem>*/}
-
                             </DropdownMenu>
                         </Dropdown>
                     </li>

@@ -22,17 +22,19 @@ import {joinRoomAction} from "../../../Store/Actions/joinRoomAction";
 import {lastReadNoAction} from "../../../Store/Actions/lastReadNoAction";
 import {messageAllLengthAction} from "../../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../../Store/Actions/joinOKAction";
-import {chatForm, chatMessageForm} from "../../Module/chatForm";
+import {chatForm, chatFormList, chatMessageForm} from "../../Module/chatForm";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import roleStyle from "../../Module/roleStyle";
-
-
+import {lastPageAction} from "../../../Store/Actions/lastPageAction";
+import {currentOnlineRoomUsersAction} from "../../../Store/Actions/currentOnlineRoomUsersAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
+                                    handleNotReadCount,
+                                    notReadCount,
                                     history
                                 }, scrollRef) => {
 
@@ -80,6 +82,12 @@ const Index = React.forwardRef(({
 
         Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
 
+        selectedChat.otherParticipant.map(other => {
+            if(other.no === message.participantNo){
+                message.profileImageUrl = other.User.profileImageUrl;
+                message.nickname = other.User.nickname;
+            }
+        })
         selectedChat.messages && selectedChat.messages.push(message);
 
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
@@ -114,6 +122,7 @@ const Index = React.forwardRef(({
 
         // 새로운 유저가 들어 왔을떄 Read 값을 변경 시키기 위해 제작,
         socket.on('roomUsers', async ({room, users}) => {
+            dispatch(currentOnlineRoomUsersAction(users)); // 방에 있는 다른 유저가 온라인인지 오프라인인지 알기 위함
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
 
@@ -133,11 +142,12 @@ const Index = React.forwardRef(({
                         lastPage = chatListCount.count - config.CHAT_LIMIT
                     }
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat) => chatForm(chat, participantNo));
+                    const chats = chatFormList(chatlist,participantNo);
+
                     selectedChat.messages = chats;
                     selectedChat.headcount = await fetchApi(chatList, setChatList).getHeadCount(participantNo, localStorage.getItem("Authorization"))
                     console.log("selectedChat.headcount", selectedChat.headcount)
-                    dispatch(reloadAction(!reload))
+                   // dispatch(reloadAction(!reload))
                 }
             }, 1000)
 
@@ -147,31 +157,30 @@ const Index = React.forwardRef(({
         socket.on('deleteMessage', async ({room, users, chatNo}) => {
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
-                // chat list updateㄴ
+                // chat list update
                 const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
                 selectedChat.messages && (selectedChat.messages.splice(idx, 1));
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
             }, 1000)
         })
+      /*  if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
+            socket.emit("unknown", (localStorage.getItem("userNo")) , false)
+        }*/
 
         socket.emit("join", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
-            participantNo: selectedChat.participantNo
+            participantNo: selectedChat.participantNo,
+            userNo : Number(localStorage.getItem("userNo"))
         }, async (response) => {
             if (response.status === 'ok') {
                 // update status
-
-
-
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
-
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
                 if (lastReadNo !== undefined) {
                     dispatch(lastReadNoAction(lastReadNo))
                 }
-
 
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
 
@@ -183,27 +192,25 @@ const Index = React.forwardRef(({
                 //쳇 리스트 갯수 구하기
                 const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
-
                 // lastPage가 -로 들어 갈때 처리 해주는 조건문
-                if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
+                if ((chatListCount.count < config.CHAT_LIMIT) || chatListCount >= 0) {
                     lastPage = 0;
                 } else {
                     lastPage = chatListCount.count - config.CHAT_LIMIT
                 }
 
-
                 //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
 
-                    const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                    const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                 } else {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-                    const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                    const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                 }
-
+                dispatch(lastPageAction(lastPage))
                 // selectedChat.messages = chats;
                 dispatch(messageAllLengthAction(chatListCount))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
@@ -230,15 +237,16 @@ const Index = React.forwardRef(({
     };
 
 
-    const chatSelectHandle = async (chat) => {
+    const chatSelectHandle = async (chat,i) => {
         try {
             dispatch(profileInfoAction(chat));
-            chat.unread_messages = 0
             dispatch(participantNoAction(chat.participantNo))
             dispatch(roomNoAction(chat.id))
 
             // 방 들어 왔을때 방 headCount 업데이트
-
+            let updateNotReadCount = [...notReadCount];
+            updateNotReadCount[i] = 0;
+            handleNotReadCount(updateNotReadCount);
 
             dispatch(roomTypeAction(chat.type))
             if (chat.messages) {
@@ -277,14 +285,14 @@ const Index = React.forwardRef(({
     };
 
     const ChatListView = (props) => {
-        const {chat} = props;
+        const {chat,i} = props;
         return <li style={chat.type === "public" ? {color: "yellowgreen"} : null}
                    className={"list-group-item " + (chat.id === selectedChat.id ? 'open-chat' : '')}>
 
             <div onClick={() => profileActions(chat)}>
                 {chat.avatar}
             </div>
-            <div className="users-list-body" onClick={() => chatSelectHandle(chat)} id={chat.id}
+            <div className="users-list-body" onClick={() => chatSelectHandle(chat,i)} id={chat.id}
                  ref={ref => {
                      joinRoom && chat.participantNo === participantNo
                      && chatSelectHandle(chat) && dispatch(joinRoomAction(false))
@@ -294,7 +302,7 @@ const Index = React.forwardRef(({
             </div>
             <div className="users-list-body">
                 <div className="users-list-action action-toggle">
-                    {/*{chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}*/}
+                    {chat.unread_messages ? <div className="new-message-count">{chat.unread_messages}</div> : ''}
                     <ChatsDropdown chat={chat}/>
                 </div>
             </div>
@@ -366,7 +374,7 @@ const Index = React.forwardRef(({
                                 return chat
                             }
                         }).map((chat, i) => {
-                            return <ChatListView chat={chat} key={i}/>
+                            return <ChatListView chat={chat} key={i} i={i}/>
                         })
                         }
                     </ul>

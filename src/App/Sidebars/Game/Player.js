@@ -1,4 +1,5 @@
-import React, { PureComponent } from "react";
+import React, {PureComponent} from "react";
+import coinImage from "../../../assets/img/game/coin/coppercoin.png"
 
 
 class Player extends PureComponent {
@@ -15,21 +16,25 @@ class Player extends PureComponent {
             <div>
 
                 <div style={
-                    { position: "absolute", width: size + userTextSize, height: size + userTextSize , left: x - userTextSize / 2 , top: y - userTextSize } }>
-
-
+                    {
+                        position: "absolute",
+                        width: size + userTextSize,
+                        height: size + userTextSize,
+                        left: x - userTextSize / 2,
+                        top: y - userTextSize
+                    }}>
                     <label>
                         <b> {userName} </b>
                     </label>
                 </div>
                 <div style={
-                    { position: "absolute", width: size, height: size, backgroundColor: userColor, left: x, top: y } } >
+                    {position: "absolute", width: size, height: size, backgroundColor: userColor, left: x, top: y}}>
                 </div>
             </div>
-
 
 
         );
     }
 }
-export { Player };
+
+export {Player};
