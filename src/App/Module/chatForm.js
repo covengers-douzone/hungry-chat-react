@@ -6,7 +6,7 @@ import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const chatMessageForm = (chat , index ) => {
 
-
+    console.log(chat);
     let contents;
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)

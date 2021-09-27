@@ -82,6 +82,12 @@ const Index = React.forwardRef(({
 
         Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
 
+        selectedChat.otherParticipant.map(other => {
+            if(other.no === message.participantNo){
+                message.profileImageUrl = other.User.profileImageUrl;
+                message.nickname = other.User.nickname;
+            }
+        })
         selectedChat.messages && selectedChat.messages.push(message);
 
         dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
