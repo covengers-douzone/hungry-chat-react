@@ -40,6 +40,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {lastPage} = useSelector(state => state)
         const {markDown} = useSelector(state => state)
         const {codeBlock} = useSelector(state => state)
+
         const [inputMsg, setInputMsg] = useState('');
 
         const [scrollEl, setScrollEl] = useState();
@@ -163,11 +164,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [chatList])
 
 
-        const handleInputMsg = (msg) => {
-            setInputMsg(msg);
-        }
 
         const handleChange = (newValue) => {
+            console.log("handleChange")
             setInputMsg(newValue);
         };
 
@@ -379,6 +378,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 onScrollUp={handlePaging}
                                 ref={scrollRef}
                             >
+                                <pre>
                                 <div className="chat-body">
                                     <div className="messages">
                                         {
@@ -395,6 +395,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                         }
                                     </div>
                                 </div>
+                                    </pre>
                             </PerfectScrollbar>
                             <div>
                                 <div onClick={toggleMenu}>
@@ -412,8 +413,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 />
 
                             </div>
-                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
-                                        handleInputMsg={handleInputMsg}/>
+                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg} setInputMsg={setInputMsg}
+                                        />
 
                         </React.Fragment>
                         :

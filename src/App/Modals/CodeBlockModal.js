@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import ReactDOM from "react-dom";
 import {CopyBlock, dracula, CodeBlock, github, vs2015, rainbow} from "react-code-blocks";
 import { sample, TopBar } from "../CodeBlock";
-import Logo from "../CodeBlock/Logo"
+import "../../assets/scss/styles.css";
 import {
     Button,
     Modal,
@@ -16,12 +15,22 @@ import {
     Input,
     InputGroup, Dropdown, DropdownMenu, DropdownItem, DropdownToggle,
 } from 'reactstrap';
+
 import userEvent from '@testing-library/user-event';
+
+import myFetch from "../Module/fetchApi";
+import {useSelector} from "react-redux";
+
 
 
 
 function CodeBlockModal({modal,setModal}) {
 
+    const {roomNo} = useSelector(state => state);
+    const {participantNo} = useSelector(state => state);
+    const {headCount} = useSelector(state => state)
+    const {codeBlock} = useSelector(state => state)
+    const {sendOk} = useSelector(state => state)
 
     const [language, changeLanguage] = useState("jsx");
     const [languageDemo, changeDemo] = useState(sample["jsx"]);
@@ -46,6 +55,7 @@ function CodeBlockModal({modal,setModal}) {
         "  mountNode \n" +
         "); "
 
+    const [text , setText] = useState("");
     const [codeBlockText , setCodeBlockText] = useState("");
     const [content, setContent] = useState("hello");
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -63,16 +73,28 @@ function CodeBlockModal({modal,setModal}) {
     }
 
     const handleSubmit = ()  => {
+        const formData = new FormData();
+        formData.append("file", null);
+        formData.append("roomNo", roomNo);
+        formData.append("participantNo", participantNo);
+        formData.append("headCount", headCount);
+        formData.append("text", "```"+ language + "\n" +codeBlockText+"\n```");
+        formData.append("markDown", "true");
+        formData.append("codeBlock" , codeBlock)
+        formData.append("Authorization", localStorage.getItem("Authorization"));
+        myFetch(null, null).send(formData);
+        setCodeBlockText("");
         setModal(!modal)
     }
 
     const handleCodeBlockTextChange = (e) =>{
-        setCodeBlockText(e.target.value);
+
+        setCodeBlockText(e.target.value)
     }
 
     useEffect( () => {
 
-        console.log("!!")
+
     },[codeBlockText])
 
     // 방 제목 변경
@@ -87,7 +109,9 @@ function CodeBlockModal({modal,setModal}) {
                     <i className="fa fa-users">
                     </i>  코드 블럭
                 </ModalHeader>
+
                 <ModalBody>
+                    <div className="container mx-auto p-4">
                     <TopBar
                         language={{
                             value: language,
@@ -115,25 +139,28 @@ function CodeBlockModal({modal,setModal}) {
                     {/*    wrapLines={true}*/}
                     {/*    codeBlock*/}
                     {/*</CodeBlock>*/}
+
                     <div>
                        
 
-                    <textarea  onChange={handleCodeBlockTextChange} style = {{width : "48%" , height : height, float:"left", overflow:"auto", backgroundColor:"#282a36", color:"white", marginRight:"10px" }}/>
-                    
-                    <div  style={{float: "left" , width:"48%",height:height, overflow:"auto"}}>
-                    <CopyBlock
-                        language={language}
-                        text={codeBlockText}
-                        wrapLines={true}
-                        theme={dracula}
-                        showLineNumbers={lineNumbers}
-                        codeBlock
-
-                    />
-                    </div>
-                    
-                    </div>
+                       <textarea  onChange={handleCodeBlockTextChange} style = {{width : "48%" , height : height, float:"left", overflow:"auto", backgroundColor:"#282a36", color:"white", marginRight:"10px" }}/>
+                       
+                       <div className="demo"  style={{float: "left" , width:"48%",height:height, overflow:"auto"}}>
+                       <CopyBlock
+                           language={language}
+                           text={codeBlockText}
+                           wrapLines={true}
+                           theme={dracula}
+                           showLineNumbers={lineNumbers}
+                           codeBlock
+   
+                       />
+                       </div>
+                       
+                       </div>
+                       </div>
                 </ModalBody>
+
                 <ModalFooter>
                     <Button color="primary" onClick={handleSubmit}>코드 호출!!</Button>
                 </ModalFooter>
