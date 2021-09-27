@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from "react-redux"
 import {
     Dropdown, DropdownToggle, DropdownMenu, DropdownItem
@@ -27,7 +27,9 @@ function ChatHeader(props) {
     const {reload} = useSelector(state => state);
     const {roomNo} = useSelector(state=>state)
     const {userNo} = useSelector(state=>state)
+    const {selectedChat, currentOnlineRoomUsers, participantNo} = useSelector(state=>state);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [otherParticipantStatus, setOtherParticipantStatus] = useState(false);
 
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -60,9 +62,6 @@ function ChatHeader(props) {
                 dispatch(roomTypeAction(false))
                 dispatch(selectedChatAction(false));
                 dispatch(sidebarAction('Chats'));
-
-
-
             }).catch(err => {
                 console.log(`${err.message}`)
             })
@@ -72,16 +71,33 @@ function ChatHeader(props) {
         dispatch(reloadAction(!reload));
     }
 
+    useEffect(()=> {
+        let status = false;
+        currentOnlineRoomUsers && currentOnlineRoomUsers.map(user => {
+            // 나 말고 다른 유저가 있다면
+            if(Number(user.participantNo) !== Number(participantNo)){
+                status = true;
+            }
+        })
+        setOtherParticipantStatus(status);
+    },[currentOnlineRoomUsers])
 
     return (
         <div className="chat-header">
             <div className="chat-header-user">
-                {props.selectedChat.avatar}
+                {selectedChat.avatar}
                 <div>
-                    <h5>{props.selectedChat.name}</h5>
-                    <small className="text-muted">
-                        <i>온라인</i>
-                    </small>
+                    <h5>{selectedChat.name}</h5>
+                    {/* 1:1 개인톡인 경우 온라인, 오프라인 여부 알려줌 */}
+                    {
+                        selectedChat.type === 'private' && selectedChat.headcount === 2 ?
+                            <small className="text-muted">
+                                {
+                                    otherParticipantStatus ? <i className={'text-primary'}>온라인</i> : <i>오프라인</i>
+                                }
+                            </small>
+                        : null
+                    }
                 </div>
             </div>
             <div className="chat-header-action">

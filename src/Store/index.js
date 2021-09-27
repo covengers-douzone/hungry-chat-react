@@ -22,6 +22,7 @@ import profileInfoReducer from "./Reducers/profileInfoReducer";
 import mobileChatProfileSidebarReducer from "./Reducers/mobileChatProfileSidebarReducer";
 import chatProfileSidebarReducer from "./Reducers/chatProfileSidebarReducer";
 import lastPageReducer from "./Reducers/lastPageReducer";
+import currentOnlineRoomUsersReducer from "./Reducers/currentOnlineRoomUsersReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -47,6 +48,7 @@ const reducers = combineReducers({
     joinOk  : joinOkReducer,
     profileInfo : profileInfoReducer,
     lastPage : lastPageReducer,
+    currentOnlineRoomUsers : currentOnlineRoomUsersReducer
 });
 
 const store = createStore(reducers, composeWithDevTools());

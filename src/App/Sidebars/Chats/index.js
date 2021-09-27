@@ -29,6 +29,7 @@ import {roomTypeAction} from "../../../Store/Actions/roomTypeAction";
 import {reloadAction} from "../../../Store/Actions/reloadAction";
 import roleStyle from "../../Module/roleStyle";
 import {lastPageAction} from "../../../Store/Actions/lastPageAction";
+import {currentOnlineRoomUsersAction} from "../../../Store/Actions/currentOnlineRoomUsersAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
@@ -115,6 +116,7 @@ const Index = React.forwardRef(({
 
         // 새로운 유저가 들어 왔을떄 Read 값을 변경 시키기 위해 제작,
         socket.on('roomUsers', async ({room, users}) => {
+            dispatch(currentOnlineRoomUsersAction(users)); // 방에 있는 다른 유저가 온라인인지 오프라인인지 알기 위함
             setTimeout(async () => {
                 // 새로운 유저 왔을 때
 
@@ -167,17 +169,12 @@ const Index = React.forwardRef(({
         }, async (response) => {
             if (response.status === 'ok') {
                 // update status
-
-
-
                 await fetchApi(null, null).setStatus(selectedChat.participantNo, 1, localStorage.getItem("Authorization"))
-
 
                 const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
                 if (lastReadNo !== undefined) {
                     dispatch(lastReadNoAction(lastReadNo))
                 }
-
 
                 const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
 
@@ -189,14 +186,12 @@ const Index = React.forwardRef(({
                 //쳇 리스트 갯수 구하기
                 const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
-
                 // lastPage가 -로 들어 갈때 처리 해주는 조건문
                 if ((chatListCount.count < config.CHAT_LIMIT) || chatListCount >= 0) {
                     lastPage = 0;
                 } else {
                     lastPage = chatListCount.count - config.CHAT_LIMIT
                 }
-
 
                 //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
