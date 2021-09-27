@@ -56,12 +56,13 @@ export default function (defaultState, setState) {
                 if (json.result !== 'success') {
                     throw json.message;
                 }
-                json.data.length > 0 && setState(json.data);
+                json.data.results.length > 0 && setState(json.data.results);
                 // setState(json.data);
                 return json.data;
             } catch (err) {
                 // Access Denied or System Error or Fetch Error(Cors ... )
                 console.error("Error From React-Fetch: " + err.message);
+                throw new Error("DB에서 정보를 로드할 수 없습니다. 혹은 권한이 없습니다.");
             }
         },
         getChatList: async function (roomNo, offset, limit, token) {

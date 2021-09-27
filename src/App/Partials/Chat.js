@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux"
 import myFetch from "../Module/fetchApi";
 import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
-import {chatForm, chatMessageForm} from "../Module/chatForm";
+import {chatForm, chatMessageForm, chatFormList} from "../Module/chatForm";
 import OpenImageModal from "../Modals/OpenImageModal";
 /*오른쪽 마우스 눌렸을 때 나오는 메뉴*/
 import {ContextMenu, MenuItem, ContextMenuTrigger} from "react-contextmenu";
@@ -18,6 +18,7 @@ import {headCountAction} from "../../Store/Actions/headCountAction";
 import {messageAllLengthAction} from "../../Store/Actions/messageAllLengthAction";
 import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
+import {lastPageAction} from "../../Store/Actions/lastPageAction";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -36,7 +37,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {messageAllLength} = useSelector(state => state)
         const {joinOk} = useSelector(state => state)
         const {lastReadNo} = useSelector(state => state)
-
+        const {lastPage} = useSelector(state => state)
         const [inputMsg, setInputMsg] = useState('');
 
         const [scrollEl, setScrollEl] = useState();
@@ -45,8 +46,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const messageRef = useRef(null);
 
-        const [lastPage, setLastPage] = useState(0)
-
+     //   const [lastPage, setLastPage] = useState(0)
+        const [lp, setLp] = useState(0);
         const [sendOk, setSendOk] = useState(true)
 
         const [deleteOk, setDeleteOk] = useState(true)
@@ -104,9 +105,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setScrollSwitch(true)
             } , 3000)
 
+
             setTimeout ( () => {
                 if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                    scrollEl.scrollTop = scrollEl.scrollTop + 50
+                  //  scrollEl.scrollTop = scrollEl.scrollTop
                     console.log("스코롤 최상단")
                 } else if (scrollEl) {
                     scrollEl.scrollTop = scrollEl.scrollHeight
@@ -114,11 +116,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }, 100)
 
-            scrOnOff = false
             console.log("messageAllLength.count" , messageAllLength.count)
+            console.log("config.CHAT_LIMIT" , config.CHAT_LIMIT)
 
-            setLastPage(messageAllLength.count - config.CHAT_LIMIT)
-            console.log("lastPage" , lastPage)
+            console.log("lastPage",lastPage)
+            setLp(lastPage)
+            // setLastPage(messageAllLength.count - config.CHAT_LIMIT)
+            // console.log("lastPage" , lastPage)
 
             setTestOk(0)
         }, [joinOk])
@@ -143,10 +147,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const searchList = async () => {
                 console.log("handleSearch")
                 const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
-                const chats = await chatlist.map((chat) => chatForm(chat, participantNo));
+                const chats = chatFormList(chatlist,participantNo);
                 selectedChat.messages = chats;
-
-
             }
             searchList();
         }
@@ -169,23 +171,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
 
-                console.log("getChatListUp@@@@@@@@@@@@@@@@@@@")
-                    if (lastPage && lastPage >= 0) {
-                        if (lastPage < config.CHAT_LIMIT) {
+                console.log("getChatListUp " , lp)
+                    if (lp && scrollEl && scrollSwitch === true) {
+
+                        if (lp < config.CHAT_LIMIT ) {
                             const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
-                            const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                            const chats = chatFormList(chatlist,participantNo);
                             selectedChat.messages = chats;
+                            setScrollSwitch(false)
                         } else {
-                            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, messageAllLength.count, localStorage.getItem("Authorization"))
-                            const chats = chatlist.map((chat, i) => chatForm(chat, participantNo, i));
+                            console.log("getChatListUp " , lp)
+                            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength.count, localStorage.getItem("Authorization"))
+                            const chats = chatFormList(chatlist,participantNo);
                             selectedChat.messages = chats;
+                       //     scrollEl.scrollTop = scrollEl.scrollHeight;
+
                         }
                     }
 
 
             }
             getChatListUp()
-        }, [lastPage])
+        }, [lp])
 
 
         // 스코롤을 위로 이동시 발동하는 핸들러
@@ -204,11 +211,15 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // 맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
             if(searchTerm === "" && scrollSwitch) {
                 console.log("페이징 실행 가능한 영역")
-                if (scrollRef && lastPage >= 0 && (scrollEl.scrollTop === 0)) {
+
+                if (scrollRef && lp >=  0 && (scrollEl.scrollTop === 0)) {
                     setTimeout(() => {
                         setTestOk(testOk + 1)
                         // scrollEl.scrollTop = scrollEl.scrollTop
-                        setLastPage(lastPage - config.CHAT_LIMIT)
+                        setLp(lp - config.CHAT_LIMIT)
+                  //      dispatch(lastPageAction(lastPage - config.CHAT_LIMIT))
+
+                        console.log("lp", lp)
                     }, 1000)
                 } else {
 
@@ -255,18 +266,57 @@ const Chat = React.forwardRef((props, scrollRef) => {
             }
         }
 
+        const messageTime = (fullTime) => {
+            // 현재 시각
+            let currentTime = new Date();
+            currentTime.setHours(currentTime.getHours() + 9);
+            currentTime = currentTime.toISOString().replace('T', ' ').substring(0, 19);
+            const currentDate = currentTime.split(' ')[0];
+            const [currentHours,currentMinutes,currentSeconds] = currentTime.split(' ')[1].split(':');
+
+            const modifiedTime = fullTime.split(' ');
+            const date = modifiedTime[0];
+            const [hours,minutes,seconds] = modifiedTime[1].split(':');
+
+            let timeForm = hours + ":" + minutes;
+
+            if(currentDate === date && currentHours === hours){
+                if(currentMinutes === minutes) {
+                    timeForm = '방금 전';
+                } else if (currentMinutes - minutes < 10) { // 보내기 10분 되기 전까지만 이렇게 표시
+                    timeForm = (currentMinutes - minutes) + '분 전';
+                }
+            }
+            return timeForm;
+        }
+
         const MessagesView = (props) => {
             const {message} = props;
-            //console.log(message.text.type);
 
             if (message.type === 'divider') {
-                return <div className="message-item messages-divider sticky-top" data-label={message.text}></div>
+                return (
+                    <div style={{marginRight: "auto", marginLeft: "auto", width: '100%'}}>
+                        <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
+                        {/*날짜 관련 divider*/}
+                        <div className="message-item messages-divider sticky-top" data-label={message.text}
+                            style={{ width: '20%', marginRight: 0, textAlign: 'center', maxWidth: '100%', float: 'left', color: '#9e9e9e'}}>{message.text}</div>
+                        <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
+                    </div>
+
+                )
             } else {
                 return (
-
                     <div className={"message-item " + message.type} ref={messageRef}
-                         onClick={() => handleClickMessage(message)}>
+                         onClick={() => handleClickMessage(message)} style={{marginTop:1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
+                            {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
+                                height:20,
+                                width:20,
+                                borderRadius:50,
+                                float: "left",
+                                marginRight:7
+                            }}/>}
+                            <p style={{fontWeight:"bold", color:"#9e9e9e", "margin-bottom": "7px", width: 145}}>{message.nickname}</p>
                             <div className={"message-content " + (message.file ? 'message-file' : null)}>
                                 {message.file ? message.file : message.text}
                             </div>
@@ -280,15 +330,21 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                           disabled={(message.participantNo !== participantNo)}>
                                     <button> 메세지 삭제</button>
                                 </MenuItem>
-
                             </ContextMenu>
                         </ContextMenuTrigger>
                         <div className="message-action">
-                            {message.date}
-                            {message.type ? <i className="ti-double-check text-info"></i> : null}
-                        </div>
-                        <div>
-                            {(roomType === "official") ? "" : message.notReadCount}
+                            {
+                                (roomType === "official") ? "" :
+                                    message.type !== 'outgoing-message' ?
+                                        <div style={{float:"left", marginRight: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{message.notReadCount}</div>
+                                        : <div style={{float:"right", marginLeft: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{message.notReadCount}</div>
+                            }
+                            {
+                                message.type !== 'outgoing-message' ?
+                                    <div style={{float: "left"}}>{messageTime(message.date)}</div>
+                                    : <div style={{float: "right"}}>{messageTime(message.date)}</div>
+                            }
+                            {/*{message.type ? <i className="ti-double-check text-info"></i> : null}*/}
                         </div>
 
                     </div>);

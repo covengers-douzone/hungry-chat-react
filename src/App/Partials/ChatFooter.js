@@ -1,7 +1,11 @@
 import React ,{useState,useRef,useEffect} from 'react'
 import {Button, Input} from 'reactstrap'
 import UploadFileModal from "../Modals/UploadFileModal";
+
 import UploadVideoModal from "../Modals/UploadVideoModal";
+
+import CodeBlockModal from "../Modals/CodeBlockModal";
+
 
 function ChatFooter(props) {
 
@@ -10,9 +14,13 @@ function ChatFooter(props) {
 
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
+
     const [isImage, setIsImage] = useState(false);
     const [isVideo, setIsVideo] = useState(false);
     const [type,  setType] = useState(null);
+
+
+    const [modalCodeBlock , setModalCodeBlock] = useState(false);
 
     const editModalToggle = () => setUploadModalOpen(!uploadModalOpen);
     const editVideoModalToggle = () => setVideoUploadModalOpen(!videoUploadModalOpen);
@@ -30,7 +38,10 @@ function ChatFooter(props) {
         setPreviewUrl(null);
         setFile(null);
     };
-
+    const chatCodeBlock = () => {
+        console.log("chatCodeBlock" , modalCodeBlock)
+        setModalCodeBlock(!modalCodeBlock)
+    }
     const handleChange = (e) => {
         props.onChange(e.target.value)
     };
@@ -94,6 +105,11 @@ function ChatFooter(props) {
                 }
                 
                 <div className="form-buttons">
+                    <Button color="light" className="btn-floating" onClick={chatCodeBlock}>
+                        <i className="fa fa-code">
+                            <CodeBlockModal modal = {modalCodeBlock} setModal = {setModalCodeBlock}/>
+                        </i>
+                    </Button>
                     <Button color="light" className="btn-floating" onClick={selectFile}>
                         <i className="fa fa-paperclip"></i>
                     </Button>

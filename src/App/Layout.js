@@ -30,7 +30,6 @@ function Layout({history}) {
     }, []);
 
     return (
-
         <div className="layout">
             <Navigation/>
             <div className="content">
