@@ -19,6 +19,7 @@ import {
     InputGroupText,
     CustomInput
 } from 'reactstrap'
+import ReactPlayer from "react-player";
 
 function UploadVideoModal(props) {
 
@@ -77,13 +78,13 @@ function UploadVideoModal(props) {
                                 {
                                     previewURL ?
                                         <div align={"center"}>
-                                            <video
-                                                  style={{
-                                                    height: "200px"
-                                                  }}
-                                                  src={previewURL}
-                                                  alt="avatar"
-                                            />
+                                            <ReactPlayer
+                                                  className='react-player'
+                                                  url={previewURL}
+                                                  width='100%'
+                                                  height='100%'
+                                                  playing
+                                                />
                                         </div>
                                         : null
                                 }

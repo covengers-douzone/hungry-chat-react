@@ -5,9 +5,9 @@ import UploadFileModal from "../Modals/UploadFileModal";
 import UploadVideoModal from "../Modals/UploadVideoModal";
 
 import CodeBlockModal from "../Modals/CodeBlockModal";
+import ReactPlayer from "react-player";
 import {useDispatch, useSelector} from "react-redux";
 import {markDownAction} from "../../Store/Actions/markDownAction";
-
 
 function ChatFooter(props) {
 
@@ -17,12 +17,8 @@ function ChatFooter(props) {
 
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
-
-    const [isImage, setIsImage] = useState(false);
-    const [isVideo, setIsVideo] = useState(false);
     const [type,  setType] = useState(null);
     const {markDown} = useSelector(state => state)
-
 
     const [modalCodeBlock , setModalCodeBlock] = useState(false);
 
@@ -63,7 +59,6 @@ function ChatFooter(props) {
         setFile(userFile);
         setPreviewUrl(previewURL);
         const type = previewURL.split('/')[0].split(':')[1];
-        console.log(type);
         setType("image");
     }
 
@@ -71,7 +66,6 @@ function ChatFooter(props) {
         setFile(userFile);
         setPreviewUrl(previewURL);
         const type = previewURL.split('/')[0].split(':')[1];
-        console.log(type);
         setType("video")
     }
 
@@ -106,16 +100,15 @@ function ChatFooter(props) {
             <form onSubmit={handleSubmit}>
                 {
                     previewURL ?
-                        type === "video" ? 
-                    <video
-                    style={{
-                      height: "100px"
-                      
-                    }}
-                    src={previewURL}
-                    className="form-control"
-                    alt="avatar"
-                    />:
+                        type === "video" ?
+                            <ReactPlayer
+                                  className='react-player'
+                                  url={previewURL}
+                                  width='100%'
+                                  height='100%'
+                                  playing
+                                />
+                        :
 
                             <img
                                   style={{
