@@ -25,6 +25,7 @@ function OpenImageModal(props) {
 
     const [activeTab, setActiveTab] = useState('1');
 
+
     const toggle = tab => {
         if (activeTab !== tab) setActiveTab(tab);
     };
@@ -65,10 +66,19 @@ function OpenImageModal(props) {
 
     const downloadImage = () => {
         const image_name = props.image.split('--');
+        console.log("image.name ", image_name[1].split('.')[1]);
         saveAs(props.image, image_name[1]) // Put your image url here.
     }
 
     props.image && calculateImageRatio();
+    
+    const splitImageName = () =>  {
+        const imageName = props.image.split('--')[1].split('.')[1];
+        console.log(imageName);
+        return imageName;
+    }
+    props.image && splitImageName();
+    console.log("previewUrl",);
 
     return (
         <div>
@@ -76,12 +86,14 @@ function OpenImageModal(props) {
                    transparent={true}
                    style={{
                        width: modalHeight,
+                       
                    }}
             >
                 <div className={"modal-content"} style={{"background-color": null}}>
-                    <div className="align-items-center" style={{'margin-top': marginTop}}>
-                        {
+                    <div className="align-items-center" style={{'margin-top': marginTop,}}>
+                        {   
                             props.image ?
+                            splitImageName() !== "mp4" ?
                                 <div align={"center"}>
                                     <img
                                           style={{
@@ -91,10 +103,23 @@ function OpenImageModal(props) {
                                           alt="avatar"
                                     />
                                 </div>
+                                :
+                                
+                                <div align={"center"} style={{backgroundColor: "black", fontSize: "8px", color:"white"}}>
+                                    download
+                                    <video
+                                        style={{
+                                        width:"0px",
+                                        backgroundColor: "black"
+                                        }}
+                                        src={props.image}
+                                        alt="avatar"
+                                    />
+                                </div>
                                 : null
                         }
                     </div>
-                    <ModalFooter style={{padding: '30px','flex-direction': 'column'}}>
+                    <ModalFooter style={{padding: '10px','flex-direction': 'column'}}>
                         <div className="align-items-center">
                             <i className="ti ti-download" onClick={() => downloadImage()}></i>
                         </div>

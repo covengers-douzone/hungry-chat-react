@@ -14,6 +14,14 @@ const chatMessageForm = (chat , index ) => {
                                               className="form-control"
                                               alt="avatar"
                                         />)
+    chat.type === 'VIDEO' && (contents = <video
+                                            style={{
+                                              height: "100px"
+                                            }}
+                                            src={config.URL + chat.contents.split('public')[1]}
+                                            className="form-control"
+                                            alt="avatar"
+                                      />)
     const chatMessage = {
         text: contents,
         date: chat.createdAt,

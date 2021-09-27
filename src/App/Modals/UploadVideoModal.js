@@ -20,7 +20,7 @@ import {
     CustomInput
 } from 'reactstrap'
 
-function MarkdownFileModal(props) {
+function UploadVideoModal(props) {
 
     const [activeTab, setActiveTab] = useState('1');
     const [ file, setFile ] = useState(null);
@@ -62,12 +62,12 @@ function MarkdownFileModal(props) {
         <div>
             <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
                 <ModalHeader toggle={props.toggle}>
-                    <i className="ti ti-pencil"></i> 파일 올리기
+                <i class="fa fa-upload" aria-hidden="true"></i> 동영상 올리기
                 </ModalHeader>
                 <ModalBody>
                     <Form>
                         <FormGroup>
-                            <Label for="avatar">파일</Label>
+                            <Label for="avatar">동영상</Label>
                             <div className="align-items-center">
                                 <CustomInput type="file" id="exampleCustomFileBrowser" name="customFile"
                                      onChange={onloadFile}
@@ -77,7 +77,7 @@ function MarkdownFileModal(props) {
                                 {
                                     previewURL ?
                                         <div align={"center"}>
-                                            <img
+                                            <video
                                                   style={{
                                                     height: "200px"
                                                   }}
@@ -100,4 +100,4 @@ function MarkdownFileModal(props) {
     )
 }
 
-export default MarkdownFileModal
+export default UploadVideoModal
