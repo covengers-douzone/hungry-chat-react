@@ -18,6 +18,7 @@ function Activation({location}) {
     let [ userPhoneNumber, setUserPhoneNumber ]= useState('');
     const [alertOpen, setAlertOpen] = useState(false);
     const [successAlertOpen, setSuccessAlertOpen] = useState(false);
+    let [ authFail, setAuthFail ] = useState(false);
     let history = useHistory();
 
     function getNumHandler(e){
@@ -120,16 +121,18 @@ function Activation({location}) {
                                         })
                                         .catch(error => {
                                         console.error("Error: "+error.message);
+                                        alert("사용자 인증 실패")
                                         history.push("/");
                                     })
                     }else{
-                        history.push("/")
+                        setAuthFail(true);
+                        
                     }
                 })
             
         }else{
-            setAlertOpen(true);
-            // history.push("/")
+            setAuthFail(true);
+            history.push("/");
         }
     }
 
@@ -161,6 +164,7 @@ function Activation({location}) {
                 </div>
                 <input id="text" name="text" type="hidden" value={ code }  required/>
                 <button className="btn btn-primary btn-block btn-lg">제출하기</button>
+                <Alert isOpen={authFail} color="info">성함 및 휴대폰번호가 일치하지 않습니다.</Alert>
             </form>
         </div>
     )
