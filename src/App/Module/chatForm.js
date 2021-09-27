@@ -2,7 +2,7 @@ import * as config from "../../config/config";
 import React from "react";
 const chatMessageForm = (chat , index ) => {
 
-
+    console.log(chat);
     let contents;
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)
