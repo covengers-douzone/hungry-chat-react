@@ -24,6 +24,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     const [openRoomList, setOpenRoomList] = useState([]);
     const [followerList, setFollowerList] = useState([]);
     const [notReadCount, setNotReadCount] = useState([]);
+    const [currentOnlineUsers, setCurrentOnlineUsers] = useState([]);
     const userNo = Number(localStorage.getItem("userNo"));
     // const [title, setTitle] = useState('');
     // const [content, setContent] = useState('');
@@ -64,6 +65,11 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 setNotReadCount(notReadCount_);
             }
         });
+
+        userSocket.on('currentUsers',(users) => {
+            //console.log('Socket Users', users);
+            setCurrentOnlineUsers(users);
+        })
 
         return (() => {
             userSocket.disconnect();
@@ -174,6 +180,16 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 otherParticipantsName = otherParticipant && otherParticipant[0] && otherParticipant[0].User.name;
             }
 
+            // 접속해 있는 다른 유저들
+            let otherUserStatus = false;
+
+            currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
+                if(Number(currentOnlineUser.userLocalStorage.userNo) === Number(otherParticipant[0].userNo)){
+                    otherUserStatus = true;
+                }
+                //console.log(Number(currentOnlineUser.userLocalStorage.userNo), otherParticipant[0].userNo)
+            }));
+
             userRoomList.push({
                 id: room.no,
                 type: room.type,
@@ -183,7 +199,8 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }), // 이 채팅방의 '너'
-                avatar: <figure className="avatar avatar-state-success">
+                otherParticipant: otherParticipant,
+                avatar: <figure className={otherUserStatus ? "avatar avatar-state-success" : "avatar"}>
                     <img src={otherParticipant && otherParticipant[0] && otherParticipant[0].User.profileImageUrl}
                          className="rounded-circle" alt="avatar"/>
                 </figure>,
@@ -206,7 +223,8 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }),
-                avatar: <figure className="avatar avatar-state-success">
+                otherParticipant: otherParticipant,
+                avatar: <figure className="avatar">
                     <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
                          alt="avatar"/>
                 </figure>,
@@ -227,10 +245,11 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                 openChatHostNo: openChatHost && openChatHost.no,
                 participantNo: currentParticipant && currentParticipant.no,
                 participant: currentParticipant,
+                otherParticipant: otherParticipant,
                 otherParticipantNo: otherParticipant && otherParticipant.filter(participant => {
                     return participant.no
                 }),
-                avatar: <figure className="avatar avatar-state-success">
+                avatar: <figure className="avatar">
                     <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
                          alt="avatar"/>
                 </figure>,
