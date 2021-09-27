@@ -23,11 +23,9 @@ import {lastPageAction} from "../../Store/Actions/lastPageAction";
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
-        const dispatch = useDispatch
+        const dispatch = useDispatch();
 
         let scrOnOff = false
-
-        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
         const {selectedChat} = useSelector(state => state);
         const {roomNo} = useSelector(state => state);
@@ -49,7 +47,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const messageRef = useRef(null);
 
-     //   const [lastPage, setLastPage] = useState(0)
+        //   const [lastPage, setLastPage] = useState(0)
         const [lp, setLp] = useState(0);
         const [sendOk, setSendOk] = useState(true)
 
@@ -64,6 +62,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {reload} = useSelector(state => state);
 
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
+        const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
 
         const [scrollSwitch , setScrollSwitch] = useState(false)
 
@@ -95,9 +94,15 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [sendOk])
 
         useEffect(() => {
+            const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
             socket.emit("deleteMessage", ({roomNo, chatNo}), async (response) => {
                 if (response.status === 'ok') {
                 }
+            });
+
+            return (() => {
+                socket.disconnect();
             })
         }, [deleteOk])
 
@@ -177,31 +182,31 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
 
                 console.log("getChatListUp " , lp)
-                    if (lp && scrollEl && scrollSwitch === true) {
+                if (lp && scrollEl && scrollSwitch === true) {
 
-                        if (lp < config.CHAT_LIMIT ) {
-                            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
-                            const chats = chatFormList(chatlist,participantNo);
-                            selectedChat.messages = chats;
-                            setScrollSwitch(false)
-                        } else {
-                            console.log("getChatListUp " , lp)
-                            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength.count, localStorage.getItem("Authorization"))
-                            const chats = chatFormList(chatlist,participantNo);
-                            selectedChat.messages = chats;
-                       //     scrollEl.scrollTop = scrollEl.scrollHeight;
+                    if (lp < config.CHAT_LIMIT ) {
+                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
+                        const chats = chatFormList(chatlist,participantNo);
+                        selectedChat.messages = chats;
+                        setScrollSwitch(false)
+                    } else {
+                        console.log("getChatListUp " , lp)
+                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength.count, localStorage.getItem("Authorization"))
+                        const chats = chatFormList(chatlist,participantNo);
+                        selectedChat.messages = chats;
+                        //     scrollEl.scrollTop = scrollEl.scrollHeight;
 
-                        }
                     }
+                }
 
 
             }
             getChatListUp()
         }, [lp])
 
-    useEffect(() => {
-        setLp(lp - config.CHAT_LIMIT)
-    },[testOk])
+        useEffect(() => {
+            setLp(lp - config.CHAT_LIMIT)
+        },[testOk])
 
 
         // 스코롤을 위로 이동시 발동하는 핸들러
@@ -268,8 +273,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
             if (message && message.text && message.text.props && message.text.type) {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
+                const fileType = message.text.type;
                 // open image modal
                 setImage(imgSource);
+                setFileType(fileType);
                 setOpenImageModalOpen(true);
             }
         }
@@ -288,11 +295,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             let timeForm = hours + ":" + minutes;
 
-            if(currentDate === date && currentHours === hours){
-                if(currentMinutes === minutes) {
+            if(currentDate === date){ // 날짜가 같다면(2021-09-09 === 2021-09-09)
+                if(currentHours === hours && currentMinutes === minutes) {
                     timeForm = '방금 전';
-                } else if (currentMinutes - minutes < 10) { // 보내기 10분 되기 전까지만 이렇게 표시
+                    // 보내기 10분 되기 전까지만 이렇게 표시
+                } else if (currentHours === hours && currentMinutes - minutes < 10) {
                     timeForm = (currentMinutes - minutes) + '분 전';
+                } else if (currentHours - hours === 1 && minutes - currentMinutes > 50){
+                    timeForm = (currentMinutes - minutes + 60) + '분 전';
                 }
             }
             return timeForm;
@@ -307,7 +317,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
                         {/*날짜 관련 divider*/}
                         <div className="message-item messages-divider sticky-top" data-label={message.text}
-                            style={{ width: '20%', marginRight: 0, textAlign: 'center', maxWidth: '100%', float: 'left', color: '#9e9e9e'}}>{message.text}</div>
+                             style={{ width: '20%', marginRight: 0, textAlign: 'center', maxWidth: '100%', float: 'left', color: '#9e9e9e'}}>{message.text}</div>
                         <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
                     </div>
 
@@ -365,6 +375,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             setMenu(isOpen => !isOpen); // on,off 개념 boolean
         }
 
+
         return (
             <div className="chat">
                 {
@@ -417,7 +428,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                             </div>
                             <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg} setInputMsg={setInputMsg}
-                                        />
+                            />
 
                         </React.Fragment>
                         :
@@ -428,7 +439,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </div>
                         </div>
                 }
-                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image}/>
+                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
             </div>
         )
     }
