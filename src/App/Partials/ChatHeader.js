@@ -19,6 +19,8 @@ import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileActi
 import {roomTypeAction} from "../../Store/Actions/roomTypeAction";
 import fetchApi from "../Module/fetchApi";
 import CodeBlockModal from "../Modals/CodeBlockModal";
+import {MdCheckBox} from "react-icons/all";
+import {markDownAction} from "../../Store/Actions/markDownAction";
 
 function ChatHeader(props) {
 
@@ -28,6 +30,11 @@ function ChatHeader(props) {
     const {roomNo} = useSelector(state=>state)
     const {userNo} = useSelector(state=>state)
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const {markDown} = useSelector(state => state);
+
+
+
 
 
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -42,6 +49,10 @@ function ChatHeader(props) {
         dispatch(mobileChatProfileAction(true));
     }
 
+    const handleChecked = (e) => {
+        dispatch(markDownAction(!markDown))
+
+    }
 
 
 
@@ -90,9 +101,10 @@ function ChatHeader(props) {
                     {/*<li className="list-inline-item">*/}
                     {/*    <VoiceCallModal/>*/}
                     {/*</li>*/}
-                    {/*<li className="list-inline-item">*/}
-                    {/*    <VideoCallModal/>*/}
-                    {/*</li>*/}
+                    <li className="list-inline-item">
+                        <input type="checkbox" checked={markDown} onChange={handleChecked}/> 마크다운 ON/OFF
+
+                    </li>
 
                     <li className="list-inline-item" data-toggle="tooltip">
                         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
