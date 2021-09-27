@@ -117,6 +117,7 @@ const Index = React.forwardRef(({
 
         console.log('selectedChat',selectedChat);
 
+
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
 
@@ -136,11 +137,15 @@ const Index = React.forwardRef(({
                     //쳇 리스트 갯수 구하기
                     const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
-                    if (chatListCount.count < config.CHAT_LIMIT || chatListCount >= 0) {
+                    if ((chatListCount.count <= config.CHAT_LIMIT)  ) {
                         lastPage = 0;
                     } else {
                         lastPage = chatListCount.count - config.CHAT_LIMIT
+                        if(lastPage < 0 ){
+                            lastPage = 0
+                        }
                     }
+
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
                     const chats = chatFormList(chatlist,participantNo);
 
@@ -192,17 +197,23 @@ const Index = React.forwardRef(({
                 //쳇 리스트 갯수 구하기
                 const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
-                // lastPage가 -로 들어 갈때 처리 해주는 조건문
-                if ((chatListCount.count < config.CHAT_LIMIT) || chatListCount >= 0) {
+                // 전체 채팅수가 10개 보다 적을때 처음부터 보여준다.
+                // 아니라면 전체 에서 마지막 인덱스부터 보여준다
+                if ((chatListCount.count <= config.CHAT_LIMIT)  ) {
                     lastPage = 0;
                 } else {
                     lastPage = chatListCount.count - config.CHAT_LIMIT
+                    if(lastPage < 0 ){
+                        lastPage = 0
+                    }
                 }
+                console.log("CHAT_LIMIT" ,  config.CHAT_LIMIT)
+                console.log(" chatListCount.count" ,  chatListCount.count)
+                console.log("lastPage" , lastPage)
 
-                //  마지막 읽은 메세지가 존재 한다면  그 메시지 위치까지 페이징 시킨다 , 없다면  5개의 마지막 메시지만 보이게 한다.
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
-
+                    lastPage = chatListCount.count - lastReadNoCount.count
                     const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                 } else {
@@ -210,6 +221,7 @@ const Index = React.forwardRef(({
                     const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                 }
+
                 dispatch(lastPageAction(lastPage))
                 // selectedChat.messages = chats;
                 dispatch(messageAllLengthAction(chatListCount))

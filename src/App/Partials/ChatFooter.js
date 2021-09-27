@@ -6,16 +6,19 @@ import UploadVideoModal from "../Modals/UploadVideoModal";
 
 import CodeBlockModal from "../Modals/CodeBlockModal";
 import ReactPlayer from "react-player";
-
+import {useDispatch, useSelector} from "react-redux";
+import {markDownAction} from "../../Store/Actions/markDownAction";
 
 function ChatFooter(props) {
 
+    const dispatch = useDispatch
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [videoUploadModalOpen, setVideoUploadModalOpen] = useState(false);
 
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
     const [type,  setType] = useState(null);
+    const {markDown} = useSelector(state => state)
 
     const [modalCodeBlock , setModalCodeBlock] = useState(false);
 
@@ -40,6 +43,7 @@ function ChatFooter(props) {
         setModalCodeBlock(!modalCodeBlock)
     }
     const handleChange = (e) => {
+        console.log("")
         props.onChange(e.target.value)
     };
 
@@ -64,6 +68,32 @@ function ChatFooter(props) {
         const type = previewURL.split('/')[0].split(':')[1];
         setType("video")
     }
+
+    const handleKeyPress = (e) => {
+
+        console.log("handleKeyPress" , e.key)
+        if(e.key ==="Enter"){
+            handleSubmit(e);
+        }
+
+
+
+    }
+
+    const keydownHandler = (e) => {
+        if(e.keyCode===13 && e.ctrlKey) {
+            props.setInputMsg(props.inputMsg+"\n")
+        }
+
+    }
+
+
+    useEffect(() => {
+        document.addEventListener('keydown',keydownHandler);
+        return () => {
+            document.removeEventListener('keydown',keydownHandler);
+        }
+    })
 
     return (
         <div className="chat-footer">
@@ -94,10 +124,9 @@ function ChatFooter(props) {
                               
                         :
 
-                        <textarea type="text" className="form-control" placeholder="메세지 입력" value={props.inputMsg}
+                        <textarea type="text" onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
-                
                 <div className="form-buttons">
                     <Button color="light" className="btn-floating" onClick={chatCodeBlock}>
                         <i className="fa fa-code">

@@ -80,9 +80,9 @@ function OpenImageModal(props) {
         return imageName;
     }
 
-
     props.image && splitImageName();
     props.image && calculateFileRatio();
+
 
     return (
         <div>
