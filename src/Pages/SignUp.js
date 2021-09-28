@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import { useForm } from "react-hook-form";
 import {Alert} from "reactstrap";
+import * as config from "../config/config";
 
 function SignUp({history}) {
     let [ color, setColor ] = useState("deeppink");
@@ -44,12 +45,12 @@ function SignUp({history}) {
         }
         setCode(authCode);// 인증코드
         //console.log(e.target.number.value);
-        fetch("http://localhost:8888/api/user/sms", {
+        fetch(config.SPRING_URL+"/api/user/sms", {
             method: "POST",
             credentials: 'include',
             headers: {
                 "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": "http://localhost:8888",
+                "Access-Control-Allow-Origin": config.SPRING_URL,
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -86,12 +87,12 @@ function SignUp({history}) {
         e.preventDefault();
 
         if(code.toString() === inputCode){
-            fetch("http://localhost:8888/api/user/join", {
+            fetch(config.SPRING_URL+"/api/user/join", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
                     "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "http://localhost:8888",
+                    "Access-Control-Allow-Origin": config.SPRING_URL,
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                     'Accept': 'application/json, text/plain',
                     'Content-Type': 'application/json;charset=UTF-8'

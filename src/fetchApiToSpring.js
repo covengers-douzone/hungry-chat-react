@@ -1,4 +1,6 @@
 // 비동기 통신
+import * as config from "./config/config";
+
 export default function (defaultState , setState) {
     const PORT = 8888;
     const domain = `http://localhost:`;
@@ -11,7 +13,7 @@ export default function (defaultState , setState) {
                     credentials: 'include',
                     headers:{
                         "Access-Control-Allow-Headers" : "Content-Type",
-                        "Access-Control-Allow-Origin": "http://localhost:8888",
+                        "Access-Control-Allow-Origin": config.SPRING_URL,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         'Accept': 'application/json, text/plain',
                         'Content-Type': 'application/json;charset=UTF-8'

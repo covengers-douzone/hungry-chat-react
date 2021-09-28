@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 import { useForm } from "react-hook-form";
+import * as config from "../config/config"
 
 function ResetPassword({location}) {
     const { register, handleSubmit, errors } = useForm();
@@ -12,12 +13,12 @@ function ResetPassword({location}) {
     const onSubmit = function handleSubmit(errors, e) {
     e.preventDefault();
 
-    fetch("http://localhost:8888/api/user/passwordupdate", {
+    fetch(config.SPRING_URL+"/api/user/passwordupdate", {
         method: "POST",
         credentials: 'include',
         headers: {
             "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": "http://localhost:8888",
+            "Access-Control-Allow-Origin": config.SPRING_URL,
             "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
             'Accept': 'application/json, text/plain',
             'Content-Type': 'application/json;charset=UTF-8'

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {Tooltip} from 'reactstrap'
@@ -9,6 +9,7 @@ import GameModal from "./Modals/GameModal"
 import {mobileSidebarAction} from "../Store/Actions/mobileSidebarAction"
 import roleStyle from "./Module/roleStyle";
 import fetchApi from "./Module/fetchApi";
+import music from "../assets/music/Caballero - Ofshane.mp3";
 
 function Navigation() {
 
@@ -39,8 +40,6 @@ function Navigation() {
         //     setGameModalOpen(!gameModalOpen)
         // }
         setGameModalOpen(!gameModalOpen)
-
-
     };
 
 
@@ -135,6 +134,20 @@ function Navigation() {
         )
     };
 
+
+    const audio = new Audio(music)
+    const [playing, setPlaying] = useState(false);
+
+    useEffect(()=>{
+        // playing ? audio.play() : audio.pause()
+        playing && audio.play()
+    },[playing])
+
+    const musicStart = () => {
+        setPlaying(!playing);
+        audio.pause()
+    }
+
     return (
         <nav className="navigation">
             <EditProfileModal modal={editModalOpen} toggle={editModalToggle}/>
@@ -156,6 +169,13 @@ function Navigation() {
                         <li>
                             <a onClick={gameModalToggle}>
                                 <i className="ti ti-game" style={opacity}></i>
+                            </a>
+                        </li>
+                    </li>
+                    <li >
+                        <li>
+                            <a id="music" onClick={musicStart}>
+                                <i className="ti ti-music" style={opacity}></i>
                             </a>
                         </li>
                     </li>

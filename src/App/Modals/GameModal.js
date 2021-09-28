@@ -50,8 +50,6 @@ class GameModal extends PureComponent {
         const width = window.outerWidth
         const height = element.clientHeight
 
-
-
         console.log("height" , height)
         console.log("width" , width)
         return (
