@@ -145,7 +145,6 @@ function Navigation() {
 
     const musicStart = () => {
         setPlaying(!playing);
-        console.log(playing)
         audio.pause()
     }
 

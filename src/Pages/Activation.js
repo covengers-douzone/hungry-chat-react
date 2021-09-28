@@ -3,6 +3,7 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 import { func } from "prop-types";
 import {Alert} from "reactstrap";
+import * as config from "../config/config"
 
 function Activation({location}) {
     
@@ -39,12 +40,12 @@ function Activation({location}) {
             authCode -= 1000;
         }
         setCode(authCode);// 인증코드
-        fetch("http://localhost:8888/api/user/sms", {
+        fetch(config.SPRING_URL+"/api/user/sms", {
             method: "POST",
             credentials: 'include',
             headers: {
                 "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": "http://localhost:8888",
+                "Access-Control-Allow-Origin": config.SPRING_URL,
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -72,12 +73,12 @@ function Activation({location}) {
         e.preventDefault();
 
         if(e.target.text.value === e.target.code.value){
-            fetch("http://localhost:8888/api/user/useractivation", {
+            fetch(config.SPRING_URL+"/api/user/useractivation", {
                 method: "POST",
                 credentials: 'include',
                 headers: {
                     "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": "http://localhost:8888",
+                    "Access-Control-Allow-Origin": config.SPRING_URL,
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                     'Accept': 'application/json, text/plain',
                     'Content-Type': 'application/json;charset=UTF-8'
@@ -90,11 +91,11 @@ function Activation({location}) {
                 })
             }).then(response =>  {
                     if(response.status === 200) {
-                        fetch("http://localhost:8888/api/user/login",{
+                        fetch(config.SPRING_URL+"/api/user/login",{
                                         method: "POST",
                                         headers: {
                                             "Access-Control-Allow-Headers":"Authorization",
-                                            "Access-Control-Allow-Origin":"http://localhost:8888",
+                                            "Access-Control-Allow-Origin":config.SPRING_URL,
                                             "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                                             "Accept":"application/json",
                                             "Content-Type":"application/json"
