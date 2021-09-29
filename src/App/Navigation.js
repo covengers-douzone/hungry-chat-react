@@ -10,7 +10,7 @@ import {mobileSidebarAction} from "../Store/Actions/mobileSidebarAction"
 import roleStyle from "./Module/roleStyle";
 import fetchApi from "./Module/fetchApi";
 import music from "../assets/music/어벤져스 오프닝ost.mp3";
-import img from "../assets/img/covengers-logo-white.png"
+import img from "../assets/img/covengers-logo-transparency.png"
 
 function Navigation() {
 
@@ -137,7 +137,7 @@ function Navigation() {
 
 
     const audio = new Audio(music)
-    const [playing, setPlaying] = useState(true);
+    const [playing, setPlaying] = useState(false);
 
     useEffect(()=>{
         // playing ? audio.play() : audio.pause()
