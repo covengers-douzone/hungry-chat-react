@@ -206,6 +206,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     useEffect(() => {
         setLp(lp - config.CHAT_LIMIT)
+        //console.log('scrollEl.clientHeight',scrollRef.current.clientHeight)
+        scrollEl && (scrollEl.scrollTop = scrollRef.current.scrollBottom)
     },[testOk])
 
 
@@ -225,11 +227,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // 맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
             if(searchTerm === "" && scrollSwitch) {
                 console.log("페이징 실행 가능한 영역")
-
+                console.log('currentScroll', scrollRef.current.scrollBottom)
                 if (scrollRef && lp >=  0 && (scrollEl.scrollTop === 0)) {
                     setTimeout(() => {
                         setTestOk(testOk + 1)
-                        // scrollEl.scrollTop = scrollEl.scrollTop
+                        //scrollEl.scrollTop = scrollRef.current.scrollBottom
 
 
                         console.log("lp", lp)
@@ -374,8 +376,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const toggleMenu = () => {
             setMenu(isOpen => !isOpen); // on,off 개념 boolean
         }
-        
-        
+
+        const onScroll = (e) => {
+            scrollRef.current.scrollTop = e.target.scrollTop;
+            scrollRef.current.scrollBottom = e.target.scrollHeight;
+
+            console.log('onScroll',scrollRef.current.scrollTop,scrollRef.current.scrollBottom)
+        }
+
         return (
             <div className="chat">
                 {
@@ -390,6 +398,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 }}
                                 containerRef={ref => setScrollEl(ref)} onYReachStart={handleScrollStart}
                                 onScrollUp={handlePaging}
+                                onScroll={onScroll}
                                 ref={scrollRef}
                             >
                                 <pre>

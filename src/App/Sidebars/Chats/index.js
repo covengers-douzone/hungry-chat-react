@@ -38,9 +38,6 @@ const Index = React.forwardRef(({
                                     history
                                 }, scrollRef) => {
 
-
-    // const socket = io.connect("http://192.168.254.8:9999", {transports: ['websocket']});
-
     const dispatch = useDispatch();
 
     const inputRef = useRef();
@@ -116,10 +113,7 @@ const Index = React.forwardRef(({
         }
 
         console.log('selectedChat',selectedChat);
-
-
         const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
-
 
         // 새로운 유저가 들어 왔을떄 Read 값을 변경 시키기 위해 제작,
         socket.on('roomUsers', async ({room, users}) => {
@@ -172,7 +166,7 @@ const Index = React.forwardRef(({
             socket.emit("unknown", (localStorage.getItem("userNo")) , false)
         }*/
 
-        socket.emit("join", {
+        socket.emit("joinParticipant", {
             nickName: selectedChat.name,
             roomNo: selectedChat.id,
             participantNo: selectedChat.participantNo,
@@ -232,14 +226,42 @@ const Index = React.forwardRef(({
         });
         socket.on('message', callback);
 
-
+        let idx = 0;
         // 1분 경과시 시간 변경위해 실행
         setInterval(async ()=>{
-            console.log('1분 경과')
-            const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
-            const chats = chatFormList(chatlist,participantNo);
-            selectedChat.messages = chats;
-        },60000);
+            const lastReadNo = await fetchApi(null, null).getLastReadNo(participantNo, localStorage.getItem("Authorization"))
+            if (lastReadNo !== undefined) {
+                dispatch(lastReadNoAction(lastReadNo))
+            }
+
+            const lastReadNoCount = await fetchApi(null, null).getLastReadNoCount(participantNo, localStorage.getItem("Authorization"))
+
+            //쳇 리스트 갯수 구하기
+            const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
+
+            // 전체 채팅수가 10개 보다 적을때 처음부터 보여준다.
+            // 아니라면 전체 에서 마지막 인덱스부터 보여준다
+            if ((chatListCount.count <= config.CHAT_LIMIT)  ) {
+                lastPage = 0;
+            } else {
+                lastPage = chatListCount.count - config.CHAT_LIMIT
+                if(lastPage < 0 ){
+                    lastPage = 0
+                }
+            }
+
+            if (lastReadNoCount && lastReadNoCount.count !== 0) {
+                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
+                lastPage = chatListCount.count - lastReadNoCount.count
+                const chats = chatFormList(chatlist,participantNo);
+                selectedChat.messages = chats;
+            } else {
+                const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lastPage, config.CHAT_LIMIT, localStorage.getItem("Authorization"))
+                const chats = chatFormList(chatlist,participantNo);
+                selectedChat.messages = chats;
+            }
+            dispatch(messageLengthAction(idx++));
+        },600000);
 
         return async () => {  // 방을 나갔을 경우  소켓을 닫고 해당 participantNo LastReadAt를 업데이트 시킨다
             if (roomNo) {
