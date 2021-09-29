@@ -166,25 +166,25 @@ function SignIn({history}) {
                     <a href="#" className="btn btn-outline-light btn-sm" onClick={unknownLoginHandler}>비회원 로그인</a>
                     <a href="/sign-up" className="btn btn-outline-light btn-sm">회원가입</a>
                 </div>
-                <hr/>
-                <p className="text-muted">SNS 로그인</p>
-                <ul className="list-inline">
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-facebook">
-                            <i className="fa fa-facebook"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-google">
-                            <i className="fa fa-google"></i>
-                        </a>
-                    </li>
-                    <li className="list-inline-item">
-                        <a href="/" className="btn btn-floating btn-instagram">
-                            <i className="fa fa-instagram"></i>
-                        </a>
-                    </li>
-                </ul>
+                {/*<hr/>*/}
+                {/*<p className="text-muted">SNS 로그인</p>*/}
+                {/*<ul className="list-inline">*/}
+                {/*    <li className="list-inline-item">*/}
+                {/*        <a href="/" className="btn btn-floating btn-facebook">*/}
+                {/*            <i className="fa fa-facebook"></i>*/}
+                {/*        </a>*/}
+                {/*    </li>*/}
+                {/*    <li className="list-inline-item">*/}
+                {/*        <a href="/" className="btn btn-floating btn-google">*/}
+                {/*            <i className="fa fa-google"></i>*/}
+                {/*        </a>*/}
+                {/*    </li>*/}
+                {/*    <li className="list-inline-item">*/}
+                {/*        <a href="/" className="btn btn-floating btn-instagram">*/}
+                {/*            <i className="fa fa-instagram"></i>*/}
+                {/*        </a>*/}
+                {/*    </li>*/}
+                {/*</ul>*/}
             </form>
         </div>
     )
