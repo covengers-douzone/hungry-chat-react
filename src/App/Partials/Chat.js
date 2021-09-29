@@ -195,7 +195,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             const chats = chatFormList(chatlist,participantNo);
                             selectedChat.messages = chats;
                        //     scrollEl.scrollTop = scrollEl.scrollHeight;
-
+                            //scrollEl && console.log('scrollEl.clientHeight',scrollEl.scrollHeight)
+                            scrollEl && (scrollEl.scrollTop = scrollRef.current.scrollBottom) &&  console.log('scrollEl.clientHeight',scrollEl.scrollHeight)
                         }
                     }
 
@@ -206,8 +207,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
     useEffect(() => {
         setLp(lp - config.CHAT_LIMIT)
-        //console.log('scrollEl.clientHeight',scrollRef.current.clientHeight)
-        scrollEl && (scrollEl.scrollTop = scrollRef.current.scrollBottom)
     },[testOk])
 
 
