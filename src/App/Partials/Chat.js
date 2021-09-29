@@ -325,7 +325,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                  textAlign: 'center',
                                  maxWidth: '100%',
                                  float: 'left',
-                                 color: '#9e9e9e'
+                                 color: '#424242'
                              }}>{message.text}</div>
                         <div style={{
                             width: '40%',
