@@ -93,53 +93,53 @@ function Profile() {
                                 </div>
                             </PerfectScrollbar>
                         </div>
-                        <hr/>
-                        <div className="pl-4 pr-4">
-                            <h6>Social Links</h6>
-                            <ul className="list-inline social-links">
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-facebook">
-                                        <i className="fa fa-facebook"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-twitter">
-                                        <i className="fa fa-twitter"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-dribbble">
-                                        <i className="fa fa-dribbble"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-whatsapp">
-                                        <i className="fa fa-whatsapp"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-linkedin">
-                                        <i className="fa fa-linkedin"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-google">
-                                        <i className="fa fa-google"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-behance">
-                                        <i className="fa fa-behance"></i>
-                                    </a>
-                                </li>
-                                <li className="list-inline-item">
-                                    <a href="/#/" className="btn btn-sm btn-floating btn-instagram">
-                                        <i className="fa fa-instagram"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <hr/>
+                        {/*<hr/>*/}
+                        {/*<div className="pl-4 pr-4">*/}
+                        {/*    <h6>Social Links</h6>*/}
+                        {/*    <ul className="list-inline social-links">*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-facebook">*/}
+                        {/*                <i className="fa fa-facebook"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-twitter">*/}
+                        {/*                <i className="fa fa-twitter"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-dribbble">*/}
+                        {/*                <i className="fa fa-dribbble"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-whatsapp">*/}
+                        {/*                <i className="fa fa-whatsapp"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-linkedin">*/}
+                        {/*                <i className="fa fa-linkedin"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-google">*/}
+                        {/*                <i className="fa fa-google"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-behance">*/}
+                        {/*                <i className="fa fa-behance"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*        <li className="list-inline-item">*/}
+                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-instagram">*/}
+                        {/*                <i className="fa fa-instagram"></i>*/}
+                        {/*            </a>*/}
+                        {/*        </li>*/}
+                        {/*    </ul>*/}
+                        {/*</div>*/}
+                        {/*<hr/>*/}
                         {/*    */}
                         {/*<div className="pl-4 pr-4">*/}
                         {/*    <div className="form-group">*/}
