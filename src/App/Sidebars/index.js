@@ -100,7 +100,8 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                     history.push("/error/500") // 500 Page(DB error) // 수정 필요
                 } else {
                     // Token 문제 발생 시 -> return null -> length error -> catch
-                    alert("Token invalid or Token expired. Please login again");
+                    console.log(err.message)
+                    alert("friend, follow, openRoom : Token invalid or Token expired. Please login again");
                     history.push("/");
                     console.log("Error : {}", err.message);
                 }

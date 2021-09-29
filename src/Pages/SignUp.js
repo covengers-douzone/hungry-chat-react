@@ -3,6 +3,8 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import { useForm } from "react-hook-form";
 import {Alert} from "reactstrap";
 import * as config from "../config/config";
+import img from "../assets/img/covengers-logo.png"
+
 
 function SignUp({history}) {
     let [ color, setColor ] = useState("deeppink");
@@ -156,7 +158,8 @@ function SignUp({history}) {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <Logo/>
+                <img src={img} style={{width:80, height:80}}/>
+                {/*<Logo/>*/}
             </div>
             <h5>회원가입</h5>
             <Alert isOpen={alertOpen} color="info">{userName}님 회원가입을 축하합니다. 5초 뒤에 로그인 화면으로 이동합니다.</Alert>
