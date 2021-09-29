@@ -2,7 +2,7 @@
 import React, { PureComponent } from "react";
 import { GameEngine } from "react-game-engine";
 import { Box } from "./Box";
-import { MoveBox } from "./MoveBox"
+import { System } from "./System"
 import { Player } from "./Player"
 import {CopperCoin} from "./CopperCoin";
 class SimpleGame extends PureComponent {
@@ -14,7 +14,7 @@ class SimpleGame extends PureComponent {
 
         return (
             <GameEngine
-                systems={[MoveBox]}
+                systems={[System]}
                 entities={{
                     //-- Notice that each entity has a unique id (required)
                     //-- and a renderer property (optional). If no renderer

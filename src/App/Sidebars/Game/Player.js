@@ -4,13 +4,17 @@ import coinImage from "../../../assets/img/game/coin/coppercoin.png"
 
 class Player extends PureComponent {
     render() {
-        const size = 30; // 박스 상자
+        const size = Math.trunc(Math.max(this.props.width, this.props.height) * 0.010);
         const userTextSize = 25 // 유저 네임 div 크기
         const userChatSize = userTextSize + 25 // 유저 네임 div 크기
         const x = this.props.x - size / 2;
         const y = this.props.y - size / 2;
         const userColor = this.props.userColor;
         const userName = this.props.userName;
+
+
+
+
         return (
 
             <div>
