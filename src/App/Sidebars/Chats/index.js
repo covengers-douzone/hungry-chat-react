@@ -260,7 +260,7 @@ const Index = React.forwardRef(({
                 history.push("/error/500") // 500 Page(DB error) // 수정 필요
             } else {
                 // Token 문제 발생 시 -> return null -> length error -> catch
-                alert("Token invalid or Token expired. Please login again");
+                alert("chatSelectHandle : Token invalid or Token expired. Please login again");
                 history.push("/");
                 console.log("Error : {}", e.message);
             }

@@ -3,6 +3,8 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 import {Alert} from "reactstrap";
 import * as config from "../config/config";
+import img from "../assets/img/covengers-logo.png"
+
 
 function UserInfoSearch() {
 
@@ -117,7 +119,8 @@ function UserInfoSearch() {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <Logo/>
+                <img src={img} style={{width:80, height:80}}/>
+                {/*<Logo/>*/}
             </div>
             <h5>회원인증</h5>
             <Alert isOpen={alertOpen} color="info">인증실패</Alert>

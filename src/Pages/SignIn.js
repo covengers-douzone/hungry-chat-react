@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {Alert} from "reactstrap";
 import * as config from "../config/config"
+import img from "../assets/img/covengers-logo.png"
 
 
 function SignIn({history}) {
@@ -78,7 +79,6 @@ function SignIn({history}) {
                                 console.info("Error: "+ error.message);
                                 history.push("/");
                         })
-                        // console.log("res: ", Promise.resolve);
         } else{
             setAlertOpen(true);
             history.push("/");
@@ -145,7 +145,8 @@ function SignIn({history}) {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <Logo/>
+                <img src={img} style={{width:80, height:80}}/>
+                {/*<Logo/>*/}
             </div>
             <h5>로그인</h5>
             <Alert isOpen={alertOpen} color="info">아이디/패스워드를 다시 확인해주세요.</Alert>

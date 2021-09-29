@@ -351,7 +351,8 @@ export default function (defaultState, setState) {
                     throw json.message;
                 }
             } catch (err) {
-                console.error(err);
+                console.error(err.message);
+                window.location.assign("/")
             }
         },
         getFriendList: async function (userNo, token) { // 방 생성
