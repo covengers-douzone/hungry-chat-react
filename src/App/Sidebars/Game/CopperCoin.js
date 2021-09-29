@@ -6,7 +6,6 @@ class CopperCoin extends PureComponent {
         const size = 100; // 박스 상자
         const x = this.props.x - size / 2;
         const y = this.props.y - size / 2;
-        console.log("CopperCoin@@@@")
         return (
                 <img style={
 

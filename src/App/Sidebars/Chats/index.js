@@ -30,6 +30,7 @@ import {reloadAction} from "../../../Store/Actions/reloadAction";
 import roleStyle from "../../Module/roleStyle";
 import {lastPageAction} from "../../../Store/Actions/lastPageAction";
 import {currentOnlineRoomUsersAction} from "../../../Store/Actions/currentOnlineRoomUsersAction";
+import {lastReadNoLengthAction} from "../../../Store/Actions/lastReadNoLengthAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
@@ -206,7 +207,7 @@ const Index = React.forwardRef(({
                 console.log("lastPage" , lastPage)
 
                 if (lastReadNoCount && lastReadNoCount.count !== 0) {
-                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count, lastReadNoCount.count, localStorage.getItem("Authorization"))
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, chatListCount.count - lastReadNoCount.count,lastReadNoCount.count, localStorage.getItem("Authorization"))
                     lastPage = chatListCount.count - lastReadNoCount.count
                     const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
@@ -218,8 +219,10 @@ const Index = React.forwardRef(({
 
                 dispatch(lastPageAction(lastPage))
                 // selectedChat.messages = chats;
-                dispatch(messageAllLengthAction(chatListCount))
+                dispatch(messageAllLengthAction(chatListCount.count))
                 dispatch(messageLengthAction(selectedChat.messages.length - 1))
+                console.log("ok@@@@@@@@@@@@@@@@@@@@@" , lastReadNoCount.count)
+                dispatch(lastReadNoLengthAction(lastReadNoCount.count))
               //  setJoinOk(!joinOk)
                 dispatch(joinOKAction(!joinOk))
             }

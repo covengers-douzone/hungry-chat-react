@@ -26,6 +26,7 @@ import currentOnlineRoomUsersReducer from "./Reducers/currentOnlineRoomUsersRedu
 import codeBlockReducer from "./Reducers/codeBlockReducer";
 import markDownReducer from "./Reducers/markDownReducer";
 import sendOkReducer from "./Reducers/sendOkReducer";
+import lastReadNoLengthReducer from "./Reducers/lastReadNoLengthReducer";
 
 const reducers = combineReducers({
     selectedSidebar: sidebarReducer,
@@ -54,6 +55,7 @@ const reducers = combineReducers({
     currentOnlineRoomUsers : currentOnlineRoomUsersReducer,
     codeBlock : codeBlockReducer,
     markDown : markDownReducer,
+    lastReadNoLength : lastReadNoLengthReducer,
     sendOk : sendOkReducer
 });
 
