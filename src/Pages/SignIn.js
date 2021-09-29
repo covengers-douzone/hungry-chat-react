@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {Alert} from "reactstrap";
+
 import * as config from "../config/config"
 
 
@@ -140,7 +141,7 @@ function SignIn({history}) {
         }
     }
 
-    useEffect(() => document.body.classList.add('form-membership'), []);
+    useEffect(() => document.body.classList.add('form-membership'));
 
     return (
         <div className="form-wrapper">
