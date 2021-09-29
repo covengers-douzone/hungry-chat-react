@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'font-awesome/css/font-awesome.min.css';
 import '@icon/themify-icons/themify-icons.css';
+
 import './assets/scss/Index.scss'
+
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
