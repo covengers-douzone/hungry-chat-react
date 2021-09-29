@@ -19,13 +19,18 @@ import {messageAllLengthAction} from "../../Store/Actions/messageAllLengthAction
 import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
+import {Link} from "react-router-dom";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
-        const dispatch = useDispatch();
+        const dispatch = useDispatch()
 
         let scrOnOff = false
+
+
+
+        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
 
         const {selectedChat} = useSelector(state => state);
         const {roomNo} = useSelector(state => state);
@@ -38,7 +43,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const {lastPage} = useSelector(state => state)
         const {markDown} = useSelector(state => state)
         const {codeBlock} = useSelector(state => state)
-
+        const {lastReadNoLength} = useSelector(state => state)
         const [inputMsg, setInputMsg] = useState('');
 
         const [scrollEl, setScrollEl] = useState();
@@ -55,16 +60,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const [chatNo, setChatNo] = useState(null)
 
-        const [testOk, setTestOk] = useState(0)
+        const [pagingOk, setPagingOk] = useState(0)
 
         const [searchTerm, setSearchTerm] = useState("");
 
-        const {reload} = useSelector(state => state);
-
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
-        const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
 
-        const [scrollSwitch , setScrollSwitch] = useState(false)
+        const [scrollSwitch, setScrollSwitch] = useState(false)
 
         // image 클릭 시 image 크게 보이게 하는 modal
         const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
@@ -81,7 +83,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         useEffect(() => {
             console.log("searchTerm", searchTerm)
 
-
         }, [searchTerm])
 
 
@@ -94,48 +95,38 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [sendOk])
 
         useEffect(() => {
-            const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
-
             socket.emit("deleteMessage", ({roomNo, chatNo}), async (response) => {
                 if (response.status === 'ok') {
                 }
-            });
-
-            return (() => {
-                socket.disconnect();
             })
         }, [deleteOk])
 
         useEffect(() => {
-            setScrollSwitch(false)
+
             setTimeout(() => {
                 console.log("스코롤 사용 가능 ")
                 setScrollSwitch(true)
-            } , 3000)
+            }, 3000)
 
 
-            setTimeout ( () => {
+
+            setTimeout(async () => {
                 if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                    scrollEl.scrollTop = scrollEl.scrollTop + 100
-                    console.log("스코롤 최상단")
+                    if (messageRef.current) {
+                    }
+
                 } else if (scrollEl) {
                     scrollEl.scrollTop = scrollEl.scrollHeight
-                    console.log("스코롤 최하단")
+
+                    // console.log("current.clientHeight" , scrollEl.current.clientHeight)
                 }
             }, 100)
 
 
-            console.log("messageAllLength.count" , messageAllLength.count)
-            console.log("config.CHAT_LIMIT" , config.CHAT_LIMIT)
-
-            console.log("lastPage",lastPage)
             setLp(lastPage)
-            // setLastPage(messageAllLength.count - config.CHAT_LIMIT)
-            // console.log("lastPage" , lastPage)
-
-            setTestOk(0)
+            setPagingOk(0)
+            window.addEventListener('paging', handleScrollStart)
         }, [joinOk])
-
 
 
         const handleSubmit = (newValue) => {
@@ -146,29 +137,25 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("headCount", headCount);
             formData.append("text", newValue.text);
             formData.append("markDown", markDown);
-            formData.append("codeBlock" , codeBlock)
+            formData.append("codeBlock", codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
             myFetch(null, null).send(formData);
-            console.log(" handleSubmit markDown@@@@@@@@@@@@2" , markDown)
+            console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
             setInputMsg("");
             setSendOk(!sendOk)
         };
+
 
         const handleSearch = async (e) => {
             setSearchTerm(e.target.value)
             const searchList = async () => {
                 console.log("handleSearch")
                 const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
-                const chats = chatFormList(chatlist,participantNo);
+                const chats = chatFormList(chatlist, participantNo);
                 selectedChat.messages = chats;
             }
             searchList();
         }
-
-        useEffect( () => {
-
-        }, [chatList])
-
 
 
         const handleChange = (newValue) => {
@@ -180,66 +167,64 @@ const Chat = React.forwardRef((props, scrollRef) => {
         useEffect(() => {
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
-
-                console.log("getChatListUp " , lp)
                 if (lp && scrollEl && scrollSwitch === true) {
 
-                    if (lp < config.CHAT_LIMIT ) {
-                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength.count, localStorage.getItem("Authorization"))
-                        const chats = chatFormList(chatlist,participantNo);
+                    if (lp < config.CHAT_LIMIT) {
+                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength, localStorage.getItem("Authorization"))
+                        const chats = chatFormList(chatlist, participantNo);
                         selectedChat.messages = chats;
-                        setScrollSwitch(false)
+
                     } else {
-                        console.log("getChatListUp " , lp)
-                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength.count, localStorage.getItem("Authorization"))
-                        const chats = chatFormList(chatlist,participantNo);
+                        console.log("getChatListUp ", lp)
+                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
+                        const chats = chatFormList(chatlist, participantNo);
                         selectedChat.messages = chats;
-                        //     scrollEl.scrollTop = scrollEl.scrollHeight;
+
+                        //     scrollEl.scrollTop = glHeight;
 
                     }
                 }
-
-
             }
             getChatListUp()
+
+
         }, [lp])
 
         useEffect(() => {
+
             setLp(lp - config.CHAT_LIMIT)
-        },[testOk])
 
+        }, [pagingOk])
 
-        // 스코롤을 위로 이동시 발동하는 핸들러
-        const handlePaging = async (a) => {
-            // if (scrollRef && lastPage >= 0 ){
-            //     console.log("handlePaging")
-            //     setLastPage(lastPage - config.CHAT_LIMIT)
-            // }
-        }
 
         // 스크롤이 맨 위에 위치 했을때 실행되는 핸들러
         const handleScrollStart = async (e) => {
+            if(scrollRef){
+                console.log("scrollRef.current.clientHeight" , scrollRef.current)
+                if(scrollEl.scrollTop + scrollEl.clientHeight === scrollEl.scrollHeight){
 
+                }
+            }
+            // setTestOk(testOk + 1)
+            // console.log(testOk) //맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
+            if (searchTerm === "" && scrollSwitch) {
 
-
-            // 맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
-            if(searchTerm === "" && scrollSwitch) {
                 console.log("페이징 실행 가능한 영역")
-
-                if (scrollRef && lp >=  0 && (scrollEl.scrollTop === 0)) {
+                if (scrollRef && lp >= 0 && (scrollEl.scrollTop === 0)) {
                     setTimeout(() => {
-                        setTestOk(testOk + 1)
+
+                        setPagingOk(pagingOk + 1)
                         // scrollEl.scrollTop = scrollEl.scrollTop
-
-
                         console.log("lp", lp)
                     }, 1000)
                 } else {
 
                 }
-            }else{
+            } else {
                 console.log("페이징 실행이 불가능한 영역")
             }
+
+
         }
 
 
@@ -268,18 +253,18 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             // console.log(  data , '번 채팅 선택');
         }
+
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
             if (message && message.text && message.text.props && message.text.type) {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
-                const fileType = message.text.type;
                 // open image modal
                 setImage(imgSource);
-                setFileType(fileType);
                 setOpenImageModalOpen(true);
             }
         }
+
 
         const messageTime = (fullTime) => {
             // 현재 시각
@@ -287,22 +272,19 @@ const Chat = React.forwardRef((props, scrollRef) => {
             currentTime.setHours(currentTime.getHours() + 9);
             currentTime = currentTime.toISOString().replace('T', ' ').substring(0, 19);
             const currentDate = currentTime.split(' ')[0];
-            const [currentHours,currentMinutes,currentSeconds] = currentTime.split(' ')[1].split(':');
+            const [currentHours, currentMinutes, currentSeconds] = currentTime.split(' ')[1].split(':');
 
             const modifiedTime = fullTime.split(' ');
             const date = modifiedTime[0];
-            const [hours,minutes,seconds] = modifiedTime[1].split(':');
+            const [hours, minutes, seconds] = modifiedTime[1].split(':');
 
             let timeForm = hours + ":" + minutes;
 
-            if(currentDate === date){ // 날짜가 같다면(2021-09-09 === 2021-09-09)
-                if(currentHours === hours && currentMinutes === minutes) {
+            if (currentDate === date && currentHours === hours) {
+                if (currentMinutes === minutes) {
                     timeForm = '방금 전';
-                    // 보내기 10분 되기 전까지만 이렇게 표시
-                } else if (currentHours === hours && currentMinutes - minutes < 10) {
+                } else if (currentMinutes - minutes < 10) { // 보내기 10분 되기 전까지만 이렇게 표시
                     timeForm = (currentMinutes - minutes) + '분 전';
-                } else if (currentHours - hours === 1 && minutes - currentMinutes > 50){
-                    timeForm = (currentMinutes - minutes + 60) + '분 전';
                 }
             }
             return timeForm;
@@ -314,27 +296,58 @@ const Chat = React.forwardRef((props, scrollRef) => {
             if (message.type === 'divider') {
                 return (
                     <div style={{marginRight: "auto", marginLeft: "auto", width: '100%'}}>
-                        <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
+                        <div style={{
+                            width: '40%',
+                            border: 1,
+                            borderLeft: 0,
+                            borderRight: 0,
+                            marginTop: 10,
+                            borderStyle: 'solid',
+                            borderBlockColor: '#e1e1e1',
+                            float: 'left'
+                        }}></div>
                         {/*날짜 관련 divider*/}
                         <div className="message-item messages-divider sticky-top" data-label={message.text}
-                             style={{ width: '20%', marginRight: 0, textAlign: 'center', maxWidth: '100%', float: 'left', color: '#9e9e9e'}}>{message.text}</div>
-                        <div style={{width: '40%',border: 1, borderLeft: 0, borderRight: 0, marginTop: 10, borderStyle: 'solid', borderBlockColor: '#e1e1e1',float: 'left'}}></div>
+                             style={{
+                                 width: '20%',
+                                 marginRight: 0,
+                                 textAlign: 'center',
+                                 maxWidth: '100%',
+                                 float: 'left',
+                                 color: '#9e9e9e'
+                             }}>{message.text}</div>
+                        <div style={{
+                            width: '40%',
+                            border: 1,
+                            borderLeft: 0,
+                            borderRight: 0,
+                            marginTop: 10,
+                            borderStyle: 'solid',
+                            borderBlockColor: '#e1e1e1',
+                            float: 'left'
+                        }}></div>
                     </div>
 
                 )
             } else {
                 return (
+
                     <div className={"message-item " + message.type} ref={messageRef}
-                         onClick={() => handleClickMessage(message)} style={{marginTop:1}}>
+                         id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
                             {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
-                                height:20,
-                                width:20,
-                                borderRadius:50,
+                                height: 20,
+                                width: 20,
+                                borderRadius: 50,
                                 float: "left",
-                                marginRight:7
+                                marginRight: 7
                             }}/>}
-                            <p style={{fontWeight:"bold", color:"#9e9e9e", "margin-bottom": "7px", width: 145}}>{message.nickname}</p>
+                            <p style={{
+                                fontWeight: "bold",
+                                color: "#9e9e9e",
+                                "margin-bottom": "7px",
+                                width: 145
+                            }}>{message.nickname}</p>
                             <div className={"message-content " + (message.file ? 'message-file' : null)}>
                                 {message.file ? message.file : message.text}
                             </div>
@@ -354,8 +367,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             {
                                 (roomType === "official") ? "" :
                                     message.type !== 'outgoing-message' ?
-                                        <div style={{float:"left", marginRight: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{message.notReadCount}</div>
-                                        : <div style={{float:"right", marginLeft: 5, backgroundColor:"#1faa00", color:"white", width:20, height:20, textAlign:"center",justifyContent:"center", borderRadius:50}}>{message.notReadCount}</div>
+                                        <div style={{
+                                            float: "left",
+                                            marginRight: 5,
+                                            backgroundColor: "#1faa00",
+                                            color: "white",
+                                            width: 20,
+                                            height: 20,
+                                            textAlign: "center",
+                                            justifyContent: "center",
+                                            borderRadius: 50
+                                        }}>{message.notReadCount}</div>
+                                        : <div style={{
+                                            float: "right",
+                                            marginLeft: 5,
+                                            backgroundColor: "#1faa00",
+                                            color: "white",
+                                            width: 20,
+                                            height: 20,
+                                            textAlign: "center",
+                                            justifyContent: "center",
+                                            borderRadius: 50
+                                        }}>{message.notReadCount}</div>
                             }
                             {
                                 message.type !== 'outgoing-message' ?
@@ -365,7 +398,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             {/*{message.type ? <i className="ti-double-check text-info"></i> : null}*/}
                         </div>
 
-                    </div>);
+                    </div>
+
+                );
             }
         };
 
@@ -374,7 +409,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const toggleMenu = () => {
             setMenu(isOpen => !isOpen); // on,off 개념 boolean
         }
-
 
         return (
             <div className="chat">
@@ -389,7 +423,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     ref.updateScroll();
                                 }}
                                 containerRef={ref => setScrollEl(ref)} onYReachStart={handleScrollStart}
-                                onScrollUp={handlePaging}
                                 ref={scrollRef}
                             >
                                 <pre>
@@ -427,7 +460,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 />
 
                             </div>
-                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg} setInputMsg={setInputMsg}
+                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                                        setInputMsg={setInputMsg}
                             />
 
                         </React.Fragment>
@@ -439,7 +473,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </div>
                         </div>
                 }
-                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
+                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image}/>
             </div>
         )
     }

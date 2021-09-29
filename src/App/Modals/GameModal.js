@@ -7,6 +7,7 @@ import {Modal, ModalBody, ModalHeader, TabContent, TabPane } from 'reactstrap';
 import {CopperCoin} from "../Sidebars/Game/CopperCoin";
 import {SilverCoin} from "../Sidebars/Game/SilverCoin";
 import {GoldCoin} from "../Sidebars/Game/GoldCoin";
+import {coinRandomCreate} from "../Sidebars/Game/CoinRandomCreate";
 
 
 class GameModal extends PureComponent {
@@ -14,9 +15,6 @@ class GameModal extends PureComponent {
     constructor(props) {
         super(props);
         this.myRef = React.createRef();
-
-
-
      //   this.myRef.current.scrollWidth = 0
     }
 
@@ -26,15 +24,11 @@ class GameModal extends PureComponent {
     }
 
     componentWillUnmount(){
-        console.log("componentWillUnmount")
+
     }
     componentDidUpdate(prevProps){
         if (this.props.modal !== prevProps.modal) {
-
-
             console.log(   this.myRef.current)
-
-
         }
     }
 
@@ -55,7 +49,6 @@ class GameModal extends PureComponent {
         console.log("height" , height)
         console.log("width" , width)
         return (
-
         <Modal ref = {this.myRef}  style={{  minWidth:`${width}px`, minHeight: `${height}px` , margin: '0', top :'0' , bottom :'0',
             padding: '0' }} isOpen={this.props.modal} toggle={this.props.toggle} centered   >
 
@@ -65,7 +58,7 @@ class GameModal extends PureComponent {
 
                 <GameEngine
                 style={{ }}
-                    systems={[MoveBox]}
+                    systems={[MoveBox , coinRandomCreate] }
                     entities={{
                         //-- Notice that each entity has a unique id (required)
                         //-- and a renderer property (optional). If no renderer
@@ -77,7 +70,8 @@ class GameModal extends PureComponent {
                         silverCoin: { x: 50,  y: 100 , renderer: <SilverCoin />},
                         goldCoin: { x: 50,  y: 150 , renderer: <GoldCoin />},
 
-                    }}>
+                    }}   >
+
                 </GameEngine>
 
             </ModalBody>
