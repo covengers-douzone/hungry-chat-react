@@ -158,7 +158,7 @@ function Navigation() {
                 <ul>
                     <li>
                         <a href={"/chat/" + localStorage.getItem("userNo")} className="logo">
-                            <img src={img} style={{width:80, height:70}}/>
+                            <img src={img} style={{width:70, height:70}}/>
                             {/*<Logo/>*/}
                         </a>
                     </li>
