@@ -147,13 +147,14 @@ function CodeBlockModal({modal,setModal}) {
                        
                        <div className="demo"  style={{float: "left" , width:"48%",height:height, overflow:"auto"}}>
                        <CopyBlock
+
                            language={language}
                            text={codeBlockText}
                            wrapLines={true}
                            theme={dracula}
                            showLineNumbers={lineNumbers}
                            codeBlock
-   
+                        
                        />
                        </div>
                        
