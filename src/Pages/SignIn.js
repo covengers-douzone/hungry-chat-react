@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {Alert} from "reactstrap";
-
 import * as config from "../config/config"
 import img from "../assets/img/covengers-logo.png"
 
