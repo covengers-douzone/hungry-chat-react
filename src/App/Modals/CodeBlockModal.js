@@ -20,6 +20,7 @@ import userEvent from '@testing-library/user-event';
 
 import myFetch from "../Module/fetchApi";
 import {useSelector} from "react-redux";
+import dark from "react-syntax-highlighter/dist/cjs/styles/hljs/dark";
 
 
 

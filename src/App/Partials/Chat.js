@@ -118,10 +118,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
                     if (messageRef.current) {
                     }
-
                 } else if (scrollEl) {
                     scrollEl.scrollTop = scrollEl.scrollHeight
-
                     // console.log("current.clientHeight" , scrollEl.current.clientHeight)
                 }
             }, 100)
@@ -129,9 +127,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             setLp(lastPage)
             setPagingOk(0)
-            window.addEventListener('paging', handleScrollStart)
         }, [joinOk])
-
 
         const handleSubmit = (newValue) => {
             const formData = new FormData();
@@ -182,60 +178,16 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }
             getChatListUp()
-
-
         }, [lp])
 
 
         useEffect(() => {
             console.log('-----paging OK 실행');
-            //setLp(lp - config.CHAT_LIMIT)
-            //console.log('scrollEl.clientHeight',scrollRef.current.clientHeight)
-            // scrollEl && (console.log('scrollEl.scrollTop-before',scrollEl.scrollTop))
-            // scrollEl && (scrollEl.scrollTop = scrollRef.current.scrollBottom)
-            // scrollEl && (console.log('scrollEl.scrollTop-after',scrollEl.scrollTop))
-
+            // 페이징 후 스크롤 위치 조정
             if(scrollEl){
-                console.log('current scrollEl.scrollTop', scrollRef.current.scrollBottom,scrollRef.current.scrollTop,scrollEl.scrollTop);
-                (scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)  / pagingOk)  ;
-        
-                console.log('after scrollEl.scrollTop',scrollEl.scrollTop);
+                scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/pagingOk;
             }
         }, [pagingOk])
-
-
-
-
-        // 스크롤이 맨 위에 위치 했을때 실행되는 핸들러
-        const handleScrollStart = async (e) => {
-            // if(scrollRef){
-            //     console.log("scrollRef.current.clientHeight" , scrollRef.current)
-            //     if(scrollEl.scrollTop + scrollEl.clientHeight === scrollEl.scrollHeight){
-            //
-            //     }
-            // }
-            // // setTestOk(testOk + 1)
-            // // console.log(testOk) //맨위가 아닌 , 스코롤이 존재하며 , 페이지가 완료가 되지 않았을때 실행
-            // if (searchTerm === "" && scrollSwitch) {
-            //
-            //     console.log("페이징 실행 가능한 영역")
-            //
-            //     if (scrollRef && lp >= 0 && (scrollEl.scrollTop === 0)) {
-            //        //setTimeout(() => {
-            //             //setPagingOk(pagingOk + 1)
-            //         setLp(lp - config.CHAT_LIMIT)
-            //             // scrollEl.scrollTop = scrollEl.scrollTop
-            //             console.log("lp", lp)
-            //         //}, 1000)
-            //     } else {
-            //
-            //     }
-            // } else {
-            //     console.log("페이징 실행이 불가능한 영역")
-            // }
-
-
-        }
 
 
         // 오른쪽 마우스 눌렸을 때 나타나는 '메시지 삭제' 핸들러
@@ -330,7 +282,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                  textAlign: 'center',
                                  maxWidth: '100%',
                                  float: 'left',
-                                 color: '#9e9e9e'
+                                 color: '#424242'
                              }}>{message.text}</div>
                         <div style={{
                             width: '40%',
@@ -427,47 +379,20 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            // scroll
-            // let scrollHeight = Math.round(Math.max
-            // (document.getElementById("root").scrollHeight
-            //     ,e.target.scrollHeight ))
-            // let scrollTop = Math.round(Math.max
-            // (document.getElementById("root").scrollTop
-            //     ,e.target.scrollTop ))
-            //
-            // let clientHeight = Math.round(Math.max
-            // (e.target.clientHeight))
-            //
-            // if(scrollTop + clientHeight === scrollTop){
-            //     console.log("페이징 성공")
-            //     const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
-            //     setLp(newLp)
-            // }
-            //
-            // console.log("scrollHeight" ,scrollHeight)
-            // console.log("scrollTop" ,scrollTop)
-            // console.log("clientHeight" ,clientHeight)
-
-            console.log('--------------------------------------------')
-            console.log('예전 scrollTop',scrollRef.current.scrollTop)
-            console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
+            // console.log('--------------------------------------------')
+            // console.log('예전 scrollTop',scrollRef.current.scrollTop)
+            // console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
             console.log('현재 scrollTop',e.target.scrollTop);
             console.log('현재 scrollHeight',e.target.scrollHeight);
-            console.log('lp',lp)
-            if( e.target.scrollTop < 200 && (scrollRef.current.scrollTop > e.target.scrollTop)){
+            // console.log('lp',lp)
+            if( e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
-                //setTimeout(() => {
-                //     console.log('current scrollEl.scrollTop', scrollEl.scrollTop);
-                //     scrollEl.scrollTop = scrollRef.current.scrollBottom - scrollRef.current.scrollTop;
-                //     console.log('after scrollEl.scrollTop',scrollEl.scrollTop);
-                //}, 100)
-                console.log('scrollll',scrollEl.scrollTop, scrollRef.current.scrollBottom - scrollRef.current.scrollTop)
+                // lp 변경 후, pagingOk변경되면서(useEffect-pagingOk 참고), 페이징 스크롤 위치 조정됨
+                //console.log('scrollll',scrollEl.scrollTop, scrollRef.current.scrollBottom - scrollRef.current.scrollTop)
             }
             scrollRef.current.scrollTop = e.target.scrollTop;
             scrollRef.current.scrollBottom = e.target.scrollHeight;
-
-            //console.log('onScroll',scrollRef.current.scrollTop,scrollRef.current.scrollBottom)
         }
 
         return (
@@ -482,7 +407,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 onUpdateSize={(ref) => {
                                     ref.updateScroll();
                                 }}
-                                containerRef={ref => setScrollEl(ref)} onYReachStart={handleScrollStart}
+                                containerRef={ref => setScrollEl(ref)} //onYReachStart={handleScrollStart}
                                 onScroll={onScroll}
                                 ref={scrollRef}
                             >
