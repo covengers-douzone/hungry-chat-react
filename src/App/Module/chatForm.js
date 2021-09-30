@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ReactPlayer from "react-player";
-
+import remarkGfm from 'remark-gfm'
 const clickVideo = (e) => {
     e.preventDefault();
     console.log(e);
@@ -15,8 +15,12 @@ const chatMessageForm = (chat , index ) => {
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)
     chat.type === 'MARKDOWN' && (contents =
+
         <ReactMarkdown
+
             children={chat.contents}
+            remarkPlugins={[remarkGfm]}
+            id={chatNo}
             components={{
                 code({node, inline, className, children, ...props}) {
                     const match = /language-(\w+)/.exec(className || '')
@@ -25,10 +29,11 @@ const chatMessageForm = (chat , index ) => {
                             children={String(children).replace(/\n$/, '')}
                             style={dark}
                             language={match[1]}
-                            PreTag="h6"
+                            PreTag="div"
                             {...props}
                         />
                     ) : (
+
                         <code className={className} {...props}>
                             {children}
                         </code>
@@ -72,6 +77,7 @@ const chatMessageForm = (chat , index ) => {
         chatNo : chatNo,
         participantNo : (chat.Participant && chat.Participant.no) || chat.participantNo,
         index : index,
+        type : chat.type
     }
     return chatMessage;
 }

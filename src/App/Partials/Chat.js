@@ -218,15 +218,26 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-            if (message && message.text && message.text.props && message.text.type) {
+
+
+            if(message.type === "IMG"){
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
                 // open image modal
+
+                console.log("message.text.type" ,fileType)
+
                 setImage(imgSource);
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
+            }else if (message.type === "MARKDOWNS"){
+
+            }else if(message.type === "TEXT"){
+
             }
+
+
         }
 
 

@@ -11,10 +11,11 @@ import {markDownAction} from "../../Store/Actions/markDownAction";
 
 function ChatFooter(props) {
 
-    const dispatch = useDispatch
+    const dispatch = useDispatch()
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [videoUploadModalOpen, setVideoUploadModalOpen] = useState(false);
 
+    const inputRef = useRef(null);
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
     const [type,  setType] = useState(null);
@@ -78,13 +79,23 @@ function ChatFooter(props) {
 
 
 
+
     }
 
     const keydownHandler = (e) => {
         if(e.keyCode===13 && e.ctrlKey) {
             props.setInputMsg(props.inputMsg+"\n")
         }
+        if(e.altKey){
+            dispatch(markDownAction(!markDown))
+            
+            if(inputRef){
+                console.log("포커스이동" , inputRef)
+                inputRef.current.focus();
+            }
 
+
+        }
     }
 
 
@@ -124,7 +135,7 @@ function ChatFooter(props) {
                               
                         :
 
-                        <textarea type="text" onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
+                        <textarea ref ={inputRef} type="text" onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
                 <div className="form-buttons">
