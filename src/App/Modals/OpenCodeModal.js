@@ -41,7 +41,7 @@ function OpenCodeModal(props) {
 
     return (
         <div>
-            <Modal style={{minWidth: '50%', minHeight: '100%'}}
+            <Modal style={{minWidth: '75%', minHeight: '100%'}}
                    className="modal-dialog-zoom" isOpen={props.modal} centered>
                 <ModalHeader toggle={modalToggle}>
                     <i className="fa fa-code">
@@ -58,8 +58,8 @@ function OpenCodeModal(props) {
                             <div className="demo">
                                 <CopyBlock
 
-                                    language={"java"}
-                                    text={"text"}
+                                    language={props.language}
+                                    text={props.text}
                                     wrapLines={true}
                                     theme={dracula}
                                     showLineNumbers={true}
