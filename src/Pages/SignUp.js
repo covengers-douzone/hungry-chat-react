@@ -69,10 +69,16 @@ function SignUp({history}) {
                 if(response.result === "success") { // 성공
                     setSuccessAlertOpen(true)
                     setDisabledCode(false);
+                    setFailAlertOpen(false);
+                    setErrorAlertOpen(false);
                 }else if(response.status === 400){ // 이미 등록된 번호
                     setFailAlertOpen(true);
+                    setSuccessAlertOpen(false)
+                    setErrorAlertOpen(false);
                 }else { // 서버 문제
                     setErrorAlertOpen(true);
+                    setFailAlertOpen(false);
+                    setSuccessAlertOpen(false)
                 }
             })
             .catch(error => {
