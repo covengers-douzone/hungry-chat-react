@@ -382,10 +382,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // console.log('--------------------------------------------')
             // console.log('예전 scrollTop',scrollRef.current.scrollTop)
             // console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
-            // console.log('현재 scrollTop',e.target.scrollTop);
-            // console.log('현재 scrollHeight',e.target.scrollHeight);
-            // console.log('lp',lp)
-            if( e.target.scrollTop < 200 && (scrollRef.current.scrollTop > e.target.scrollTop)){
+
+            if( e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
                 // lp 변경 후, pagingOk변경되면서(useEffect-pagingOk 참고), 페이징 스크롤 위치 조정됨

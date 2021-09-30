@@ -25,7 +25,7 @@ const chatMessageForm = (chat , index ) => {
                             children={String(children).replace(/\n$/, '')}
                             style={dark}
                             language={match[1]}
-                            PreTag="div"
+                            PreTag="h6"
                             {...props}
                         />
                     ) : (
@@ -35,6 +35,7 @@ const chatMessageForm = (chat , index ) => {
                     )
                 }
             }}
+
         />)
     chat.type === 'IMG' && (contents = <img
                                               style={{
