@@ -9,7 +9,11 @@ import ModalHeader from 'reactstrap/lib/ModalHeader';
 
 function OpenMessageModal(props) {
     let modalHeight = '300px';
+    const modalToggle = () => {
 
+        props.setModal(!props.modal)
+
+    }
     return (
         <div>
             <Modal isOpen={props.modal}  centered className="modal-dialog-zoom"
@@ -17,9 +21,12 @@ function OpenMessageModal(props) {
                    style={{
                        width: modalHeight,                       
                    }}
+
             >
-                <ModalHeader>
-                <div>전체 글보기</div>
+
+                <ModalHeader toggle={modalToggle}>
+                    <i className="fa fa-file">
+                    </i> 전체 글
                 </ModalHeader>
                 <ModalBody style={{border: "1px solid brown", padding: "0px"}} >
                 <div className={"modal-content"} style={{backgroundColor: "#f5f5f5"}}>

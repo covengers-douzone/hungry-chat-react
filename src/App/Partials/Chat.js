@@ -21,6 +21,7 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+import OpenCodeModal from "../Modals/OpenCodeModal";
 
 import { tr } from 'date-fns/locale'
 
@@ -78,6 +79,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // image 클릭 시 image 크게 보이게 하는 modal
         const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+        const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
 
         const [ openMessageModalOpen, setOpenMessageModalOpen ] = useState(false);
 
@@ -248,23 +250,36 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-            if (message && message.text && message.text.props && message.text.type) {
+
+            console.log("handleClickMessage" , message)
+
+            if(message.type === "IMG"){
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
                 // open image modal
+
+                console.log("message.text.type" ,fileType)
+
                 setImage(imgSource);
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
+            }else if (message.type === "MARKDOWN"){
+
+                console.log("openCodeModalOpen" , openCodeModalOpen)
+                setOpenCodeModalOpen(true);
+
+            }else if(message.type === "outgoing-message" || message.type === "TEXT" ){
+                if(message.text.length > 15){
+                    const messageText = message.text;
+                    const messageType = message.text.type;
+                    setText(messageText);
+                    setMessageType(messageType);
+                    setOpenMessageModalOpen(true);
+                }
             }
 
-            if(message.text.length > 15){
-                const messageText = message.text;
-                const messageType = message.text.type;
-                setText(messageText);
-                setMessageType(messageType);
-                setOpenMessageModalOpen(true);
-            }
+
         }
 
 
@@ -502,8 +517,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </div>
                         </div>
                 }
-                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
-                <OpenMessageModal modal={openMessageModalOpen} toggle={editOpenMessageModalToggle} text={text}  fileType={messageType}/>
+                <OpenImageModal modal={openImageModalOpen} setModal = {setOpenImageModalOpen}  toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
+                <OpenCodeModal modal ={openCodeModalOpen} setModal = {setOpenCodeModalOpen} text={text}  fileType={messageType}  />
+                <OpenMessageModal modal={openMessageModalOpen} setModal = {setOpenMessageModalOpen} toggle={editOpenMessageModalToggle} text={text}  fileType={messageType}/>
             </div>
         )
     }
