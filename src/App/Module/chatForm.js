@@ -13,6 +13,7 @@ const clickVideo = (e) => {
 
 const chatMessageForm = (chat , index ) => {
     let contents;
+    let match
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)
     chat.type === 'MARKDOWN' && (contents =
@@ -24,7 +25,7 @@ const chatMessageForm = (chat , index ) => {
             id={chatNo}
             components={{
                 code({node, inline, className, children, ...props}) {
-                    const match = /language-(\w+)/.exec(className || '')
+                    match = /language-(\w+)/.exec(className || '')
                     return !inline && match ? (
                         <SyntaxHighlighter
                             children={String(children).replace(/\n$/, '')}
@@ -82,7 +83,8 @@ const chatMessageForm = (chat , index ) => {
         chatNo : chatNo,
         participantNo : (chat.Participant && chat.Participant.no) || chat.participantNo,
         index : index,
-        type : chat.type
+        type : chat.type,
+        chatMessage : chat.contents
     }
     return chatMessage;
 }
