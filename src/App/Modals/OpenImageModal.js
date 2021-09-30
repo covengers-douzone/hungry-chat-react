@@ -86,7 +86,7 @@ function OpenImageModal(props) {
 
     return (
         <div>
-            <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom"
+            <Modal isOpen={props.modal}  centered className="modal-dialog-zoom"
                    transparent={true}
                    style={{
                        width: modalHeight,
