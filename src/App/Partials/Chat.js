@@ -270,7 +270,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 let splitResult = message.text.props.children.split('\n');
 
 
-                console.log("splitResult", splitResult) //
 
                 let language = splitResult[0].split('```')
                 let contents = ""
@@ -283,8 +282,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 for(let i = 1; i < splitResult.length -1; i++){
                     contents += splitResult[i] + "\n"
                 }
-                console.log("language" , language[1])
-                console.log("contents" , contents)
+
+                setLanguage(language[1])
                 setLanguage(language[1])
                 setText(contents)
                 setOpenCodeModalOpen(true);
