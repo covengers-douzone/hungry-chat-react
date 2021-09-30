@@ -20,6 +20,7 @@ import userEvent from '@testing-library/user-event';
 
 import myFetch from "../Module/fetchApi";
 import {useSelector} from "react-redux";
+import dark from "react-syntax-highlighter/dist/cjs/styles/hljs/dark";
 
 
 
@@ -104,7 +105,11 @@ function CodeBlockModal({modal,setModal}) {
 
     return (
         <div>
-            <Modal style = {{minWidth : '50%' , minHeight : '100%' ,height : 'auto'}} className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
+            <Modal style = {{minWidth : '50%' , minHeight : '100%' ,height : 'auto'}}
+                   className="modal-dialog-zoom" isOpen={modal} onRequestClose={(e) => {
+                setModal(true)
+                   }
+            } centered>
                 <ModalHeader toggle={modalToggle}>
                     <i className="fa fa-users">
                     </i>  코드 블럭

@@ -3,7 +3,7 @@ import coinImage from "../../../assets/img/game/coin/coppercoin.png"
 
 class CopperCoin extends PureComponent {
     render() {
-        const size = 100; // 박스 상자
+        const size = Math.trunc(Math.max(this.props.width, this.props.height) * 0.075);
         const x = this.props.x - size / 2;
         const y = this.props.y - size / 2;
         return (

@@ -175,7 +175,7 @@ function SettingsModal(props) {
         props.toggle();
     }
     return (
-        <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
+        <Modal isOpen={props.modal}  centered className="modal-dialog-zoom">
             <ModalHeader toggle={props.toggle}>
                 <i className="ti ti-settings"></i> 설정
             </ModalHeader>
