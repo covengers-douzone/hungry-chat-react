@@ -119,22 +119,22 @@ function ChatFooter(props) {
                     previewURL ?
                         type === "video" ?
                             <ReactPlayer
-                                  className='react-player'
-                                  url={previewURL}
-                                  width='100%'
-                                  height='100%'
-                                  playing
-                                />
-                        :
+                                className='react-player'
+                                url={previewURL}
+                                width='100%'
+                                height='100%'
+                                playing
+                            />
+                            :
 
                             <img
-                                  style={{
+                                style={{
                                     height: "100px"
-                                    
-                                  }}
-                                  src={previewURL}
-                                  className="form-control"
-                                  alt="avatar"
+
+                                }}
+                                src={previewURL}
+                                className="form-control"
+                                alt="avatar"
                             />
                         :
                         <ReactTextareaAutocomplete
@@ -180,9 +180,9 @@ function ChatFooter(props) {
                         <i className="fa fa-paperclip"></i>
                     </Button>
                     <Button color="light" className="btn-floating" onClick={videoUpload}>
-                    <i class="fa fa-video-camera" aria-hidden="true"></i>
+                        <i class="fa fa-video-camera" aria-hidden="true"></i>
                     </Button>
-                    
+
                     <Button color="primary" className="btn-floating">
                         <i className="fa fa-send"></i>
                     </Button>
@@ -191,7 +191,7 @@ function ChatFooter(props) {
 
             <UploadVideoModal modal={videoUploadModalOpen} toggle={editVideoModalToggle} handleFile={handleVideoFile}/>
             <UploadFileModal modal={uploadModalOpen} toggle={editModalToggle} handleFile={handleFile}/>
-            
+
         </div>
     )
 }
