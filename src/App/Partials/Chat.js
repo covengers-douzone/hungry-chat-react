@@ -192,7 +192,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const handleChange = (newValue) => {
-            console.log("handleChange")
             setInputMsg(newValue);
         };
 
