@@ -8,6 +8,7 @@ import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
 import {chatForm, chatMessageForm, chatFormList} from "../Module/chatForm";
 import OpenImageModal from "../Modals/OpenImageModal";
+import OpenMessageModal from "../Modals/OpenMessageModal"
 /*오른쪽 마우스 눌렸을 때 나오는 메뉴*/
 import {ContextMenu, MenuItem, ContextMenuTrigger} from "react-contextmenu";
 import {reloadAction} from "../../Store/Actions/reloadAction";
@@ -20,6 +21,7 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+import { tr } from 'date-fns/locale'
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -64,16 +66,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
         const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
 
+        const [text, setText] = useState(null);
+        const [messageType, setMessageType] = useState(null);
+
         const [scrollSwitch, setScrollSwitch] = useState(false)
 
         // image 클릭 시 image 크게 보이게 하는 modal
         const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+
+        const [ openMessageModalOpen, setOpenMessageModalOpen ] = useState(false);
+
         // modal에서 사용; modal 닫을 때 실행되는 함수
         const editOpenImageModalToggle = () => {
             // openImageModalOpen : false로 설정
             setOpenImageModalOpen(!openImageModalOpen);
             // image file 없애기
             setImage(null);
+        }
+
+        const editOpenMessageModalToggle = () => {
+            // openMessageModalOpen : false로 설정
+            setOpenMessageModalOpen(!openMessageModalOpen);
+            setText(null);
         }
 
         const inputRef = useRef();
@@ -227,8 +241,20 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
             }
+
+            if(message.text.length > 15){
+                const messageText = message.text;
+                const messageType = message.text.type;
+                setText(messageText);
+                setMessageType(messageType);
+                setOpenMessageModalOpen(true);
+            }
         }
 
+
+        
+
+       
 
         const messageTime = (fullTime) => {
             // 현재 시각
@@ -316,9 +342,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 "margin-bottom": "7px",
                                 width: 145
                             }}>{message.nickname}</p>
-                            <div className={"message-content " + (message.file ? 'message-file' : null)}>
-                                {message.file ? message.file : message.text}
+                            
+                            <div className={"message-content " + (message.file ? 'message-file' : null)} onClick = {() => handleClickMessage(message) } >
+                                {message.file ? message.file : message.text.length > 20 ? message.text.substring(0, 20) + " ..." : message.text }
                             </div>
+
 
                             <ContextMenu id={`contextMenu${message.chatNo}`}>
                                 <MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>
@@ -458,6 +486,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         </div>
                 }
                 <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
+                <OpenMessageModal modal={openMessageModalOpen} toggle={editOpenMessageModalToggle} text={text}  fileType={messageType}/>
             </div>
         )
     }

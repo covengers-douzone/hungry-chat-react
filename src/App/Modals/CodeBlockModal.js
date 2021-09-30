@@ -105,7 +105,7 @@ function CodeBlockModal({modal,setModal}) {
 
     return (
         <div>
-            <Modal style = {{minWidth : '50%' , minHeight : '100%' ,height : 'auto'}}
+            <Modal style = {{minWidth : '100%' , minHeight : '100%' ,height : 'auto'}}
                    className="modal-dialog-zoom" isOpen={modal} onRequestClose={(e) => {
                 setModal(true)
                    }
@@ -115,7 +115,7 @@ function CodeBlockModal({modal,setModal}) {
                     </i>  코드 블럭
                 </ModalHeader>
 
-                <ModalBody>
+                <ModalBody >
                     <div className="container mx-auto p-4">
                     <TopBar
                         language={{
@@ -145,12 +145,12 @@ function CodeBlockModal({modal,setModal}) {
                     {/*    codeBlock*/}
                     {/*</CodeBlock>*/}
 
-                    <div>
+                    <div style={{ fontSize: "13px"}}>
                        
 
                        <textarea  onChange={handleCodeBlockTextChange} style = {{width : "48%" , height : height, float:"left", overflow:"auto", backgroundColor:"#282a36", color:"white", marginRight:"10px" }}/>
                        
-                       <div className="demo"  style={{float: "left" , width:"48%",height:height, overflow:"auto"}}>
+                       <div className="demo"  style={{float: "left" , width:"48%",height:height, overflow:"auto" , whiteSpace: "nowrap"}}>
                        <CopyBlock
 
                            language={language}
