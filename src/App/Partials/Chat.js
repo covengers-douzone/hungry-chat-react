@@ -60,6 +60,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [pagingOk, setPagingOk] = useState(0)
 
         const [searchTerm, setSearchTerm] = useState("");
+        const [reRender, setReRender] = useState(false);
 
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
         const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
@@ -79,7 +80,27 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const inputRef = useRef();
 
         useEffect(() => {
-            console.log("searchTerm", searchTerm)
+            //console.log("searchTerm", searchTerm)
+            const searchList = async () => {
+                console.log("handleSearch",searchTerm)
+                const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
+                const chats = chatFormList(chatlist, participantNo);
+                selectedChat.messages = chats;
+                setReRender(!reRender);
+                console.log('search?',chats);
+            }
+
+            if(searchTerm !== ""){
+                searchList();
+            } else {
+                // searchTerm을 지운 경우 젤 마지막 메세지부터 10개 출력
+                if(lastPage === lp){
+                    setLp(lastPage + 1);
+                } else {
+                    setLp(lastPage);
+                }
+
+            }
 
         }, [searchTerm])
 
@@ -147,16 +168,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
         const handleSearch = async (e) => {
-            setSearchTerm(e.target.value)
-            const searchList = async () => {
-                console.log("handleSearch")
-                const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
-                const chats = chatFormList(chatlist, participantNo);
-                selectedChat.messages = chats;
-            }
-            searchList();
+            setSearchTerm(e.target.value);
         }
-
 
         const handleChange = (newValue) => {
             console.log("handleChange")
@@ -383,9 +396,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // console.log('예전 scrollTop',scrollRef.current.scrollTop)
             // console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
 
-            if( e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
+
+            if(searchTerm === "" && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
+
                 // lp 변경 후, pagingOk변경되면서(useEffect-pagingOk 참고), 페이징 스크롤 위치 조정됨
                 //console.log('scrollll',scrollEl.scrollTop, scrollRef.current.scrollBottom - scrollRef.current.scrollTop)
             }
