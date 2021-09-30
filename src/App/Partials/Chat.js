@@ -21,7 +21,11 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+
 import { tr } from 'date-fns/locale'
+
+import img from "../../assets/img/covengers-logo-transparency.png"
+
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -62,6 +66,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [pagingOk, setPagingOk] = useState(0)
 
         const [searchTerm, setSearchTerm] = useState("");
+        const [reRender, setReRender] = useState(false);
 
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
         const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
@@ -93,7 +98,27 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const inputRef = useRef();
 
         useEffect(() => {
-            console.log("searchTerm", searchTerm)
+            //console.log("searchTerm", searchTerm)
+            const searchList = async () => {
+                console.log("handleSearch",searchTerm)
+                const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
+                const chats = chatFormList(chatlist, participantNo);
+                selectedChat.messages = chats;
+                setReRender(!reRender);
+                console.log('search?',chats);
+            }
+
+            if(searchTerm !== ""){
+                searchList();
+            } else {
+                // searchTerm을 지운 경우 젤 마지막 메세지부터 10개 출력
+                if(lastPage === lp){
+                    setLp(lastPage + 1);
+                } else {
+                    setLp(lastPage);
+                }
+
+            }
 
         }, [searchTerm])
 
@@ -161,16 +186,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
         const handleSearch = async (e) => {
-            setSearchTerm(e.target.value)
-            const searchList = async () => {
-                console.log("handleSearch")
-                const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
-                const chats = chatFormList(chatlist, participantNo);
-                selectedChat.messages = chats;
-            }
-            searchList();
+            setSearchTerm(e.target.value);
         }
-
 
         const handleChange = (newValue) => {
             console.log("handleChange")
@@ -206,7 +223,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // 오른쪽 마우스 눌렸을 때 나타나는 '메시지 삭제' 핸들러
         const handleMessageDelete = async (e, data) => { // data가 Dom의 형태로 나오기 때문에 밑에 과정을 거친다
-
             let putChatNo = "";
             for (const key in data) {
                 //(data[key] === 'target') ? break : (putChatNo += data[key].toString())
@@ -411,9 +427,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // console.log('예전 scrollTop',scrollRef.current.scrollTop)
             // console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
 
-            if( e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
+
+            if(searchTerm === "" && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
+
                 // lp 변경 후, pagingOk변경되면서(useEffect-pagingOk 참고), 페이징 스크롤 위치 조정됨
                 //console.log('scrollll',scrollEl.scrollTop, scrollRef.current.scrollBottom - scrollRef.current.scrollTop)
             }
@@ -467,8 +485,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     placeholder="채팅검색"
                                     ref={inputRef}
                                     onChange={handleSearch}
-
-
                                 />
 
                             </div>
@@ -480,8 +496,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         :
                         <div className="chat-body no-message">
                             <div className="no-message-container">
-                                <i className="fa fa-comments-o"></i>
-                                <p>메시지를 읽을 대화 선택</p>
+                                <img src={img} style={{width:150, height:150, opacity:0.3}}/>
+                                {/*<i className="fa fa-comments-o"></i>*/}
+                                <p>COVENGERS</p>
                             </div>
                         </div>
                 }
