@@ -18,12 +18,12 @@ class GameModal extends PureComponent {
         super(props);
         this.myRef = React.createRef();
         //   this.myRef.current.scrollWidth = 0
-        const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_GAME_PORT}`, {transports: ['websocket']});
-
-        socket.emit("userJoin" , {
-            userNo :localStorage.getItem("userNo"),
-            nickName : localStorage.getItem("name")
-        })
+        // const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_GAME_PORT}`, {transports: ['websocket']});
+        //
+        // socket.emit("userJoin" , {
+        //     userNo :localStorage.getItem("userNo"),
+        //     nickName : localStorage.getItem("name")
+        // })
 
     }
 

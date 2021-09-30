@@ -5,12 +5,12 @@ import * as config from "../../../config/config";
 const element = document.getElementById('root');
 const width = window.outerWidth
 const height = element.clientHeight
-
-const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_GAME_PORT}`, {transports: ['websocket']});
-
-const users = [{
-
-}]
+//
+// const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_GAME_PORT}`, {transports: ['websocket']});
+//
+// const users = [{
+//
+// }]
 
 
 

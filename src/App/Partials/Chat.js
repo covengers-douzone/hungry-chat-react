@@ -170,26 +170,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         useEffect(() => {
             console.log('lp 변경',lp)
-            //scrollEl && (scrollEl.scrollTop = scrollRef.current.scrollBottom - scrollRef.current.scrollTop);
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
                 if (scrollEl && scrollSwitch === true) {
-                    // if (lp < config.CHAT_LIMIT) {
-                    //     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, 0, messageAllLength, localStorage.getItem("Authorization"))
-                    //     const chats = chatFormList(chatlist, participantNo);
-                    //     selectedChat.messages = chats;
-                    //     console.log('lp < config.CHAT_LIMIT',chats)
-                    // } else {
-                    console.log('gegegegege lp',lp);
-                        const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
-                        const chats = chatFormList(chatlist, participantNo);
-                        selectedChat.messages = chats;
-                        console.log("getChatListUp ", lp)
-                        console.log('lp > config.CHAT_LIMIT',chats)
-
-                        //     scrollEl.scrollTop = glHeight;
-
-                    //}
+                    const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
+                    const chats = chatFormList(chatlist, participantNo);
+                    selectedChat.messages = chats;
+                    console.log("getChatListUp ", lp)
+                    console.log('lp > config.CHAT_LIMIT',chats)
                     setPagingOk(pagingOk + 1)
                 }
             }
@@ -206,7 +194,16 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // scrollEl && (console.log('scrollEl.scrollTop-before',scrollEl.scrollTop))
             // scrollEl && (scrollEl.scrollTop = scrollRef.current.scrollBottom)
             // scrollEl && (console.log('scrollEl.scrollTop-after',scrollEl.scrollTop))
+
+            if(scrollEl){
+                console.log('current scrollEl.scrollTop', scrollRef.current.scrollBottom,scrollRef.current.scrollTop,scrollEl.scrollTop);
+                (scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)  / pagingOk)  ;
+        
+                console.log('after scrollEl.scrollTop',scrollEl.scrollTop);
+            }
         }, [pagingOk])
+
+
 
 
         // 스크롤이 맨 위에 위치 했을때 실행되는 핸들러
@@ -431,6 +428,26 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const onScroll = (e) => {
             // scroll
+            // let scrollHeight = Math.round(Math.max
+            // (document.getElementById("root").scrollHeight
+            //     ,e.target.scrollHeight ))
+            // let scrollTop = Math.round(Math.max
+            // (document.getElementById("root").scrollTop
+            //     ,e.target.scrollTop ))
+            //
+            // let clientHeight = Math.round(Math.max
+            // (e.target.clientHeight))
+            //
+            // if(scrollTop + clientHeight === scrollTop){
+            //     console.log("페이징 성공")
+            //     const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
+            //     setLp(newLp)
+            // }
+            //
+            // console.log("scrollHeight" ,scrollHeight)
+            // console.log("scrollTop" ,scrollTop)
+            // console.log("clientHeight" ,clientHeight)
+
             console.log('--------------------------------------------')
             console.log('예전 scrollTop',scrollRef.current.scrollTop)
             console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
@@ -438,10 +455,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
             console.log('현재 scrollHeight',e.target.scrollHeight);
             console.log('lp',lp)
             if( e.target.scrollTop < 200 && (scrollRef.current.scrollTop > e.target.scrollTop)){
-                //scrollEl.scrollTop = scrollRef.current.scrollBottom - scrollRef.current.scrollTop;
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
-                console.log('newLp',newLp);
                 setLp(newLp)
+                //setTimeout(() => {
+                //     console.log('current scrollEl.scrollTop', scrollEl.scrollTop);
+                //     scrollEl.scrollTop = scrollRef.current.scrollBottom - scrollRef.current.scrollTop;
+                //     console.log('after scrollEl.scrollTop',scrollEl.scrollTop);
+                //}, 100)
                 console.log('scrollll',scrollEl.scrollTop, scrollRef.current.scrollBottom - scrollRef.current.scrollTop)
             }
             scrollRef.current.scrollTop = e.target.scrollTop;
