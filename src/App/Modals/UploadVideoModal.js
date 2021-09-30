@@ -61,7 +61,7 @@ function UploadVideoModal(props) {
 
     return (
         <div>
-            <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom">
+            <Modal isOpen={props.modal} centered className="modal-dialog-zoom">
                 <ModalHeader toggle={props.toggle}>
                 <i class="fa fa-upload" aria-hidden="true"></i> 동영상 올리기
                 </ModalHeader>

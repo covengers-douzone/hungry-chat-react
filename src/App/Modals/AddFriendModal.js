@@ -91,7 +91,7 @@ function AddFriendModal( props ) {
                 toggle={tooltipToggle}>
                 친구 추가
             </Tooltip>
-            <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
+            <Modal className="modal-dialog-zoom" isOpen={modal} centered>
                 <ModalHeader toggle={modalToggle}>
                     <i className="ti ti-user mr-2"></i> 친구 추가
                 </ModalHeader>
