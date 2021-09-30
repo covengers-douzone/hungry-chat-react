@@ -20,6 +20,7 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+import img from "../../assets/img/covengers-logo-transparency.png"
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -487,8 +488,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         :
                         <div className="chat-body no-message">
                             <div className="no-message-container">
-                                <i className="fa fa-comments-o"></i>
-                                <p>메시지를 읽을 대화 선택</p>
+                                <img src={img} style={{width:150, height:150, opacity:0.3}}/>
+                                {/*<i className="fa fa-comments-o"></i>*/}
+                                <p>COVENGERS</p>
                             </div>
                         </div>
                 }
