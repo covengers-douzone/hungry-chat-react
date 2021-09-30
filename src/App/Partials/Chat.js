@@ -20,6 +20,7 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+import OpenCodeModal from "../Modals/OpenCodeModal";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -69,6 +70,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // image 클릭 시 image 크게 보이게 하는 modal
         const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+        const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
         // modal에서 사용; modal 닫을 때 실행되는 함수
         const editOpenImageModalToggle = () => {
             // openImageModalOpen : false로 설정
@@ -232,6 +234,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
 
+            console.log("handleClickMessage" , message)
 
             if(message.type === "IMG"){
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
@@ -244,7 +247,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setImage(imgSource);
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
-            }else if (message.type === "MARKDOWNS"){
+            }else if (message.type === "MARKDOWN"){
+
+                console.log("openCodeModalOpen" , openCodeModalOpen)
+                setOpenCodeModalOpen(true);
 
             }else if(message.type === "TEXT"){
 
@@ -484,6 +490,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         </div>
                 }
                 <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
+                <OpenCodeModal modal ={openCodeModalOpen} setModal = {setOpenCodeModalOpen}   />
             </div>
         )
     }
