@@ -474,8 +474,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     placeholder="채팅검색"
                                     ref={inputRef}
                                     onChange={handleSearch}
-
-
                                 />
 
                             </div>

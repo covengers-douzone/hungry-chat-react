@@ -8,6 +8,8 @@ import CodeBlockModal from "../Modals/CodeBlockModal";
 import ReactPlayer from "react-player";
 import {useDispatch, useSelector} from "react-redux";
 import {markDownAction} from "../../Store/Actions/markDownAction";
+import Picker from "emoji-picker-react";
+
 
 function ChatFooter(props) {
 
@@ -24,6 +26,9 @@ function ChatFooter(props) {
 
     const editModalToggle = () => setUploadModalOpen(!uploadModalOpen);
     const editVideoModalToggle = () => setVideoUploadModalOpen(!videoUploadModalOpen);
+
+    const [chosenEmoji, setChosenEmoji] = useState(null);
+    const [emojiOpen, setEmojiOpen] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -95,8 +100,27 @@ function ChatFooter(props) {
         }
     })
 
+
+    const onEmojiClick = (event, {emoji}) => {
+        setChosenEmoji(emoji);
+        props.inputMsg === "" ? props.setInputMsg(emoji) : props.setInputMsg(props.inputMsg + emoji);
+    };
+
     return (
         <div className="chat-footer">
+
+            {/* emoji */}
+            {
+                emojiOpen &&  <div>
+                    {chosenEmoji ? (
+                        <span>{chosenEmoji}</span>
+                    ) : (
+                        <span>Covengers !</span>
+                    )}
+                    <Picker onEmojiClick={onEmojiClick} />
+                </div>
+            }
+
             <form onSubmit={handleSubmit}>
                 {
                     previewURL ?
@@ -119,16 +143,17 @@ function ChatFooter(props) {
                                   className="form-control"
                                   alt="avatar"
                             />
-                            
-
-                              
                         :
-
-                        <textarea type="text" onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
+                        <textarea onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
                            onChange={handleChange}/>
                 }
-                <div className="form-buttons">
 
+                <div className="form-buttons">
+                    <Button color="light" className="btn-floating"  onClick={() => {
+                        setEmojiOpen(!emojiOpen);
+                    }}>
+                        <i className="ti ti-face-smile"></i>
+                    </Button>
                     <Button color="light" className="btn-floating" onClick={chatCodeBlock}>
                         <i className="fa fa-code">
                             <CodeBlockModal modal = {modalCodeBlock} setModal = {setModalCodeBlock}/>
