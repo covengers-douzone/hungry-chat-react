@@ -266,11 +266,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setOpenImageModalOpen(true);
             } else if (message.type === "MARKDOWN") {
 
-
                 let splitResult = message.text.props.children.split('\n');
-
-
-
                 let language = splitResult[0].split('```')
                 let contents = ""
                 // for (let i = 1; i < splitResult.length; i++) {
