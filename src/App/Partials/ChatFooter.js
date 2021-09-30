@@ -8,14 +8,18 @@ import CodeBlockModal from "../Modals/CodeBlockModal";
 import ReactPlayer from "react-player";
 import {useDispatch, useSelector} from "react-redux";
 import {markDownAction} from "../../Store/Actions/markDownAction";
+import Picker from "emoji-picker-react";
+import ReactTextareaAutocomplete from "@webscopeio/react-textarea-autocomplete";
+import emoji from "@jukben/emoji-search";
+import "@webscopeio/react-textarea-autocomplete/style.css";
+
 
 function ChatFooter(props) {
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [videoUploadModalOpen, setVideoUploadModalOpen] = useState(false);
 
-    const inputRef = useRef(null);
     const [file, setFile] = useState(null);
     const [ previewURL, setPreviewUrl ] = useState(null);
     const [type,  setType] = useState(null);
@@ -25,6 +29,9 @@ function ChatFooter(props) {
 
     const editModalToggle = () => setUploadModalOpen(!uploadModalOpen);
     const editVideoModalToggle = () => setVideoUploadModalOpen(!videoUploadModalOpen);
+
+    const [chosenEmoji, setChosenEmoji] = useState(null);
+    const [emojiOpen, setEmojiOpen] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -71,74 +78,92 @@ function ChatFooter(props) {
     }
 
     const handleKeyPress = (e) => {
-
-        console.log("handleKeyPress" , e.key)
-        if(e.key ==="Enter"){
+        if((e.keyCode==="Enter" | e.ctrlKey) === 1){
+            props.setInputMsg(props.inputMsg+"\n")
+        } else if (e.key ==="Enter"){
             handleSubmit(e);
         }
 
-
-
-
     }
 
-    const keydownHandler = (e) => {
-        if(e.keyCode===13 && e.ctrlKey) {
-            props.setInputMsg(props.inputMsg+"\n")
-        }
-        if(e.altKey){
-            dispatch(markDownAction(!markDown))
-            
-            if(inputRef){
-                console.log("포커스이동" , inputRef)
-                inputRef.current.focus();
-            }
+    const onEmojiClick = (event, {emoji}) => {
+        setChosenEmoji(emoji);
+        props.inputMsg === "" ? props.setInputMsg(emoji) : props.setInputMsg(props.inputMsg + emoji);
+    };
 
-
-        }
-    }
-
-
-    useEffect(() => {
-        document.addEventListener('keydown',keydownHandler);
-        return () => {
-            document.removeEventListener('keydown',keydownHandler);
-        }
-    })
+    const Item = ({ entity: { name, char } }) => <div>{`${name}: ${char}`}</div>;
+    const Loading = ({ data }) => <div>Loading</div>;
 
     return (
         <div className="chat-footer">
+            {/* emoji */}
+            {
+                emojiOpen &&  <div>
+                    {chosenEmoji ? (
+                        <span>{chosenEmoji}</span>
+                    ) : (
+                        <span>Covengers !</span>
+                    )}
+                    <Picker onEmojiClick={onEmojiClick}/>
+                </div>
+            }
+
             <form onSubmit={handleSubmit}>
                 {
                     previewURL ?
                         type === "video" ?
                             <ReactPlayer
-                                  className='react-player'
-                                  url={previewURL}
-                                  width='100%'
-                                  height='100%'
-                                  playing
-                                />
-                        :
+                                className='react-player'
+                                url={previewURL}
+                                width='100%'
+                                height='100%'
+                                playing
+                            />
+                            :
 
                             <img
-                                  style={{
+                                style={{
                                     height: "100px"
-                                    
-                                  }}
-                                  src={previewURL}
-                                  className="form-control"
-                                  alt="avatar"
+
+                                }}
+                                src={previewURL}
+                                className="form-control"
+                                alt="avatar"
                             />
-                            
-
-                              
                         :
-
-                        <textarea ref ={inputRef} type="text" onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
-                           onChange={handleChange}/>
+                        <ReactTextareaAutocomplete
+                            className="form-control"
+                            value={props.inputMsg}
+                            onChange={handleChange}
+                            onKeyPress={handleKeyPress}
+                            placeholder="메시지를 입력하세요."
+                            loadingComponent={Loading}
+                            style={{
+                                fontSize: "15px",
+                                lineHeight: "20px",
+                                padding: 5
+                            }}
+                            minChar={0}
+                            trigger={{
+                                ":": {
+                                    dataProvider: (token) => {
+                                        return emoji(token)
+                                            .slice(0, 10)
+                                            .map(({ name, char }) => ({ name, char }));
+                                    },
+                                    component: Item,
+                                    output: (item, trigger) => item.char
+                                }
+                            }}
+                        />
                 }
+
                 <div className="form-buttons">
+                    <Button color="light" className="btn-floating"  onClick={() => {
+                        setEmojiOpen(!emojiOpen);
+                    }}>
+                        <i className="ti ti-face-smile"></i>
+                    </Button>
                     <Button color="light" className="btn-floating" onClick={chatCodeBlock}>
                         <i className="fa fa-code">
                             <CodeBlockModal modal = {modalCodeBlock} setModal = {setModalCodeBlock}/>
@@ -148,9 +173,9 @@ function ChatFooter(props) {
                         <i className="fa fa-paperclip"></i>
                     </Button>
                     <Button color="light" className="btn-floating" onClick={videoUpload}>
-                    <i class="fa fa-video-camera" aria-hidden="true"></i>
+                        <i class="fa fa-video-camera" aria-hidden="true"></i>
                     </Button>
-                    
+
                     <Button color="primary" className="btn-floating">
                         <i className="fa fa-send"></i>
                     </Button>
@@ -159,7 +184,7 @@ function ChatFooter(props) {
 
             <UploadVideoModal modal={videoUploadModalOpen} toggle={editVideoModalToggle} handleFile={handleVideoFile}/>
             <UploadFileModal modal={uploadModalOpen} toggle={editModalToggle} handleFile={handleFile}/>
-            
+
         </div>
     )
 }

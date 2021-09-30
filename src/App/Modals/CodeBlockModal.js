@@ -101,7 +101,8 @@ function CodeBlockModal({modal, setModal}) {
 
     return (
         <div>
-            <Modal style={{minWidth: '100%', minHeight: '100%', height: 'auto'}}
+
+            <Modal style = {{minWidth : '100%' , minHeight : '100%' ,height : 'auto'}}
                    className="modal-dialog-zoom" isOpen={modal} onRequestClose={(e) => {
                 setModal(true)
             }
@@ -111,7 +112,7 @@ function CodeBlockModal({modal, setModal}) {
                     </i> 코드 블럭
                 </ModalHeader>
 
-                <ModalBody>
+                <ModalBody >
                     <div className="container mx-auto p-4">
                         <TopBar
                             language={{

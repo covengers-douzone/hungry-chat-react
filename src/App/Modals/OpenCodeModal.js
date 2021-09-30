@@ -44,7 +44,7 @@ function OpenCodeModal(props) {
             <Modal style={{minWidth: '50%', minHeight: '100%'}}
                    className="modal-dialog-zoom" isOpen={props.modal} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users">
+                    <i className="fa fa-code">
                     </i> 코드 창
                 </ModalHeader>
 
