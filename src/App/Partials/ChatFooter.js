@@ -128,6 +128,7 @@ function ChatFooter(props) {
                            onChange={handleChange}/>
                 }
                 <div className="form-buttons">
+
                     <Button color="light" className="btn-floating" onClick={chatCodeBlock}>
                         <i className="fa fa-code">
                             <CodeBlockModal modal = {modalCodeBlock} setModal = {setModalCodeBlock}/>

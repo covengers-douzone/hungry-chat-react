@@ -236,7 +236,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // 오른쪽 마우스 눌렸을 때 나타나는 '메시지 삭제' 핸들러
         const handleMessageDelete = async (e, data) => { // data가 Dom의 형태로 나오기 때문에 밑에 과정을 거친다
-
             let putChatNo = "";
             for (const key in data) {
                 //(data[key] === 'target') ? break : (putChatNo += data[key].toString())
