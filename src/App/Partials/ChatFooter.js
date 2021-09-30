@@ -33,6 +33,8 @@ function ChatFooter(props) {
     const [chosenEmoji, setChosenEmoji] = useState(null);
     const [emojiOpen, setEmojiOpen] = useState(false);
 
+    let inputRef = useRef();
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -51,7 +53,6 @@ function ChatFooter(props) {
         setModalCodeBlock(!modalCodeBlock)
     }
     const handleChange = (e) => {
-        console.log("")
         props.onChange(e.target.value)
     };
 
@@ -89,10 +90,15 @@ function ChatFooter(props) {
     const onEmojiClick = (event, {emoji}) => {
         setChosenEmoji(emoji);
         props.inputMsg === "" ? props.setInputMsg(emoji) : props.setInputMsg(props.inputMsg + emoji);
+        setEmojiOpen(false)
     };
 
     const Item = ({ entity: { name, char } }) => <div>{`${name}: ${char}`}</div>;
     const Loading = ({ data }) => <div>Loading</div>;
+
+    useEffect(()=>{
+        inputRef.current.textareaRef.focus()
+    })
 
     return (
         <div className="chat-footer">
@@ -132,6 +138,7 @@ function ChatFooter(props) {
                             />
                         :
                         <ReactTextareaAutocomplete
+                            ref={inputRef}
                             className="form-control"
                             value={props.inputMsg}
                             onChange={handleChange}

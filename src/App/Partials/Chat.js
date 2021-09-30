@@ -164,7 +164,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
         const handleChange = (newValue) => {
-            console.log("handleChange")
             setInputMsg(newValue);
         };
 
@@ -229,8 +228,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
             } else {
                 console.log("페이징 실행이 불가능한 영역")
             }
-
-
         }
 
 
