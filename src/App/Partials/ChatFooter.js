@@ -9,6 +9,9 @@ import ReactPlayer from "react-player";
 import {useDispatch, useSelector} from "react-redux";
 import {markDownAction} from "../../Store/Actions/markDownAction";
 import Picker from "emoji-picker-react";
+import ReactTextareaAutocomplete from "@webscopeio/react-textarea-autocomplete";
+import emoji from "@jukben/emoji-search";
+import "@webscopeio/react-textarea-autocomplete/style.css";
 
 
 function ChatFooter(props) {
@@ -75,40 +78,24 @@ function ChatFooter(props) {
     }
 
     const handleKeyPress = (e) => {
-
-        console.log("handleKeyPress" , e.key)
-        if(e.key ==="Enter"){
+        if((e.keyCode==="Enter" | e.ctrlKey) === 1){
+            props.setInputMsg(props.inputMsg+"\n")
+        } else if (e.key ==="Enter"){
             handleSubmit(e);
         }
 
-
-
     }
-
-    const keydownHandler = (e) => {
-        if(e.keyCode===13 && e.ctrlKey) {
-            props.setInputMsg(props.inputMsg+"\n")
-        }
-
-    }
-
-
-    useEffect(() => {
-        document.addEventListener('keydown',keydownHandler);
-        return () => {
-            document.removeEventListener('keydown',keydownHandler);
-        }
-    })
-
 
     const onEmojiClick = (event, {emoji}) => {
         setChosenEmoji(emoji);
         props.inputMsg === "" ? props.setInputMsg(emoji) : props.setInputMsg(props.inputMsg + emoji);
     };
 
+    const Item = ({ entity: { name, char } }) => <div>{`${name}: ${char}`}</div>;
+    const Loading = ({ data }) => <div>Loading</div>;
+
     return (
         <div className="chat-footer">
-
             {/* emoji */}
             {
                 emojiOpen &&  <div>
@@ -117,7 +104,7 @@ function ChatFooter(props) {
                     ) : (
                         <span>Covengers !</span>
                     )}
-                    <Picker onEmojiClick={onEmojiClick} />
+                    <Picker onEmojiClick={onEmojiClick}/>
                 </div>
             }
 
@@ -144,8 +131,31 @@ function ChatFooter(props) {
                                   alt="avatar"
                             />
                         :
-                        <textarea onKeyPress = {handleKeyPress} className="form-control" placeholder="메세지 입력" value={props.inputMsg}
-                           onChange={handleChange}/>
+                        <ReactTextareaAutocomplete
+                            className="form-control"
+                            value={props.inputMsg}
+                            onChange={handleChange}
+                            onKeyPress={handleKeyPress}
+                            placeholder="메시지를 입력하세요."
+                            loadingComponent={Loading}
+                            style={{
+                                fontSize: "15px",
+                                lineHeight: "20px",
+                                padding: 5
+                            }}
+                            minChar={0}
+                            trigger={{
+                                ":": {
+                                    dataProvider: (token) => {
+                                        return emoji(token)
+                                            .slice(0, 10)
+                                            .map(({ name, char }) => ({ name, char }));
+                                    },
+                                    component: Item,
+                                    output: (item, trigger) => item.char
+                                }
+                            }}
+                        />
                 }
 
                 <div className="form-buttons">
