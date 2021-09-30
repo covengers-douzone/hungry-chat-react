@@ -20,6 +20,7 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+import img from "../../assets/img/covengers-logo-transparency.png"
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -205,7 +206,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // 오른쪽 마우스 눌렸을 때 나타나는 '메시지 삭제' 핸들러
         const handleMessageDelete = async (e, data) => { // data가 Dom의 형태로 나오기 때문에 밑에 과정을 거친다
-
             let putChatNo = "";
             for (const key in data) {
                 //(data[key] === 'target') ? break : (putChatNo += data[key].toString())
@@ -454,8 +454,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     placeholder="채팅검색"
                                     ref={inputRef}
                                     onChange={handleSearch}
-
-
                                 />
 
                             </div>
@@ -467,8 +465,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         :
                         <div className="chat-body no-message">
                             <div className="no-message-container">
-                                <i className="fa fa-comments-o"></i>
-                                <p>메시지를 읽을 대화 선택</p>
+                                <img src={img} style={{width:150, height:150, opacity:0.3}}/>
+                                {/*<i className="fa fa-comments-o"></i>*/}
+                                <p>COVENGERS</p>
                             </div>
                         </div>
                 }
