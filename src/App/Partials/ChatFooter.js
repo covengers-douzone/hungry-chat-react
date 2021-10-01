@@ -131,7 +131,6 @@ function ChatFooter(props) {
                             <img
                                 style={{
                                     height: "100px"
-
                                 }}
                                 src={previewURL}
                                 className="form-control"
