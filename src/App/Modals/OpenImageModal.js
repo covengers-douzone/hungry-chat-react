@@ -30,7 +30,11 @@ function OpenImageModal(props) {
     const toggle = tab => {
         if (activeTab !== tab) setActiveTab(tab);
     };
+    const modalToggle = () => {
 
+        props.setModal(!props.modal)
+
+    }
     let imageHeight = '200px';
     let modalHeight = '300px';
     let marginTop = '50px';
@@ -86,13 +90,17 @@ function OpenImageModal(props) {
 
     return (
         <div>
-            <Modal isOpen={props.modal} toggle={props.toggle} centered className="modal-dialog-zoom"
+            <Modal isOpen={props.modal}  centered className="modal-dialog-zoom"
                    transparent={true}
                    style={{
                        width: modalHeight,
                        
                    }}
             >
+                <ModalHeader toggle={modalToggle}>
+                    <i className="fa fa-image">
+                    </i> 이미지
+                </ModalHeader>
                 <div className={"modal-content"} style={{"background-color": null}}>
                     <div className="align-items-center" style={{'margin-top': marginTop,}}>
                         {   

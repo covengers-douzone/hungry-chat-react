@@ -4,31 +4,38 @@ import ReactMarkdown from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ReactPlayer from "react-player";
+import remarkGfm from 'remark-gfm'
 
 const clickVideo = (e) => {
     e.preventDefault();
-    console.log(e);
+    console.log("EEEE: ", e);
 }
 
 const chatMessageForm = (chat , index ) => {
     let contents;
+    let match
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)
     chat.type === 'MARKDOWN' && (contents =
+
         <ReactMarkdown
+
             children={chat.contents}
+            remarkPlugins={[remarkGfm]}
+            id={chatNo}
             components={{
                 code({node, inline, className, children, ...props}) {
-                    const match = /language-(\w+)/.exec(className || '')
+                    match = /language-(\w+)/.exec(className || '')
                     return !inline && match ? (
                         <SyntaxHighlighter
                             children={String(children).replace(/\n$/, '')}
                             style={dark}
                             language={match[1]}
-                            PreTag="h6"
+                            PreTag="div"
                             {...props}
                         />
                     ) : (
+
                         <code className={className} {...props}>
                             {children}
                         </code>
@@ -45,24 +52,28 @@ const chatMessageForm = (chat , index ) => {
                                               className="form-control"
                                               alt="avatar"
                                         />)
-    // chat.type === 'VIDEO' && (contents = <video
-    //                                         style={{
-    //                                           height: "100px"
-    //                                         }}
-    //                                         src={config.URL + chat.contents.split('public')[1]}
-    //                                         className="form-control"
-    //                                         alt="avatar"
-    //                                   />)
+    chat.type === 'VIDEO' && (contents = <video
+                                            style={{
+                                              height: "100px"
+                                            }}
+                                            src={config.URL + chat.contents.split('public')[1]}
+                                            className="form-control"
+                                            alt="avatar"
+                                      />)
 
-    chat.type === 'VIDEO' && (contents = <ReactPlayer
-                                                      className='react-player'
-                                                      url={config.URL + chat.contents.split('public')[1]}
-                                                      width='100%'
-                                                      height='100%'
-                                                      controls={true}
-                                                      light={true}
-                                                      onClick={clickVideo}
-                                                    />)
+    // chat.type === 'VIDEO' && (contents = <ReactPlayer
+                                                    
+    //                                                   className='react-player'
+    //                                                   url={config.URL + chat.contents.split('public')[1]}
+                                                      
+    //                                                   width='100%'
+    //                                                   height='100%'
+                                                      
+    //                                                   controls={true}
+    //                                                   light={true}
+    //                                                   onClick={clickVideo}
+    //                                                 />)
+                                                    
     const chatMessage = {
         profileImageUrl: chat.Participant && chat.Participant.User.profileImageUrl,
         nickname: chat.Participant && chat.Participant.User.nickname,
@@ -72,6 +83,8 @@ const chatMessageForm = (chat , index ) => {
         chatNo : chatNo,
         participantNo : (chat.Participant && chat.Participant.no) || chat.participantNo,
         index : index,
+        type : chat.type,
+        chatMessage : chat.contents
     }
     return chatMessage;
 }

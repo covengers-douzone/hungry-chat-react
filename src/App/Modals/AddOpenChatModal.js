@@ -77,7 +77,7 @@ function AddOpenChatModal() {
                 toggle={tooltipToggle}>
                 방 만들기
             </Tooltip>
-            <Modal className="modal-dialog-zoom" isOpen={modal} toggle={modalToggle} centered>
+            <Modal className="modal-dialog-zoom" isOpen={modal}  centered>
                 <ModalHeader toggle={modalToggle}>
                     <i className="fa fa-users"></i> 방 만들기
                 </ModalHeader>

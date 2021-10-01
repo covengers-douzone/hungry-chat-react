@@ -8,6 +8,7 @@ import fetchApi from "../Module/fetchApi";
 import * as config from "../../config/config";
 import {chatForm, chatMessageForm, chatFormList} from "../Module/chatForm";
 import OpenImageModal from "../Modals/OpenImageModal";
+import OpenMessageModal from "../Modals/OpenMessageModal"
 /*오른쪽 마우스 눌렸을 때 나오는 메뉴*/
 import {ContextMenu, MenuItem, ContextMenuTrigger} from "react-contextmenu";
 import {reloadAction} from "../../Store/Actions/reloadAction";
@@ -21,6 +22,10 @@ import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
 import {sendOkAction} from "../../Store/Actions/sendOkAction";
+import OpenCodeModal from "../Modals/OpenCodeModal";
+import {tr} from 'date-fns/locale'
+import img from "../../assets/img/covengers-logo-transparency.png"
+
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -68,16 +73,32 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
         const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
 
+        const [text, setText] = useState(null);
+        const [messageType, setMessageType] = useState(null);
+
         const [scrollSwitch, setScrollSwitch] = useState(false)
+
+        const [language , setLanguage] = useState("null")
+
 
         // image 클릭 시 image 크게 보이게 하는 modal
         const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+        const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+
+        const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+
         // modal에서 사용; modal 닫을 때 실행되는 함수
         const editOpenImageModalToggle = () => {
             // openImageModalOpen : false로 설정
             setOpenImageModalOpen(!openImageModalOpen);
             // image file 없애기
             setImage(null);
+        }
+
+        const editOpenMessageModalToggle = () => {
+            // openMessageModalOpen : false로 설정
+            setOpenMessageModalOpen(!openMessageModalOpen);
+            setText(null);
         }
 
         const inputRef = useRef();
@@ -103,7 +124,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 // search list 초기화
                 setSearchChatNoList([]);
                 // searchTerm을 지운 경우 젤 마지막 메세지부터 10개 출력
-                if(lastPage === lp){
+                if (lastPage === lp) {
                     setLp(lastPage + 1);
                 } else {
                     setLp(lastPage);
@@ -139,7 +160,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 console.log("스코롤 사용 가능 ")
                 setScrollSwitch(true)
             }, 3000)
-
 
 
             setTimeout(async () => {
@@ -180,7 +200,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const handleChange = (newValue) => {
-            console.log("handleChange")
             setInputMsg(newValue);
         };
 
@@ -224,7 +243,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         // 오른쪽 마우스 눌렸을 때 나타나는 '메시지 삭제' 핸들러
         const handleMessageDelete = async (e, data) => { // data가 Dom의 형태로 나오기 때문에 밑에 과정을 거친다
-
             let putChatNo = "";
             for (const key in data) {
                 //(data[key] === 'target') ? break : (putChatNo += data[key].toString())
@@ -250,15 +268,51 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-            if (message && message.text && message.text.props && message.text.type) {
+
+
+            console.log("message", message)
+            if (message.type === "IMG") {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
                 // open image modal
+
+                console.log("message.text.type", fileType)
+
                 setImage(imgSource);
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
+            } else if (message.type === "MARKDOWN") {
+
+                let splitResult = message.text.props.children.split('\n');
+                let language = splitResult[0].split('```')
+                let contents = ""
+                // for (let i = 1; i < splitResult.length; i++) {
+                //     if (splitResult[i] !== "") {
+                //         contents = splitResult[i]
+                //         break;
+                //     }
+                // }
+                for(let i = 1; i < splitResult.length -1; i++){
+                    contents += splitResult[i] + "\n"
+                }
+
+                setLanguage(language[1])
+                setLanguage(language[1])
+                setText(contents)
+                setOpenCodeModalOpen(true);
+
+            } else if (message.type === "outgoing-message" || message.type === "TEXT") {
+                if (message.text.length > 15) {
+                    const messageText = message.text;
+                    const messageType = message.text.type;
+                    setText(messageText);
+                    setMessageType(messageType);
+                    setOpenMessageModalOpen(true);
+                }
             }
+
+
         }
 
 
@@ -276,14 +330,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
             let timeForm = hours + ":" + minutes;
 
-            if(currentDate === date){ // 날짜가 같다면(2021-09-09 === 2021-09-09)
-                if(currentHours === hours && currentMinutes === minutes) {
+            if (currentDate === date) { // 날짜가 같다면(2021-09-09 === 2021-09-09)
+                if (currentHours === hours && currentMinutes === minutes) {
 
                     timeForm = '방금 전';
                     // 보내기 10분 되기 전까지만 이렇게 표시
                 } else if (currentHours === hours && currentMinutes - minutes < 10) {
                     timeForm = (currentMinutes - minutes) + '분 전';
-                } else if (currentHours - hours === 1 && minutes - currentMinutes > 50){
+                } else if (currentHours - hours === 1 && minutes - currentMinutes > 50) {
                     timeForm = (currentMinutes - minutes + 60) + '분 전';
                 }
             }
@@ -347,9 +401,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 "margin-bottom": "7px",
                                 width: 145
                             }}>{message.nickname}</p>
-                            <div className={"message-content " + (message.file ? 'message-file ' : '') + (message.search ? "message-search" : '')}>
-                                {message.file ? message.file : message.text}
+
+                            <div className={"message-content " + (message.file ? 'message-file' : '') + (message.search ? "message-search" : '')}
+                                 onClick={() => handleClickMessage(message)}>
+                                {message.file ? message.file : message.text.length > 20 ? message.text.substring(0, 20) + " ..." : message.text}
                             </div>
+
 
                             <ContextMenu id={`contextMenu${message.chatNo}`}>
                                 <MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>
@@ -410,7 +467,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            //searchTerm === "" &&
             if( !searchOk && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
@@ -467,8 +523,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     placeholder="채팅검색"
                                     ref={inputRef}
                                     onChange={handleSearch}
-
-
                                 />
 
                             </div>
@@ -480,12 +534,18 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         :
                         <div className="chat-body no-message">
                             <div className="no-message-container">
-                                <i className="fa fa-comments-o"></i>
-                                <p>메시지를 읽을 대화 선택</p>
+                                <img src={img} style={{width: 150, height: 150, opacity: 0.3}}/>
+                                {/*<i className="fa fa-comments-o"></i>*/}
+                                <p>COVENGERS</p>
                             </div>
                         </div>
                 }
-                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
+                <OpenImageModal modal={openImageModalOpen} setModal={setOpenImageModalOpen}
+                                toggle={editOpenImageModalToggle} image={image} fileType={fileType}/>
+                <OpenCodeModal modal={openCodeModalOpen} setModal={setOpenCodeModalOpen} text={text}
+                               language={language}/>
+                <OpenMessageModal modal={openMessageModalOpen} setModal={setOpenMessageModalOpen}
+                                  toggle={editOpenMessageModalToggle} text={text} fileType={messageType}/>
             </div>
         )
     }
