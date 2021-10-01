@@ -87,7 +87,7 @@ function OpenImageModal(props) {
     props.image && splitImageName();
     props.image && calculateFileRatio();
 
-
+    console.log("props.image", props.fileType);
     return (
         <div>
             <Modal isOpen={props.modal}  centered className="modal-dialog-zoom"

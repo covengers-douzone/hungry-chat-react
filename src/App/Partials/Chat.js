@@ -267,7 +267,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
             console.log("message", message)
-            if (message.type === "IMG") {
+            if (message.type === "IMG" || message.type === "VIDEO") {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
