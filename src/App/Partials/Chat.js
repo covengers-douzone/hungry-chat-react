@@ -25,7 +25,7 @@ import {sendOkAction} from "../../Store/Actions/sendOkAction";
 import OpenCodeModal from "../Modals/OpenCodeModal";
 import {tr} from 'date-fns/locale'
 import img from "../../assets/img/covengers-logo-transparency.png"
-
+import {Input} from 'reactstrap'
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -104,6 +104,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const searchRef = useRef();
         const inputRef = useRef();
 
+    useEffect(()=>{
+        if(searchRef &&  searchRef.current){
+            searchRef.current.focus();
+        } else if(inputRef && inputRef.current){
+           inputRef.current.textareaRef.focus()
+        }
+    })
 
 
     useEffect(() => {
@@ -264,17 +271,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
             setChatNo(chatNo)
             setDeleteOk(!deleteOk)
-
-
             // console.log(  data , '번 채팅 선택');
         }
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-
-
             console.log("message", message)
-            if (message.type === "IMG") {
+            if (message.type === "IMG" || message.type === "VIDEO") {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
@@ -286,7 +289,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
             } else if (message.type === "MARKDOWN") {
-
                 let splitResult = message.text.props.children.split('\n');
                 let language = splitResult[0].split('```')
                 let contents = ""
@@ -299,12 +301,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 for(let i = 1; i < splitResult.length -1; i++){
                     contents += splitResult[i] + "\n"
                 }
-
                 setLanguage(language[1])
                 setText(contents)
                 setOpenCodeModalOpen(true);
+            } else if (message.type === "TEXT") {
 
-            } else if (message.type === "outgoing-message" || message.type === "TEXT") {
                 if (message.text.length > 15) {
                     const messageText = message.text;
                     const messageType = message.text.type;
@@ -313,10 +314,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     setOpenMessageModalOpen(true);
                 }
             }
-
-
         }
-
 
         const messageTime = (fullTime) => {
             // 현재 시각
@@ -387,7 +385,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 )
             } else {
                 return (
-                    <div className={"message-item " + message.type} ref={messageRef}
+                    <div className={"message-item " + message.outgoing} ref={messageRef}
                          id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
                             {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
@@ -424,7 +422,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         <div className="message-action">
                             {
                                 (roomType === "official") ? "" :
-                                    message.type !== 'outgoing-message' ?
+                                    message.outgoing !== 'outgoing-message' ?
                                         <div style={{
                                             float: "left",
                                             marginRight: 5,
@@ -449,7 +447,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                         }}>{message.notReadCount}</div>
                             }
                             {
-                                message.type !== 'outgoing-message' ?
+                                message.outgoing !== 'outgoing-message' ?
                                     <div style={{float: "left"}}>{messageTime(message.date)}</div>
                                     : <div style={{float: "right"}}>{messageTime(message.date)}</div>
                             }
@@ -478,6 +476,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             scrollRef.current.scrollTop = e.target.scrollTop;
             scrollRef.current.scrollBottom = e.target.scrollHeight;
         }
+
 
         return (
             <div className="chat">
@@ -516,19 +515,31 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </PerfectScrollbar>
                             <div>
                                 <div onClick={toggleMenu}>
-                                    <i className="ti ti-search">채팅검색</i>
+                                    <i className="ti ti-search" style={{color: 'white'}}>채팅검색</i>
                                 </div>
 
-                                <input
-                                    type="text"
-                                    className={isOpen ? "show-menu" : "hide-menu"}
-                                    placeholder="채팅검색"
-                                    ref={searchRef}
-                                    onChange={handleSearch}
-                                />
+                                {
+                                    isOpen ?
+                                        <form>
+                                            <input
+                                                type="text"
+                                                className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
+                                                placeholder="채팅검색"
+                                                ref={searchRef}
+                                                onChange={handleSearch}
+                                                style={{
+                                                    backgroundColor: '#EBEBEB',
+                                                    marginBottom: 5
+                                                }}
+                                            />
+                                        </form>
+                                        : null
+                                }
+
+
 
                             </div>
-                            <ChatFooter inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                            <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                         setInputMsg={setInputMsg}
                             />
 

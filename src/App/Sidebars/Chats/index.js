@@ -80,7 +80,7 @@ const Index = React.forwardRef(({
         const message = chatMessageForm(chat);
         message.userNo = userNo;
 
-        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.type = "outgoing-message");
+        Number(socketUserNo) === Number(participantNo) && selectedChat.messages && (message.outgoing = "outgoing-message");
 
         selectedChat.otherParticipant.map(other => {
             if(other.no === message.participantNo){
@@ -361,7 +361,7 @@ const Index = React.forwardRef(({
                 </ul>
             </header>
             <form>
-
+                <input hidden="hidden"/>
                 <input
                     type="text"
                     className="form-control"

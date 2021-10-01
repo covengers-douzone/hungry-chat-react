@@ -82,8 +82,6 @@ function ChatFooter(props) {
         } else if (e.key ==="Enter"){
             handleSubmit(e);
         }
-
-
     }
 
     const onEmojiClick = (event, {emoji}) => {
@@ -127,7 +125,6 @@ function ChatFooter(props) {
                             <img
                                 style={{
                                     height: "100px"
-
                                 }}
                                 src={previewURL}
                                 className="form-control"
@@ -136,6 +133,9 @@ function ChatFooter(props) {
                         :
                         <ReactTextareaAutocomplete
                             ref={props.inputRef}
+                            onClick={() => {
+                                props.setMenu(false)
+                            }}
                             className="form-control"
                             value={props.inputMsg}
                             onChange={handleChange}

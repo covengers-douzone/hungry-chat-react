@@ -88,6 +88,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                 </ul>
             </header>
             <form>
+                <input hidden="hidden"/>
                 <input
                     type="text" 
                     className="form-control" 

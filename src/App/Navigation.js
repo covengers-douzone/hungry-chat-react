@@ -19,6 +19,7 @@ function Navigation() {
     const dispatch = useDispatch();
     const [roomList, setRoomList] = useState([]);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [logoUrl , setLogoUrl] = useState("");
 
     const editModalToggle = () => {
         if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
@@ -70,6 +71,14 @@ function Navigation() {
         },
 
     ];
+
+    const handleLogoClick = (e) => {
+        if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
+           e.preventDefault()
+        }else{
+            setLogoUrl("/chat/" + localStorage.getItem("userNo"))
+        }
+    }
 
     const handlePageExit = async () => {
         if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
@@ -166,7 +175,7 @@ function Navigation() {
             <div className="nav-group">
                 <ul>
                     <li>
-                        <a href={"/chat/" + localStorage.getItem("userNo")} className="logo" style={ch_name === "Ketchup America" ? {backgroundColor: ch_color.cap} : ch_name === "Dr.Stranger" ? {backgroundColor: ch_color.dr} : ch_name === "Green monster" ? {backgroundColor: ch_color.hulk} : ch_name === "Static electricity" ? {backgroundColor: ch_color.thor} : {backgroundColor: ch_color.default}} >
+                        <a onClick={handleLogoClick} href={logoUrl} className="logo" style={ch_name === "Ketchup America" ? {backgroundColor: ch_color.cap} : ch_name === "Dr.Stranger" ? {backgroundColor: ch_color.dr} : ch_name === "Green monster" ? {backgroundColor: ch_color.hulk} : ch_name === "Static electricity" ? {backgroundColor: ch_color.thor} : {backgroundColor: ch_color.default}} >
                                 <img src={img} style={{width:70, height:70}}/>
                                 {/*<Logo/>*/}
                         </a>

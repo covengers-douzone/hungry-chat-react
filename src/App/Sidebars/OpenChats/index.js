@@ -85,9 +85,11 @@ function Index({roomList, openRoomList, history,}) {
 
     const profileActions = (chat) => {
         // 개인톡(내가 방장일 경우)
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         dispatch(profileInfoAction(chat.openChatHost));
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
+        }
     };
 
 
@@ -155,7 +157,7 @@ function Index({roomList, openRoomList, history,}) {
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef} onChange={e => {
+                <input type="text" className="form-control" placeholder="오픈채팅검색" ref={inputRef} onChange={e => {
                     setSearchTerm(e.target.value)
                 }}/>
             </form>
