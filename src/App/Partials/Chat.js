@@ -25,7 +25,7 @@ import {sendOkAction} from "../../Store/Actions/sendOkAction";
 import OpenCodeModal from "../Modals/OpenCodeModal";
 import {tr} from 'date-fns/locale'
 import img from "../../assets/img/covengers-logo-transparency.png"
-
+import {Input} from 'reactstrap'
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -514,16 +514,24 @@ const Chat = React.forwardRef((props, scrollRef) => {
                             </PerfectScrollbar>
                             <div>
                                 <div onClick={toggleMenu}>
-                                    <i className="ti ti-search">채팅검색</i>
+                                    <i className="ti ti-search" style={{color: 'white'}}>채팅검색</i>
                                 </div>
 
-                                <input
-                                    type="text"
-                                    className={isOpen ? "show-menu" : "hide-menu"}
-                                    placeholder="채팅검색"
-                                    ref={inputRef}
-                                    onChange={handleSearch}
-                                />
+                                {
+                                    isOpen ?
+                                        <Input
+                                            type="text"
+                                            className={"form-control "} // + (isOpen ? "show-menu" : "hide-menu")}
+                                            placeholder="채팅검색"
+                                            ref={inputRef}
+                                            onChange={handleSearch}
+                                            style={{
+                                                marginBottom: 5
+                                            }}
+                                        />
+                                        : null
+                                }
+
 
                             </div>
                             <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
