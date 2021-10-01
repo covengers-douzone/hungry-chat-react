@@ -394,7 +394,7 @@ const Index = React.forwardRef(({
                 </ul>
             </header>
             <form>
-
+                <input hidden="hidden"/>
                 <input
                     type="text"
                     className="form-control"

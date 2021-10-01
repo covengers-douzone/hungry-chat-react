@@ -155,7 +155,7 @@ function Index({roomList, openRoomList, history,}) {
                 </ul>
             </header>
             <form>
-                <input type="text" className="form-control" placeholder="Search chat" ref={inputRef} onChange={e => {
+                <input type="text" className="form-control" placeholder="오픈채팅검색" ref={inputRef} onChange={e => {
                     setSearchTerm(e.target.value)
                 }}/>
             </form>

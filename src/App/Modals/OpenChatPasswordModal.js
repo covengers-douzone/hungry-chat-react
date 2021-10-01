@@ -70,6 +70,7 @@ function OpenChatPasswordModal({modal, setModal, enterPasswordChat, roomList}) {
                         <FormGroup>
                             <Label for="password">비밀번호</Label>
                             <InputGroup>
+                                <Input hidden="hidden"/>
                                 <Input type="password" name="password" id="password" onChange={ (e) => {
                                     const {value} = e.target
                                     setPassword(value);

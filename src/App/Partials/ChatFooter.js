@@ -98,7 +98,7 @@ function ChatFooter(props) {
     const Loading = ({ data }) => <div>Loading</div>;
 
     useEffect(()=>{
-        inputRef.current.textareaRef.focus()
+        //inputRef.current.textareaRef.focus();
     })
 
     return (
@@ -131,7 +131,6 @@ function ChatFooter(props) {
                             <img
                                 style={{
                                     height: "100px"
-
                                 }}
                                 src={previewURL}
                                 className="form-control"

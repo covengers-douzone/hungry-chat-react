@@ -243,15 +243,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
             setChatNo(chatNo)
             setDeleteOk(!deleteOk)
-
-
             // console.log(  data , '번 채팅 선택');
         }
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-
-
             console.log("message", message)
             if (message.type === "IMG") {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
@@ -265,7 +261,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
             } else if (message.type === "MARKDOWN") {
-
                 let splitResult = message.text.props.children.split('\n');
                 let language = splitResult[0].split('```')
                 let contents = ""
@@ -278,12 +273,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 for(let i = 1; i < splitResult.length -1; i++){
                     contents += splitResult[i] + "\n"
                 }
-
                 setLanguage(language[1])
                 setLanguage(language[1])
                 setText(contents)
                 setOpenCodeModalOpen(true);
-
             } else if (message.type === "outgoing-message" || message.type === "TEXT") {
                 if (message.text.length > 15) {
                     const messageText = message.text;
@@ -293,10 +286,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     setOpenMessageModalOpen(true);
                 }
             }
-
-
         }
-
 
         const messageTime = (fullTime) => {
             // 현재 시각
@@ -466,6 +456,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             scrollRef.current.scrollBottom = e.target.scrollHeight;
         }
 
+
         return (
             <div className="chat">
                 {
@@ -505,7 +496,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 <div onClick={toggleMenu}>
                                     <i className="ti ti-search">채팅검색</i>
                                 </div>
-
+                                <input hidden="hidden"/>
                                 <input
                                     type="text"
                                     className={isOpen ? "show-menu" : "hide-menu"}
