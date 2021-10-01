@@ -1,7 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {CopyBlock, dracula} from "react-code-blocks";
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "prismjs/themes/prism.css"; //Example style, you can use another
 import {sample, TopBar} from "../CodeBlock";
-import "../../assets/scss/styles.css";
 import {
     Button,
     Modal,
@@ -35,7 +39,10 @@ function CodeBlockModal({modal, setModal}) {
     const [languageDemo, changeDemo] = useState(sample["jsx"]);
     const [lineNumbers, toggleLineNumbers] = useState(true);
 
-    let a = " class HelloMessage extends React.Component {\n" +
+
+
+    const [text, setText] = useState("");
+    const [codeBlockText, setCodeBlockText] = useState(" class HelloMessage extends React.Component {\n" +
         "  handlePress = () => {\n" +
         "    alert('Hello')\n" +
         "  }\n" +
@@ -52,10 +59,7 @@ function CodeBlockModal({modal, setModal}) {
         "ReactDOM.render(\n" +
         "  <HelloMessage name=\"Taylor\" />, \n" +
         "  mountNode \n" +
-        "); "
-
-    const [text, setText] = useState("");
-    const [codeBlockText, setCodeBlockText] = useState("");
+        "); ");
     const [content, setContent] = useState("hello");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const toggle = () => setDropdownOpen(prevState => !prevState);
@@ -102,7 +106,7 @@ function CodeBlockModal({modal, setModal}) {
     return (
         <div>
 
-            <Modal style = {{minWidth : '100%' , minHeight : '100%' ,height : 'auto'}}
+            <Modal style = {{minWidth : '75%' , minHeight : '100%'}}
                    className="modal-dialog-zoom" isOpen={modal} onRequestClose={(e) => {
                 setModal(true)
             }
@@ -113,7 +117,7 @@ function CodeBlockModal({modal, setModal}) {
                 </ModalHeader>
 
                 <ModalBody >
-                    <div className="container mx-auto p-4">
+                    <div className="container mx-auto p-4" >
                         <TopBar
                             language={{
                                 value: language,
@@ -133,46 +137,21 @@ function CodeBlockModal({modal, setModal}) {
                                 onChange: e => toggleLineNumbers(!lineNumbers)
                             }}
                         />
-                        {/*<CodeBlock style = {{width : "100%" , height : height}}>*/}
-                        {/*    language={language}*/}
-                        {/*    text={languageDemo}*/}
-                        {/*    showLineNumbers={lineNumbers}*/}
-                        {/*    theme={dracula}*/}
-                        {/*    wrapLines={true}*/}
-                        {/*    codeBlock*/}
-                        {/*</CodeBlock>*/}
+                        <Editor
+                            value={codeBlockText}
+                            onValueChange={(code) => setCodeBlockText(code)}
+                            highlight={(code) => highlight(code, languages.js)}
+                            padding={10}
+                            style={{
+                                fontFamily: '"Fira code", "Fira Mono", monospace',
+                                fontSize: 12,
+                                borderWidth : 3
+                            }}
+                        />
 
-                        <div>
 
-
-                       <textarea onChange={handleCodeBlockTextChange} style={{
-                           width: "48%",
-                           height: height,
-                           float: "left",
-                           overflow: "auto",
-                           backgroundColor: "#282a36",
-                           color: "white",
-                           marginRight: "10px"
-                       }}
-
-                       />
-
-                            <div className="demo"
-                                 style={{float: "left", width: "48%", height: height, overflow: "auto"}}>
-                                <CopyBlock
-
-                                    language={language}
-                                    text={codeBlockText}
-                                    wrapLines={true}
-                                    theme={dracula}
-                                    showLineNumbers={lineNumbers}
-                                    codeBlock
-
-                                />
-                            </div>
-
-                        </div>
                     </div>
+
                 </ModalBody>
 
                 <ModalFooter>

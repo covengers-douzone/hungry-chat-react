@@ -298,7 +298,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
 
                 setLanguage(language[1])
-                setLanguage(language[1])
                 setText(contents)
                 setOpenCodeModalOpen(true);
 
