@@ -85,6 +85,7 @@ function ChatFooter(props) {
             handleSubmit(e);
         }
 
+
     }
 
     const onEmojiClick = (event, {emoji}) => {
