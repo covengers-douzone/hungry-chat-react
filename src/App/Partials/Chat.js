@@ -301,7 +301,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setText(contents)
                 setOpenCodeModalOpen(true);
 
-            } else if (message.type === "outgoing-message" || message.type === "TEXT") {
+            } else if (message.type === "TEXT") {
                 if (message.text.length > 15) {
                     const messageText = message.text;
                     const messageType = message.text.type;
@@ -384,7 +384,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 )
             } else {
                 return (
-                    <div className={"message-item " + message.type} ref={messageRef}
+                    <div className={"message-item " + message.outgoing} ref={messageRef}
                          id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
                             {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
@@ -421,7 +421,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                         <div className="message-action">
                             {
                                 (roomType === "official") ? "" :
-                                    message.type !== 'outgoing-message' ?
+                                    message.outgoing !== 'outgoing-message' ?
                                         <div style={{
                                             float: "left",
                                             marginRight: 5,
@@ -446,7 +446,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                         }}>{message.notReadCount}</div>
                             }
                             {
-                                message.type !== 'outgoing-message' ?
+                                message.outgoing !== 'outgoing-message' ?
                                     <div style={{float: "left"}}>{messageTime(message.date)}</div>
                                     : <div style={{float: "right"}}>{messageTime(message.date)}</div>
                             }
@@ -518,16 +518,19 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                                 {
                                     isOpen ?
-                                        <Input
-                                            type="text"
-                                            className={"form-control "} // + (isOpen ? "show-menu" : "hide-menu")}
-                                            placeholder="채팅검색"
-                                            ref={inputRef}
-                                            onChange={handleSearch}
-                                            style={{
-                                                marginBottom: 5
-                                            }}
-                                        />
+                                        <form>
+                                            <input
+                                                type="text"
+                                                className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
+                                                placeholder="채팅검색"
+                                                ref={inputRef}
+                                                onChange={handleSearch}
+                                                style={{
+                                                    backgroundColor: '#EBEBEB',
+                                                    marginBottom: 5
+                                                }}
+                                            />
+                                        </form>
                                         : null
                                 }
 

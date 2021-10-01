@@ -97,7 +97,7 @@ const chatForm = (chat,participantNo,i) => {
        // 내가 보낸 메세지
        chatMessage.profileImageUrl=""
        chatMessage.nickname=""
-       chatMessage.type = 'outgoing-message'
+       chatMessage.outgoing = 'outgoing-message'
        return chatMessage;
     }
 }
