@@ -17,25 +17,21 @@ const chatMessageForm = (chat , index ) => {
     const chatNo = chat.no;
     chat.type === 'TEXT' && (contents = chat.contents)
     chat.type === 'MARKDOWN' && (contents =
-
         <ReactMarkdown
-
             children={chat.contents}
-            remarkPlugins={[remarkGfm]}
             id={chatNo}
             components={{
                 code({node, inline, className, children, ...props}) {
                     match = /language-(\w+)/.exec(className || '')
                     return !inline && match ? (
                         <SyntaxHighlighter
-                            children={String(children).replace(/\n$/, '')}
+                            children={String(children).replace(/\n$/, '').substr(0,100)+"\n...... 전체 코드 보기" }
                             style={dark}
                             language={match[1]}
                             PreTag="div"
                             {...props}
                         />
                     ) : (
-
                         <code className={className} {...props}>
                             {children}
                         </code>
@@ -97,7 +93,7 @@ const chatForm = (chat,participantNo,i) => {
        // 내가 보낸 메세지
        chatMessage.profileImageUrl=""
        chatMessage.nickname=""
-       chatMessage.type = 'outgoing-message'
+       chatMessage.outgoing = 'outgoing-message'
        return chatMessage;
     }
 }

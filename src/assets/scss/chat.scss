@@ -96,6 +96,10 @@
 					padding: 10px 20px;
 					
 
+					&.message-search {
+						border: 2px solid palevioletred;
+					}
+
 					&.message-file {
 						display: flex;
 						align-items: center;

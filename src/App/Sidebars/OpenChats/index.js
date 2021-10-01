@@ -85,9 +85,11 @@ function Index({roomList, openRoomList, history,}) {
 
     const profileActions = (chat) => {
         // 개인톡(내가 방장일 경우)
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         dispatch(profileInfoAction(chat.openChatHost));
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
+        }
     };
 
 

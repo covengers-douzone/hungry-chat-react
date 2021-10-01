@@ -98,7 +98,7 @@ function ChatFooter(props) {
     const Loading = ({ data }) => <div>Loading</div>;
 
     useEffect(()=>{
-        //inputRef.current.textareaRef.focus();
+        inputRef && inputRef.current && inputRef.current.textareaRef.focus()
     })
 
     return (
