@@ -1,4 +1,4 @@
-const sendOkReducer = (state = [], action) => {
+const sendOkReducer = (state = false, action) => {
     switch (action.type) {
         case 'SEND_OK':
             return action.status;
