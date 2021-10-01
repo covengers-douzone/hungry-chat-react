@@ -54,7 +54,7 @@ const ChatsDropdown = ({chat}) => {
 
 
     return (
-        <Dropdown isOpen={dropdownOpen} toggle={toggle}  disabled={(localStorage.getItem("role") === "ROLE_UNKNOWN")}>
+        <Dropdown isOpen={dropdownOpen} toggle={toggle}  >
             <DropdownToggle tag="a">
                 <i className="ti ti-more"></i>
                 {/*<i className="ti ti-trash" style={{color:"red"}}></i>*/}
