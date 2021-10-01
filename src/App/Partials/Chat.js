@@ -101,14 +101,17 @@ const Chat = React.forwardRef((props, scrollRef) => {
             setText(null);
         }
 
+        const searchRef = useRef();
         const inputRef = useRef();
 
-        useEffect(() => {
+
+
+    useEffect(() => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
                 console.log("handleSearch",searchTerm)
                 const {results: chatlist, searchedChatNoList} = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
-                if(searchedChatNoList.length > 0){
+                if(searchedChatNoList && searchedChatNoList.length > 0){
                     setSearchChatNoList(searchedChatNoList);
                     const chatNum = chatlist.length;
                     const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
@@ -520,12 +523,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     type="text"
                                     className={isOpen ? "show-menu" : "hide-menu"}
                                     placeholder="채팅검색"
-                                    ref={inputRef}
+                                    ref={searchRef}
                                     onChange={handleSearch}
                                 />
 
                             </div>
-                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                            <ChatFooter inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                         setInputMsg={setInputMsg}
                             />
 
