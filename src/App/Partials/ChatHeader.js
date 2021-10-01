@@ -35,9 +35,6 @@ function ChatHeader(props) {
     const {markDown} = useSelector(state => state);
 
 
-
-
-
     const [calenderModalOpen, setCalendarModalOpen] = useState(false);
 
     const calenderModalToggle = () => setCalendarModalOpen(prevState => !prevState);

@@ -101,14 +101,24 @@ const Chat = React.forwardRef((props, scrollRef) => {
             setText(null);
         }
 
+        const searchRef = useRef();
         const inputRef = useRef();
 
-        useEffect(() => {
+    useEffect(()=>{
+        if(searchRef &&  searchRef.current){
+            searchRef.current.focus();
+        } else if(inputRef && inputRef.current){
+           inputRef.current.textareaRef.focus()
+        }
+    })
+
+
+    useEffect(() => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
                 console.log("handleSearch",searchTerm)
                 const {results: chatlist, searchedChatNoList} = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
-                if(searchedChatNoList.length > 0){
+                if(searchedChatNoList && searchedChatNoList.length > 0){
                     setSearchChatNoList(searchedChatNoList);
                     const chatNum = chatlist.length;
                     const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
@@ -253,7 +263,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }
             const splitData = putChatNo.split(",")
-            const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
+            const lastData = splitData[splitData.length - 1].split("["); // 마지막 데터는 [ 와 표시가 된다 ,
             const chatNo = Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
             // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
             // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
@@ -508,16 +518,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     <i className="ti ti-search" style={{color: 'white'}}>채팅검색</i>
                                 </div>
 
-                                <input hidden="hidden"/>
-                                <input
-                                    type="text"
-                                    className={isOpen ? "show-menu" : "hide-menu"}
-                                    placeholder="채팅검색"
-                                    ref={inputRef}
-                                    onChange={handleSearch}
-                                />
-
-
                                 {
                                     isOpen ?
                                         <form>
@@ -525,7 +525,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                                 type="text"
                                                 className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
                                                 placeholder="채팅검색"
-                                                ref={inputRef}
+                                                ref={searchRef}
                                                 onChange={handleSearch}
                                                 style={{
                                                     backgroundColor: '#EBEBEB',
@@ -539,7 +539,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
                             </div>
-                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                            <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                         setInputMsg={setInputMsg}
                             />
 
