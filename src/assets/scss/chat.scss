@@ -95,6 +95,10 @@
 					border-radius: 5px;
 					padding: 10px 20px;
 
+					&.message-search {
+						border: 1px solid yellow;
+					}
+
 					&.message-file {
 						display: flex;
 						align-items: center;

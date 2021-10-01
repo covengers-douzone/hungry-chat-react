@@ -20,6 +20,7 @@ import {joinOKAction} from "../../Store/Actions/joinOKAction";
 import UploadFileModal from "../Modals/UploadFileModal";
 import {lastPageAction} from "../../Store/Actions/lastPageAction";
 import {Link} from "react-router-dom";
+import {sendOkAction} from "../../Store/Actions/sendOkAction";
 
 
 const Chat = React.forwardRef((props, scrollRef) => {
@@ -51,7 +52,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         //   const [lastPage, setLastPage] = useState(0)
         const [lp, setLp] = useState(0);
-        const [sendOk, setSendOk] = useState(true)
+        //const [sendOk, setSendOk] = useState(true)
+        const {sendOk} = useSelector(state => state);
 
         const [deleteOk, setDeleteOk] = useState(true)
 
@@ -60,7 +62,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [pagingOk, setPagingOk] = useState(0)
 
         const [searchTerm, setSearchTerm] = useState("");
-        const [reRender, setReRender] = useState(false);
+        const [searchOk, setSearchOk] = useState(false);
+        const [searchChatNoList, setSearchChatNoList] = useState([]);
 
         const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
         const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
@@ -83,16 +86,22 @@ const Chat = React.forwardRef((props, scrollRef) => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
                 console.log("handleSearch",searchTerm)
-                const chatlist = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, 100, searchTerm, localStorage.getItem("Authorization"))
-                const chats = chatFormList(chatlist, participantNo);
-                selectedChat.messages = chats;
-                setReRender(!reRender);
-                console.log('search?',chats);
+                const {results: chatlist, searchedChatNoList} = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
+                if(searchedChatNoList.length > 0){
+                    setSearchChatNoList(searchedChatNoList);
+                    const chatNum = chatlist.length;
+                    const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
+                    setLp(newLp)
+                }
             }
 
             if(searchTerm !== ""){
+                // 찾을때 chatlist 변경
                 searchList();
+                setSearchOk(true);
             } else {
+                // search list 초기화
+                setSearchChatNoList([]);
                 // searchTerm을 지운 경우 젤 마지막 메세지부터 10개 출력
                 if(lastPage === lp){
                     setLp(lastPage + 1);
@@ -104,12 +113,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         }, [searchTerm])
 
-
         useEffect(() => {
+            console.log('ssssssssssssssssss',sendOk)
             if (scrollEl) {
-                setTimeout(() => {
-                    scrollEl.scrollTop = scrollEl.scrollHeight;
-                }, 100)
+                scrollEl.scrollTop = scrollEl.scrollHeight;
             }
         }, [sendOk])
 
@@ -163,7 +170,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             myFetch(null, null).send(formData);
             console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
             setInputMsg("");
-            setSendOk(!sendOk)
+            //dispatch(sendOkAction(!sendOk));
+            //setSendOk(!sendOk)
         };
 
 
@@ -178,15 +186,17 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
         useEffect(() => {
-            console.log('lp 변경',lp)
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
                 if (scrollEl && scrollSwitch === true) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
-                    const chats = chatFormList(chatlist, participantNo);
+                    const chats = chatFormList(chatlist, participantNo).map(chat => {
+                        if(searchChatNoList.includes(chat.chatNo)){
+                            chat.search = true
+                        }
+                        return chat
+                    });
                     selectedChat.messages = chats;
-                    console.log("getChatListUp ", lp)
-                    console.log('lp > config.CHAT_LIMIT',chats)
                     setPagingOk(pagingOk + 1)
                 }
             }
@@ -198,7 +208,16 @@ const Chat = React.forwardRef((props, scrollRef) => {
             console.log('-----paging OK 실행');
             // 페이징 후 스크롤 위치 조정
             if(scrollEl){
-                scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/pagingOk;
+                if(searchOk){
+                    scrollEl.scrollTop = 0;
+                    setSearchOk(false);
+                } else {
+                    if(lp === 0) {
+                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/Math.ceil((messageAllLength - lp)/10 + 2);
+                    } else{
+                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/Math.ceil((messageAllLength - lp)/10 - 1);
+                    }
+                }
             }
         }, [pagingOk])
 
@@ -312,7 +331,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 )
             } else {
                 return (
-
                     <div className={"message-item " + message.type} ref={messageRef}
                          id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
@@ -329,7 +347,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 "margin-bottom": "7px",
                                 width: 145
                             }}>{message.nickname}</p>
-                            <div className={"message-content " + (message.file ? 'message-file' : null)}>
+                            <div className={"message-content " + (message.file ? 'message-file ' : '') + (message.search ? "message-search" : '')}>
                                 {message.file ? message.file : message.text}
                             </div>
 
@@ -392,17 +410,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            // console.log('--------------------------------------------')
-            // console.log('예전 scrollTop',scrollRef.current.scrollTop)
-            // console.log('예전 scrollBottom',scrollRef.current.scrollBottom)
-
-
-            if(searchTerm === "" && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
+            //searchTerm === "" &&
+            if( !searchOk && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
-
-                // lp 변경 후, pagingOk변경되면서(useEffect-pagingOk 참고), 페이징 스크롤 위치 조정됨
-                //console.log('scrollll',scrollEl.scrollTop, scrollRef.current.scrollBottom - scrollRef.current.scrollTop)
+            } else if(searchOk){
+                scrollRef.current.scrollTop = 0;
             }
             scrollRef.current.scrollTop = e.target.scrollTop;
             scrollRef.current.scrollBottom = e.target.scrollHeight;
