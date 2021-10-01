@@ -19,6 +19,7 @@ function Navigation() {
     const dispatch = useDispatch();
     const [roomList, setRoomList] = useState([]);
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [logoUrl , setLogoUrl] = useState("");
 
     const editModalToggle = () => {
         if (localStorage.getItem("role") !== "ROLE_UNKNOWN") {
@@ -70,6 +71,14 @@ function Navigation() {
         },
 
     ];
+
+    const handleLogoClick = (e) => {
+        if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
+           e.preventDefault()
+        }else{
+            setLogoUrl("/chat/" + localStorage.getItem("userNo"))
+        }
+    }
 
     const handlePageExit = async () => {
         if (localStorage.getItem("role") === "ROLE_UNKNOWN") {
@@ -157,10 +166,12 @@ function Navigation() {
             <div className="nav-group">
                 <ul>
                     <li>
-                        <a href={"/chat/" + localStorage.getItem("userNo")} className="logo">
+
+                        <a onClick={handleLogoClick} href={logoUrl} className="logo">
                             <img src={img} style={{width:70, height:70}}/>
                             {/*<Logo/>*/}
-                        </a>
+                        </a>  }
+
                     </li>
                     {
                         navigationItems.map((item, i) => <NavigationItemView key={i} item={item}

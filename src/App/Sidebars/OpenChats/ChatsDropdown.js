@@ -22,8 +22,10 @@ const ChatsDropdown = ({chat}) => {
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
     const profileActions = () => {
-        dispatch(profileAction(true));
-        dispatch(mobileProfileAction(true))
+
+            dispatch(profileAction(true));
+            dispatch(mobileProfileAction(true))
+
     };
 
     const chatDeleteAction = async () => {
@@ -54,7 +56,8 @@ const ChatsDropdown = ({chat}) => {
             </DropdownToggle>
             <DropdownMenu>
                 <DropdownItem onClick={profileActions}>프로필</DropdownItem>
-                <DropdownItem onClick={chatDeleteAction}>삭제하기</DropdownItem>
+                {(chat.openChatHost.no === Number(localStorage.getItem("userNo"))) && <DropdownItem onClick={chatDeleteAction}>삭제하기</DropdownItem>}
+
             </DropdownMenu>
         </Dropdown>
     )
