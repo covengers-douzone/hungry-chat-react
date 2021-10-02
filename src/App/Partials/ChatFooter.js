@@ -77,10 +77,14 @@ function ChatFooter(props) {
     }
 
     const handleKeyPress = (e) => {
+        console.log("handleKeyPress" , e.keyCode )
         if((e.keyCode==="Enter" | e.ctrlKey) === 1){
             props.setInputMsg(props.inputMsg+"\n")
         } else if (e.key ==="Enter"){
             handleSubmit(e);
+        }
+        if (e.altKey){
+            dispatch(markDownAction(!markDown))
         }
     }
 

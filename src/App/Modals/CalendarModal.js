@@ -96,7 +96,7 @@ function CalendarModal(props){
 
     return (
             <Modal style={{minWidth:'1000px', minHeight: '500px'}} isOpen={props.modal} centered>
-                <ModalHeader toggle={props.toggle}>
+                <ModalHeader >
                 <i className="ti ti-calendar"></i> 캘린더
                 </ModalHeader>
                 <ModalBody style={{minWidth:'1000px', minHeight: '500px', position:"relative"}}>

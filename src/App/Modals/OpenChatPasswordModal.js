@@ -40,9 +40,13 @@ function OpenChatPasswordModal({modal, setModal, enterPasswordChat, roomList}) {
                 return room.type === "public" && room.participantNo === enterPasswordChat.participantNo;
             })
             if(result.length === 0){
+                const roomNo = enterPasswordChat.id
                 const participantNo = (await fetchApi(null,null).createParticipant(localStorage.getItem("userNo") ,enterPasswordChat.id ,"ROLE_MEMBER", localStorage.getItem("Authorization") )).no;
                 dispatch(participantNoAction(participantNo));
                 dispatch(reloadAction(!reload));
+                const result = await fetchApi(null, null).updateHeadCount("join", roomNo, localStorage.getItem("Authorization"))
+
+
             } else {
                 dispatch(participantNoAction(result[0].participantNo));
             }
