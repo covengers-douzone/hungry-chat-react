@@ -102,6 +102,16 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const inputRef = useRef();
+        const searchRef = useRef();
+
+
+        useEffect(()=>{
+            if(searchRef &&  searchRef.current){
+                searchRef.current.focus();
+            } else if(inputRef && inputRef.current){
+                inputRef.current.textareaRef.focus()
+            }
+        })
 
         useEffect(() => {
             //console.log("searchTerm", searchTerm)
@@ -256,7 +266,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
             const chatNo = Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
             // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
-            // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
+            await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
             // const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
             // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
             setChatNo(chatNo)
@@ -408,9 +418,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
                             <ContextMenu id={`contextMenu${message.chatNo}`}>
-                                <MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>
-                                    <button> 메세지 정보</button>
-                                </MenuItem>
+                                {/*<MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>*/}
+                                {/*    <button> 메세지 정보</button>*/}
+                                {/*</MenuItem>*/}
                                 <MenuItem id="Message-Delete-item" data={`${message.chatNo},${message.index}`}
                                           onClick={handleMessageDelete}
                                           disabled={(message.participantNo !== participantNo)}>
@@ -523,7 +533,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                                 type="text"
                                                 className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
                                                 placeholder="채팅검색"
-                                                ref={inputRef}
+                                                ref={searchRef}
                                                 onChange={handleSearch}
                                                 style={{
                                                     backgroundColor: '#EBEBEB',
@@ -537,7 +547,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                             </div>
                             <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
-                                        setInputMsg={setInputMsg}
+                                        setInputMsg={setInputMsg} inputRef={inputRef}
                             />
 
                         </React.Fragment>
