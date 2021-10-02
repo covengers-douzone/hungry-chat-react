@@ -30,98 +30,101 @@ import {Input} from 'reactstrap'
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
-    const dispatch = useDispatch();
+        const dispatch = useDispatch();
 
-    let scrOnOff = false
-
-
-    const {selectedChat} = useSelector(state => state);
-    const {roomNo} = useSelector(state => state);
-    const {roomType} = useSelector(state => state);
-    const {participantNo} = useSelector(state => state);
-    const {headCount} = useSelector(state => state)
-    const {messageAllLength} = useSelector(state => state)
-    const {joinOk} = useSelector(state => state)
-    const {lastReadNo} = useSelector(state => state)
-    const {lastPage} = useSelector(state => state)
-    const {markDown} = useSelector(state => state)
-    const {codeBlock} = useSelector(state => state)
-    const {lastReadNoLength} = useSelector(state => state)
-    const [inputMsg, setInputMsg] = useState('');
-
-    const [scrollEl, setScrollEl] = useState();
-
-    const [chatList, setChatList] = useState([]);
-
-    const messageRef = useRef(null);
-
-    //   const [lastPage, setLastPage] = useState(0)
-    const [lp, setLp] = useState(0);
-    //const [sendOk, setSendOk] = useState(true)
-    const {sendOk} = useSelector(state => state);
-
-    const [deleteOk, setDeleteOk] = useState(true)
-
-    const [chatNo, setChatNo] = useState(null)
-
-    const [pagingOk, setPagingOk] = useState(0)
-
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchOk, setSearchOk] = useState(false);
-    const [searchChatNoList, setSearchChatNoList] = useState([]);
-
-    const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
-    const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
-
-    const [text, setText] = useState(null);
-    const [messageType, setMessageType] = useState(null);
-
-    const [scrollSwitch, setScrollSwitch] = useState(false)
-
-    const [language , setLanguage] = useState("null")
+        let scrOnOff = false
 
 
-    // image 클릭 시 image 크게 보이게 하는 modal
-    const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
-    const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+        const {selectedChat} = useSelector(state => state);
+        const {roomNo} = useSelector(state => state);
+        const {roomType} = useSelector(state => state);
+        const {participantNo} = useSelector(state => state);
+        const {headCount} = useSelector(state => state)
+        const {messageAllLength} = useSelector(state => state)
+        const {joinOk} = useSelector(state => state)
+        const {lastReadNo} = useSelector(state => state)
+        const {lastPage} = useSelector(state => state)
+        const {markDown} = useSelector(state => state)
+        const {codeBlock} = useSelector(state => state)
+        const {lastReadNoLength} = useSelector(state => state)
+        const [inputMsg, setInputMsg] = useState('');
 
-    const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+        const [scrollEl, setScrollEl] = useState();
 
-    // modal에서 사용; modal 닫을 때 실행되는 함수
-    const editOpenImageModalToggle = () => {
-        // openImageModalOpen : false로 설정
-        setOpenImageModalOpen(!openImageModalOpen);
-        // image file 없애기
-        setImage(null);
-    }
+        const [chatList, setChatList] = useState([]);
 
-    const editOpenMessageModalToggle = () => {
-        // openMessageModalOpen : false로 설정
-        setOpenMessageModalOpen(!openMessageModalOpen);
-        setText(null);
-    }
+        const messageRef = useRef(null);
 
-    const searchRef = useRef();
-    const inputRef = useRef();
+        //   const [lastPage, setLastPage] = useState(0)
+        const [lp, setLp] = useState(0);
+        //const [sendOk, setSendOk] = useState(true)
+        const {sendOk} = useSelector(state => state);
 
-    useEffect(()=>{
-        if(searchRef &&  searchRef.current){
-            searchRef.current.focus();
-        } else if(inputRef && inputRef.current){
-            inputRef.current.textareaRef.focus()
+        const [deleteOk, setDeleteOk] = useState(true)
+
+        const [chatNo, setChatNo] = useState(null)
+
+        const [pagingOk, setPagingOk] = useState(0)
+
+        const [searchTerm, setSearchTerm] = useState("");
+        const [searchOk, setSearchOk] = useState(false);
+        const [searchChatNoList, setSearchChatNoList] = useState([]);
+
+        const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
+        const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
+
+        const [text, setText] = useState(null);
+        const [messageType, setMessageType] = useState(null);
+
+        const [scrollSwitch, setScrollSwitch] = useState(false)
+
+        const [language, setLanguage] = useState("null")
+
+
+        // image 클릭 시 image 크게 보이게 하는 modal
+        const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+        const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+
+        const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+
+        // modal에서 사용; modal 닫을 때 실행되는 함수
+        const editOpenImageModalToggle = () => {
+            // openImageModalOpen : false로 설정
+            setOpenImageModalOpen(!openImageModalOpen);
+            // image file 없애기
+            setImage(null);
         }
-    })
 
-    useEffect(() => {
+        const editOpenMessageModalToggle = () => {
+            // openMessageModalOpen : false로 설정
+            setOpenMessageModalOpen(!openMessageModalOpen);
+            setText(null);
+        }
+
+        const searchRef = useRef();
+        const inputRef = useRef();
+
+        useEffect(() => {
+            if (searchRef && searchRef.current) {
+                searchRef.current.focus();
+            } else if (inputRef && inputRef.current) {
+                inputRef.current.textareaRef.focus()
+            }
+        })
+
+        useEffect(() => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
-                console.log("handleSearch",searchTerm)
-                const {results: chatlist, searchedChatNoList} = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
-                if(searchedChatNoList && searchedChatNoList.length > 0){
+                console.log("handleSearch", searchTerm)
+                const {
+                    results: chatlist,
+                    searchedChatNoList
+                } = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
+                if (searchedChatNoList && searchedChatNoList.length > 0) {
                     setSearchChatNoList(searchedChatNoList);
                     const chatNum = chatlist.length;
                     const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
-                    setLp(newLp)
+                    setLp(newLp === lp ? newLp + 1 : newLp)
                 } else {
                     // 검색 결과가 안나오는 경우
                     setSearchChatNoList(searchedChatNoList);
@@ -133,7 +136,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }
 
-            if(searchTerm !== ""){
+            if (searchTerm !== "") {
                 // 찾을때 chatlist 변경
                 searchList();
                 setSearchOk(true);
@@ -152,7 +155,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [searchTerm])
 
         useEffect(() => {
-            console.log('useEffect !! sendOk',sendOk)
+            console.log('useEffect !! sendOk', sendOk)
 
             if (scrollEl) {
                 scrollEl.scrollTop = scrollEl.scrollHeight;
@@ -229,7 +232,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 if (scrollEl && scrollSwitch === true) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
                     const chats = chatFormList(chatlist, participantNo).map(chat => {
-                        if(searchChatNoList.includes(chat.chatNo)){
+                        if (searchChatNoList.includes(chat.chatNo)) {
                             chat.search = true
                         }
                         return chat
@@ -245,15 +248,15 @@ const Chat = React.forwardRef((props, scrollRef) => {
         useEffect(() => {
             console.log('-----paging OK 실행');
             // 페이징 후 스크롤 위치 조정
-            if(scrollEl){
-                if(searchOk){
+            if (scrollEl) {
+                if (searchOk) {
                     scrollEl.scrollTop = 0;
                     setSearchOk(false);
                 } else {
-                    if(lp === 0) {
-                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/Math.ceil((messageAllLength - lp)/10 + 2);
-                    } else{
-                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/Math.ceil((messageAllLength - lp)/10 - 1);
+                    if (lp === 0) {
+                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop) / Math.ceil((messageAllLength - lp) / 10 + 2);
+                    } else {
+                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop) / Math.ceil((messageAllLength - lp) / 10 - 1);
                     }
                 }
             }
@@ -307,7 +310,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 //         break;
                 //     }
                 // }
-                for(let i = 1; i < splitResult.length -1; i++){
+                for (let i = 1; i < splitResult.length - 1; i++) {
                     contents += splitResult[i] + "\n"
                 }
                 setLanguage(language[1])
@@ -411,8 +414,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 width: 145
                             }}>{message.nickname}</p>
 
-                            <div className={"message-content " + (message.file ? 'message-file' : '') + (message.search ? "message-search" : '')}
-                                 onClick={() => handleClickMessage(message)}>
+                            <div
+                                className={"message-content " + (message.file ? 'message-file' : '') + (message.search ? "message-search" : '')}
+                                onClick={() => handleClickMessage(message)}>
                                 {message.file ? message.file : message.text.length > 20 ? message.text.substring(0, 20) + " ..." : message.text}
                             </div>
 
@@ -476,10 +480,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            if( !searchOk && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
+            if (!searchOk && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)) {
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
-            } else if(searchOk){
+            } else if (searchOk) {
                 scrollRef.current.scrollTop = 0;
             }
             scrollRef.current.scrollTop = e.target.scrollTop;
@@ -529,24 +533,25 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                                 {
                                     isOpen ?
-                                            <form>
-                                                <input
-                                                    type="text"
-                                                    className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
-                                                    placeholder="채팅검색"
-                                                    ref={searchRef}
-                                                    onChange={handleSearch}
-                                                    style={{
-                                                        backgroundColor: '#EBEBEB',
-                                                        marginBottom: 5
-                                                    }}
-                                                />
-                                            </form>
+                                        <form>
+                                            <input
+                                                type="text"
+                                                className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
+                                                placeholder="채팅검색"
+                                                ref={searchRef}
+                                                onChange={handleSearch}
+                                                style={{
+                                                    backgroundColor: '#EBEBEB',
+                                                    marginBottom: 5
+                                                }}
+                                            />
+                                        </form>
                                         : null
                                 }
                             </div>
 
-                            <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                            <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm}
+                                        onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                         setInputMsg={setInputMsg}
                             />
 
