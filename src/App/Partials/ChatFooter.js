@@ -97,8 +97,6 @@ function ChatFooter(props) {
     const Item = ({ entity: { name, char } }) => <div>{`${name}: ${char}`}</div>;
     const Loading = ({ data }) => <div>Loading</div>;
 
-
-
     return (
         <div className="chat-footer">
             {/* emoji */}

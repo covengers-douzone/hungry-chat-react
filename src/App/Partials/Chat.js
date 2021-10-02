@@ -30,88 +30,87 @@ import {Input} from 'reactstrap'
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
-        const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-        let scrOnOff = false
-
-
-        const {selectedChat} = useSelector(state => state);
-        const {roomNo} = useSelector(state => state);
-        const {roomType} = useSelector(state => state);
-        const {participantNo} = useSelector(state => state);
-        const {headCount} = useSelector(state => state)
-        const {messageAllLength} = useSelector(state => state)
-        const {joinOk} = useSelector(state => state)
-        const {lastReadNo} = useSelector(state => state)
-        const {lastPage} = useSelector(state => state)
-        const {markDown} = useSelector(state => state)
-        const {codeBlock} = useSelector(state => state)
-        const {lastReadNoLength} = useSelector(state => state)
-        const [inputMsg, setInputMsg] = useState('');
-
-        const [scrollEl, setScrollEl] = useState();
-
-        const [chatList, setChatList] = useState([]);
-
-        const messageRef = useRef(null);
-
-        //   const [lastPage, setLastPage] = useState(0)
-        const [lp, setLp] = useState(0);
-        //const [sendOk, setSendOk] = useState(true)
-        const {sendOk} = useSelector(state => state);
-
-        const [deleteOk, setDeleteOk] = useState(true)
-
-        const [chatNo, setChatNo] = useState(null)
-
-        const [pagingOk, setPagingOk] = useState(0)
-
-        const [searchTerm, setSearchTerm] = useState("");
-        const [searchOk, setSearchOk] = useState(false);
-        const [searchChatNoList, setSearchChatNoList] = useState([]);
-
-        const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
-        const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
-
-        const [text, setText] = useState(null);
-        const [messageType, setMessageType] = useState(null);
-
-        const [scrollSwitch, setScrollSwitch] = useState(false)
-
-        const [language , setLanguage] = useState("null")
+    let scrOnOff = false
 
 
-        // image 클릭 시 image 크게 보이게 하는 modal
-        const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
-        const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+    const {selectedChat} = useSelector(state => state);
+    const {roomNo} = useSelector(state => state);
+    const {roomType} = useSelector(state => state);
+    const {participantNo} = useSelector(state => state);
+    const {headCount} = useSelector(state => state)
+    const {messageAllLength} = useSelector(state => state)
+    const {joinOk} = useSelector(state => state)
+    const {lastReadNo} = useSelector(state => state)
+    const {lastPage} = useSelector(state => state)
+    const {markDown} = useSelector(state => state)
+    const {codeBlock} = useSelector(state => state)
+    const {lastReadNoLength} = useSelector(state => state)
+    const [inputMsg, setInputMsg] = useState('');
 
-        const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+    const [scrollEl, setScrollEl] = useState();
 
-        // modal에서 사용; modal 닫을 때 실행되는 함수
-        const editOpenImageModalToggle = () => {
-            // openImageModalOpen : false로 설정
-            setOpenImageModalOpen(!openImageModalOpen);
-            // image file 없애기
-            setImage(null);
-        }
+    const [chatList, setChatList] = useState([]);
 
-        const editOpenMessageModalToggle = () => {
-            // openMessageModalOpen : false로 설정
-            setOpenMessageModalOpen(!openMessageModalOpen);
-            setText(null);
-        }
+    const messageRef = useRef(null);
 
-        const searchRef = useRef();
-        const inputRef = useRef();
+    //   const [lastPage, setLastPage] = useState(0)
+    const [lp, setLp] = useState(0);
+    //const [sendOk, setSendOk] = useState(true)
+    const {sendOk} = useSelector(state => state);
+
+    const [deleteOk, setDeleteOk] = useState(true)
+
+    const [chatNo, setChatNo] = useState(null)
+
+    const [pagingOk, setPagingOk] = useState(0)
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchOk, setSearchOk] = useState(false);
+    const [searchChatNoList, setSearchChatNoList] = useState([]);
+
+    const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
+    const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
+
+    const [text, setText] = useState(null);
+    const [messageType, setMessageType] = useState(null);
+
+    const [scrollSwitch, setScrollSwitch] = useState(false)
+
+    const [language , setLanguage] = useState("null")
+
+
+    // image 클릭 시 image 크게 보이게 하는 modal
+    const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+    const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+
+    const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+
+    // modal에서 사용; modal 닫을 때 실행되는 함수
+    const editOpenImageModalToggle = () => {
+        // openImageModalOpen : false로 설정
+        setOpenImageModalOpen(!openImageModalOpen);
+        // image file 없애기
+        setImage(null);
+    }
+
+    const editOpenMessageModalToggle = () => {
+        // openMessageModalOpen : false로 설정
+        setOpenMessageModalOpen(!openMessageModalOpen);
+        setText(null);
+    }
+
+    const searchRef = useRef();
+    const inputRef = useRef();
 
     useEffect(()=>{
         if(searchRef &&  searchRef.current){
             searchRef.current.focus();
         } else if(inputRef && inputRef.current){
-           inputRef.current.textareaRef.focus()
+            inputRef.current.textareaRef.focus()
         }
     })
-
 
     useEffect(() => {
             //console.log("searchTerm", searchTerm)
@@ -123,6 +122,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     const chatNum = chatlist.length;
                     const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
                     setLp(newLp)
+                } else {
+                    // 검색 결과가 안나오는 경우
+                    setSearchChatNoList(searchedChatNoList);
+                    if (lastPage === lp) {
+                        setLp(lastPage + 1);
+                    } else {
+                        setLp(lastPage);
+                    }
                 }
             }
 
@@ -268,7 +275,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             const lastData = splitData[splitData.length - 1].split("["); // 마지막 데터는 [ 와 표시가 된다 ,
             const chatNo = Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
             // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
-            // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
+            await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
             // const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
             // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
             setChatNo(chatNo)
@@ -411,9 +418,9 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
 
                             <ContextMenu id={`contextMenu${message.chatNo}`}>
-                                <MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>
-                                    <button> 메세지 정보</button>
-                                </MenuItem>
+                                {/*<MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>*/}
+                                {/*    <button> 메세지 정보</button>*/}
+                                {/*</MenuItem>*/}
                                 <MenuItem id="Message-Delete-item" data={`${message.chatNo},${message.index}`}
                                           onClick={handleMessageDelete}
                                           disabled={(message.participantNo !== participantNo)}>
@@ -522,25 +529,23 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                                 {
                                     isOpen ?
-                                        <form>
-                                            <input
-                                                type="text"
-                                                className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
-                                                placeholder="채팅검색"
-                                                ref={searchRef}
-                                                onChange={handleSearch}
-                                                style={{
-                                                    backgroundColor: '#EBEBEB',
-                                                    marginBottom: 5
-                                                }}
-                                            />
-                                        </form>
+                                            <form>
+                                                <input
+                                                    type="text"
+                                                    className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
+                                                    placeholder="채팅검색"
+                                                    ref={searchRef}
+                                                    onChange={handleSearch}
+                                                    style={{
+                                                        backgroundColor: '#EBEBEB',
+                                                        marginBottom: 5
+                                                    }}
+                                                />
+                                            </form>
                                         : null
                                 }
-
-
-
                             </div>
+
                             <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                         setInputMsg={setInputMsg}
                             />
