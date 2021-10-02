@@ -58,7 +58,7 @@ const Index = React.forwardRef(({
 
     const [chatList, setChatList] = useState([]);
 
-   // const [joinOk, setJoinOk] = useState(true)
+    const [send, setSend] = useState(true)
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -90,10 +90,15 @@ const Index = React.forwardRef(({
         })
         selectedChat.messages && selectedChat.messages.push(message);
 
-        console.log('sendOk',sendOk,!sendOk);
-        dispatch(sendOkAction(!sendOk));
-        dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
+
+
+
+
+        dispatch(sendOkAction(selectedChat.messages.length));
+       dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
+
     }
+
 
     setTimeout(async () => {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {

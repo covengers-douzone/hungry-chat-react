@@ -135,10 +135,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [searchTerm])
 
         useEffect(() => {
-            console.log('ssssssssssssssssss',sendOk)
+            console.log('useEffect !! sendOk',sendOk)
+
             if (scrollEl) {
                 scrollEl.scrollTop = scrollEl.scrollHeight;
             }
+
         }, [sendOk])
 
         useEffect(() => {
