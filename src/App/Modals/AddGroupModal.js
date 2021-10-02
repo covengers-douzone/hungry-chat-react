@@ -131,6 +131,7 @@ function AddGroupModal({friendList}) {
                         <FormGroup>
                             <Label for="title">방 제목</Label>
                             <InputGroup>
+                                <Input hidden="hidden"/>
                                 <Input type="text" name="title" id="title" onChange={titleEvent}/>
                             </InputGroup>
                         </FormGroup>

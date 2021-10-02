@@ -30,99 +30,106 @@ import {Input} from 'reactstrap'
 
 const Chat = React.forwardRef((props, scrollRef) => {
 
-        const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-        let scrOnOff = false
-
-
-        const {selectedChat} = useSelector(state => state);
-        const {roomNo} = useSelector(state => state);
-        const {roomType} = useSelector(state => state);
-        const {participantNo} = useSelector(state => state);
-        const {headCount} = useSelector(state => state)
-        const {messageAllLength} = useSelector(state => state)
-        const {joinOk} = useSelector(state => state)
-        const {lastReadNo} = useSelector(state => state)
-        const {lastPage} = useSelector(state => state)
-        const {markDown} = useSelector(state => state)
-        const {codeBlock} = useSelector(state => state)
-        const {lastReadNoLength} = useSelector(state => state)
-        const [inputMsg, setInputMsg] = useState('');
-
-        const [scrollEl, setScrollEl] = useState();
-
-        const [chatList, setChatList] = useState([]);
-
-        const messageRef = useRef(null);
-
-        //   const [lastPage, setLastPage] = useState(0)
-        const [lp, setLp] = useState(0);
-        //const [sendOk, setSendOk] = useState(true)
-        const {sendOk} = useSelector(state => state);
-
-        const [deleteOk, setDeleteOk] = useState(true)
-
-        const [chatNo, setChatNo] = useState(null)
-
-        const [pagingOk, setPagingOk] = useState(0)
-
-        const [searchTerm, setSearchTerm] = useState("");
-        const [searchOk, setSearchOk] = useState(false);
-        const [searchChatNoList, setSearchChatNoList] = useState([]);
-
-        const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
-        const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
-
-        const [text, setText] = useState(null);
-        const [messageType, setMessageType] = useState(null);
-
-        const [scrollSwitch, setScrollSwitch] = useState(false)
-
-        const [language , setLanguage] = useState("null")
+    let scrOnOff = false
 
 
-        // image 클릭 시 image 크게 보이게 하는 modal
-        const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
-        const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+    const {selectedChat} = useSelector(state => state);
+    const {roomNo} = useSelector(state => state);
+    const {roomType} = useSelector(state => state);
+    const {participantNo} = useSelector(state => state);
+    const {headCount} = useSelector(state => state)
+    const {messageAllLength} = useSelector(state => state)
+    const {joinOk} = useSelector(state => state)
+    const {lastReadNo} = useSelector(state => state)
+    const {lastPage} = useSelector(state => state)
+    const {markDown} = useSelector(state => state)
+    const {codeBlock} = useSelector(state => state)
+    const {lastReadNoLength} = useSelector(state => state)
+    const [inputMsg, setInputMsg] = useState('');
 
-        const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+    const [scrollEl, setScrollEl] = useState();
 
-        // modal에서 사용; modal 닫을 때 실행되는 함수
-        const editOpenImageModalToggle = () => {
-            // openImageModalOpen : false로 설정
-            setOpenImageModalOpen(!openImageModalOpen);
-            // image file 없애기
-            setImage(null);
+    const [chatList, setChatList] = useState([]);
+
+    const messageRef = useRef(null);
+
+    //   const [lastPage, setLastPage] = useState(0)
+    const [lp, setLp] = useState(0);
+    //const [sendOk, setSendOk] = useState(true)
+    const {sendOk} = useSelector(state => state);
+
+    const [deleteOk, setDeleteOk] = useState(true)
+
+    const [chatNo, setChatNo] = useState(null)
+
+    const [pagingOk, setPagingOk] = useState(0)
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchOk, setSearchOk] = useState(false);
+    const [searchChatNoList, setSearchChatNoList] = useState([]);
+
+    const [image, setImage] = useState(null); // OpemImageModal에 image source 넘겨주기 위함
+    const [fileType, setFileType] = useState(null); // OpenImageModal에 file type 넘겨줌
+
+    const [text, setText] = useState(null);
+    const [messageType, setMessageType] = useState(null);
+
+    const [scrollSwitch, setScrollSwitch] = useState(false)
+
+    const [language , setLanguage] = useState("null")
+
+
+    // image 클릭 시 image 크게 보이게 하는 modal
+    const [openImageModalOpen, setOpenImageModalOpen] = useState(false);
+    const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
+
+    const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+
+    // modal에서 사용; modal 닫을 때 실행되는 함수
+    const editOpenImageModalToggle = () => {
+        // openImageModalOpen : false로 설정
+        setOpenImageModalOpen(!openImageModalOpen);
+        // image file 없애기
+        setImage(null);
+    }
+
+    const editOpenMessageModalToggle = () => {
+        // openMessageModalOpen : false로 설정
+        setOpenMessageModalOpen(!openMessageModalOpen);
+        setText(null);
+    }
+
+    const searchRef = useRef();
+    const inputRef = useRef();
+
+    useEffect(()=>{
+        if(searchRef &&  searchRef.current){
+            searchRef.current.focus();
+        } else if(inputRef && inputRef.current){
+            inputRef.current.textareaRef.focus()
         }
+    })
 
-        const editOpenMessageModalToggle = () => {
-            // openMessageModalOpen : false로 설정
-            setOpenMessageModalOpen(!openMessageModalOpen);
-            setText(null);
-        }
-
-        const inputRef = useRef();
-        const searchRef = useRef();
-
-
-        useEffect(()=>{
-            if(searchRef &&  searchRef.current){
-                searchRef.current.focus();
-            } else if(inputRef && inputRef.current){
-                inputRef.current.textareaRef.focus()
-            }
-        })
-
-        useEffect(() => {
+    useEffect(() => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
                 console.log("handleSearch",searchTerm)
                 const {results: chatlist, searchedChatNoList} = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
-                if(searchedChatNoList.length > 0){
+                if(searchedChatNoList && searchedChatNoList.length > 0){
                     setSearchChatNoList(searchedChatNoList);
                     const chatNum = chatlist.length;
                     const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
                     setLp(newLp)
+                } else {
+                    // 검색 결과가 안나오는 경우
+                    setSearchChatNoList(searchedChatNoList);
+                    if (lastPage === lp) {
+                        setLp(lastPage + 1);
+                    } else {
+                        setLp(lastPage);
+                    }
                 }
             }
 
@@ -263,7 +270,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }
             const splitData = putChatNo.split(",")
-            const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
+            const lastData = splitData[splitData.length - 1].split("["); // 마지막 데터는 [ 와 표시가 된다 ,
             const chatNo = Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
             // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
             await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
@@ -271,17 +278,13 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
             setChatNo(chatNo)
             setDeleteOk(!deleteOk)
-
-
             // console.log(  data , '번 채팅 선택');
         }
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-
-
             console.log("message", message)
-            if (message.type === "IMG") {
+            if (message.type === "IMG" || message.type === "VIDEO") {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
@@ -293,7 +296,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
             } else if (message.type === "MARKDOWN") {
-
                 let splitResult = message.text.props.children.split('\n');
                 let language = splitResult[0].split('```')
                 let contents = ""
@@ -306,12 +308,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 for(let i = 1; i < splitResult.length -1; i++){
                     contents += splitResult[i] + "\n"
                 }
-
                 setLanguage(language[1])
                 setText(contents)
                 setOpenCodeModalOpen(true);
-
             } else if (message.type === "TEXT") {
+
                 if (message.text.length > 15) {
                     const messageText = message.text;
                     const messageType = message.text.type;
@@ -320,10 +321,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     setOpenMessageModalOpen(true);
                 }
             }
-
-
         }
-
 
         const messageTime = (fullTime) => {
             // 현재 시각
@@ -486,6 +484,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             scrollRef.current.scrollBottom = e.target.scrollHeight;
         }
 
+
         return (
             <div className="chat">
                 {
@@ -528,26 +527,25 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
                                 {
                                     isOpen ?
-                                        <form>
-                                            <input
-                                                type="text"
-                                                className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
-                                                placeholder="채팅검색"
-                                                ref={searchRef}
-                                                onChange={handleSearch}
-                                                style={{
-                                                    backgroundColor: '#EBEBEB',
-                                                    marginBottom: 5
-                                                }}
-                                            />
-                                        </form>
+                                            <form>
+                                                <input
+                                                    type="text"
+                                                    className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
+                                                    placeholder="채팅검색"
+                                                    ref={searchRef}
+                                                    onChange={handleSearch}
+                                                    style={{
+                                                        backgroundColor: '#EBEBEB',
+                                                        marginBottom: 5
+                                                    }}
+                                                />
+                                            </form>
                                         : null
                                 }
-
-
                             </div>
-                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
-                                        setInputMsg={setInputMsg} inputRef={inputRef}
+
+                            <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm} onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+                                        setInputMsg={setInputMsg}
                             />
 
                         </React.Fragment>

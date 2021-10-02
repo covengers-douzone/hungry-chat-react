@@ -33,8 +33,6 @@ function ChatFooter(props) {
     const [chosenEmoji, setChosenEmoji] = useState(null);
     const [emojiOpen, setEmojiOpen] = useState(false);
 
-    //const inputRef = useRef();
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -84,8 +82,6 @@ function ChatFooter(props) {
         } else if (e.key ==="Enter"){
             handleSubmit(e);
         }
-
-
     }
 
     const onEmojiClick = (event, {emoji}) => {
@@ -96,10 +92,6 @@ function ChatFooter(props) {
 
     const Item = ({ entity: { name, char } }) => <div>{`${name}: ${char}`}</div>;
     const Loading = ({ data }) => <div>Loading</div>;
-
-    // useEffect(()=>{
-    //     props.inputRef && props.inputRef.current && props.inputRef.current.textareaRef.focus()
-    // })
 
     return (
         <div className="chat-footer">
@@ -131,7 +123,6 @@ function ChatFooter(props) {
                             <img
                                 style={{
                                     height: "100px"
-
                                 }}
                                 src={previewURL}
                                 className="form-control"
@@ -140,11 +131,14 @@ function ChatFooter(props) {
                         :
                         <ReactTextareaAutocomplete
                             ref={props.inputRef}
+                            onClick={() => {
+                                props.setMenu(false)
+                            }}
                             className="form-control"
                             value={props.inputMsg}
                             onChange={handleChange}
                             onKeyPress={handleKeyPress}
-                            placeholder="메시지를 입력하세요."
+                            placeholder="Covengers! 메시지를 입력하세요."
                             loadingComponent={Loading}
                             style={{
                                 fontSize: "15px",
@@ -161,7 +155,7 @@ function ChatFooter(props) {
                                     },
                                     component: Item,
                                     output: (item, trigger) => item.char
-                                }
+                                },
                             }}
                         />
                 }

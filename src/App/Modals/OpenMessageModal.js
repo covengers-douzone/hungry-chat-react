@@ -31,7 +31,6 @@ function OpenMessageModal(props) {
                     <div className="align-items-center" style={{backgroundColor: "#FAF0E6" , height:"400px", overflow:"auto", wordBreak:"break-all"}}>  
                         {props.text}
                     </div>
-
                 </ModalBody>
             </Modal>
         </div>

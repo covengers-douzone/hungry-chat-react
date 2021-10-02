@@ -104,6 +104,7 @@ function AddFriendModal( props ) {
                     <Form>
                         <FormGroup>
                             <Label for="email">이메일</Label>
+                            <Input hidden="hidden" />
                             <Input type="text" name="email" id="email" onChange={(event)=>{
                                 const { value } = event.target;
                                 setEmail(value);
