@@ -98,8 +98,10 @@ function CalendarModal(props){
 
     return (
             <Modal style={{minWidth:'1000px', minHeight: '500px'}} isOpen={props.modal} centered>
-                <ModalHeader >
-                <i className="ti ti-calendar"></i> 캘린더
+                <ModalHeader toggle={() => {
+                    props.toggle();
+                }}>
+                    <i className="ti ti-calendar"></i> 캘린더
                 </ModalHeader>
                 <ModalBody style={{minWidth:'1000px', minHeight: '500px', position:"relative"}}>
                     <Alert isOpen={alertOpen}>일정 : {newTitle}</Alert>
