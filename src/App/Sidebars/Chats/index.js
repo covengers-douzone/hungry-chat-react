@@ -58,7 +58,7 @@ const Index = React.forwardRef(({
 
     const [chatList, setChatList] = useState([]);
 
-   // const [joinOk, setJoinOk] = useState(true)
+    const [send, setSend] = useState(true)
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -90,10 +90,15 @@ const Index = React.forwardRef(({
         })
         selectedChat.messages && selectedChat.messages.push(message);
 
-        console.log('sendOk',sendOk,!sendOk);
-        dispatch(sendOkAction(!sendOk));
-        dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
+
+
+
+
+        dispatch(sendOkAction(selectedChat.messages.length));
+       dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
+
     }
+
 
     setTimeout(async () => {
         if (!selectedChat || (Array.isArray(selectedChat) && !selectedChat.length)) {
@@ -159,13 +164,12 @@ const Index = React.forwardRef(({
 
         // 모든 메세지를 삭제
         socket.on('deleteMessage', async ({room, users, chatNo}) => {
-            setTimeout(async () => {
-                // 새로운 유저 왔을 때
+            //setTimeout(async () => {
                 // chat list update
-                const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
-                selectedChat.messages && (selectedChat.messages.splice(idx, 1));
-                dispatch(messageLengthAction(selectedChat.messages.length - 1))
-            }, 1000)
+            const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
+            selectedChat.messages && (selectedChat.messages.splice(idx, 1));
+            dispatch(messageLengthAction(selectedChat.messages.length - 1))
+            //}, 100)
         })
       /*  if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
             socket.emit("unknown", (localStorage.getItem("userNo")) , false)
