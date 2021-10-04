@@ -139,7 +139,7 @@ function CalendarModal(props){
                                 selectable
                                 localizer={localizer}
                                 events={allEvents}
-                                views={['month']}
+                                views={['month','agenda']}
                                 startAccessor="start"
                                 endAccessor={(event) => {
                                     return addMinutes(new Date(event.end), 1)
@@ -155,7 +155,7 @@ function CalendarModal(props){
                                 <Calendar
                                     localizer={localizer}
                                     events={allEvents}
-                                    views={['month']}
+                                    views={['month','agenda']}
                                     startAccessor="start"
                                     endAccessor={(event) => {
                                         return addMinutes(new Date(event.end), 1)
