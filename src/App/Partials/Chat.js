@@ -209,8 +209,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("markDown", markDown);
             formData.append("codeBlock", codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
-            myFetch(null, null).send(formData);
             console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
+           console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
+
+            myFetch(null, null).send(formData);
+
             setInputMsg("");
             //dispatch(sendOkAction(!sendOk));
             //setSendOk(!sendOk)
@@ -289,21 +292,34 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
             console.log("message", message)
-            if (message.type === "IMG" || message.type === "VIDEO") {
+            if (message.type === "IMG" ) {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
                 // open image modal
 
-                console.log("message.text.type", fileType)
+                console.log("fileType", fileType)
 
                 setImage(imgSource);
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
-            } else if (message.type === "MARKDOWN") {
+            }
+            else if (message.type === "VIDEO") {
+                const imgSource = message.text.props.url
+                const fileType = 'video';
+                // open image modal
+
+                console.log("fileType", fileType, imgSource)
+
+                setImage(imgSource);
+                setFileType(fileType);
+                setOpenImageModalOpen(true);
+            }
+            else if (message.type === "MARKDOWN") {
                 let splitResult = message.text.props.children.split('\n');
                 let language = splitResult[0].split('```')
                 let contents = ""
+                // for (let i = 1; i < splitResult.length; i++) {
                 // for (let i = 1; i < splitResult.length; i++) {
                 //     if (splitResult[i] !== "") {
                 //         contents = splitResult[i]
