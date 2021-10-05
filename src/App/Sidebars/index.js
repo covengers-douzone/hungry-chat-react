@@ -292,12 +292,21 @@ const Index = React.forwardRef(({history}, scrollRef) => {
     });
 
     followerList.map((follower, i) => {
+        // 접속해 있는 다른 유저들
+          let otherUserStatus = false;
+
+          currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
+              if(Number(currentOnlineUser.userLocalStorage.userNo) === Number(follower.no)){
+                  otherUserStatus = true;
+              }
+              //console.log(Number(currentOnlineUser.userLocalStorage.userNo), friend.no)
+          }));
         userFollowerList.push({
             no: follower.no,
             username: follower.username,
             name: follower.name,
             comments: follower.comments,
-            avatar: <figure className="avatar">
+            avatar: <figure className={otherUserStatus ? "avatar avatar-state-success" : "avatar"}>
                 <img src={follower.profileImageUrl} className="rounded-circle" alt="avatar"/>
             </figure>,
             createdAt: follower.createdAt,
