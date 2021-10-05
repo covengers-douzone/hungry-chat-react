@@ -266,12 +266,22 @@ const Index = React.forwardRef(({history}, scrollRef) => {
 
 
     friendList.map((friend, i) => {
+        // 접속해 있는 다른 유저들
+       let otherUserStatus = false;
+
+       currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
+           if(Number(currentOnlineUser.userLocalStorage.userNo) === Number(friend.no)){
+               otherUserStatus = true;
+           }
+           //console.log(Number(currentOnlineUser.userLocalStorage.userNo), friend.no)
+       }));
+
         userFriendList.push({
             no: friend.no,
             name: friend.name,
             username: friend.username,
             comments: friend.comments,
-            avatar: <figure className="avatar">
+            avatar: <figure className={otherUserStatus ? "avatar avatar-state-success" : "avatar"}>
                 <img src={friend.profileImageUrl} className="rounded-circle" alt="avatar"/>
             </figure>,
             createdAt: friend.createdAt,
