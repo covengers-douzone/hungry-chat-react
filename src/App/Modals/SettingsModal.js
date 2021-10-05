@@ -76,8 +76,7 @@ function SettingsModal(props) {
         }
     }, [])
 
-    const send = async event => {
-        event.preventDefault();
+    const send = async () => {
         try{
             const formData = new FormData();
             console.log(localStorage.getItem("Authorization"));
@@ -98,7 +97,7 @@ function SettingsModal(props) {
         }catch (err){
             console.log(err.response + err.message);
         }
-        props.toggle();
+        // props.toggle();
     }
 
     const changePasswordHandler = async (e) => {
@@ -247,7 +246,12 @@ function SettingsModal(props) {
                                     <input className="browse-input" type="file" name="UploadedFile"
                                            id="UploadedFile" onChange={(event) => {
                                                const file = event.target.files[0];
-                                            setFile(file);
+                                               setFile(file);
+                                               const reader = new FileReader();
+                                                reader.readAsDataURL(file);
+                                                reader.onloadend = () => {
+                                                    setProfileImage(reader.result)
+                                                }
                                     }}/>
                                 </div>
                                 <span className="Error"/>
