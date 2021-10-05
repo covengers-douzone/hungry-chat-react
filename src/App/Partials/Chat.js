@@ -497,7 +497,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     selectedChat.name
                         ?
                         <React.Fragment>
-                            <h3>현재 총 인원 : {selectedChat.headcount}  </h3>
+                            {/*<h3>현재 총 인원 : {selectedChat.headcount}  </h3>*/}
                             <ChatHeader history={props.history} selectedChat={selectedChat}/>
                             <PerfectScrollbar
                                 onUpdateSize={(ref) => {
