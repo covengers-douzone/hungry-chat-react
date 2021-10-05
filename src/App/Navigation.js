@@ -185,13 +185,15 @@ function Navigation() {
                                                                              tooltipName={"Tooltip-" + i}/>)
                     }
 
-                    <li >
-                        <li>
-                            <a onClick={gameModalToggle}>
-                                <i className="ti ti-game" style={opacity}></i>
-                            </a>
-                        </li>
-                    </li>
+                    {/*<li >*/}
+                    {/*    <li>*/}
+                    {/*        <a onClick={gameModalToggle}>*/}
+                    {/*            <i className="ti ti-game" style={opacity}></i>*/}
+                    {/*        </a>*/}
+                    {/*    </li>*/}
+                    {/*</li>*/}
+
+
                     <li >
                         <li>
                             <a id="music" onClick={musicStart}>
