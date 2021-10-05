@@ -37,11 +37,11 @@ function UploadFileModal(props) {
          let reader = new FileReader();
          const file = event.target.files[0];
 
+         reader.readAsDataURL(file);
          reader.onloadend = () => {
              setFile(file);
              setPreviewUrl(reader.result);
          }
-         reader.readAsDataURL(file);
          setReader(reader);
      }
 
