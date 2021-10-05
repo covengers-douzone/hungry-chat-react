@@ -76,7 +76,7 @@ function Navigation() {
         if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
            e.preventDefault()
         }else{
-            setLogoUrl("/chat/" + localStorage.getItem("userNo"))
+            setLogoUrl("/chat")
         }
     }
 
