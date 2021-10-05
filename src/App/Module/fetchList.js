@@ -1,13 +1,11 @@
 import * as config from "../../config/config";
 
 export default function (token) {
-    const PORT = config.FETCH_API_PORT;
-    const domain = config.FETCH_API_IP;
     const headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+        "Access-Control-Allow-Origin": `${config.URL}`,
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
         Authorization: token
     }
@@ -26,7 +24,7 @@ export default function (token) {
 
     const fetchAction = async (namespace, method, body) => {
         try {
-            const response = await fetch(`${domain}:${PORT}/api/${namespace}/`, {
+            const response = await fetch(`${config.URL}/api/${namespace}/`, {
                 method: method,
                 headers: headers,
                 body: body,
