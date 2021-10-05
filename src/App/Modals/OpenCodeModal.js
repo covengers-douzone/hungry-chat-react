@@ -23,6 +23,7 @@ import {saveAs} from 'file-saver';
 import ReactPlayer from 'react-player';
 import {CopyBlock, dracula} from "react-code-blocks";
 import {sample, TopBar} from "../CodeBlock";
+import PerfectScrollbar from "react-perfect-scrollbar"
 
 function OpenCodeModal(props) {
 
@@ -41,7 +42,7 @@ function OpenCodeModal(props) {
 
     return (
         <div>
-            <Modal style={{minWidth: '75%', minHeight: '100%'}}
+            <Modal style={{minWidth: '75%'}}
                    className="modal-dialog-zoom" isOpen={props.modal} centered>
                 <ModalHeader toggle={modalToggle}>
                     <i className="fa fa-code">
@@ -50,24 +51,23 @@ function OpenCodeModal(props) {
 
                 <ModalBody>
                     <div className="container mx-auto p-4">
-                        <a><b>코드라인</b></a>
-                        <input type={"checkbox"}/>
+                        {/*<a><b>코드라인</b></a>*/}
+                        {/*<input type={"checkbox"}/>*/}
                         <div>
+                            <PerfectScrollbar>
+                                <div className="demo" style={{maxHeight: '300px'}}>
+                                    <CopyBlock
 
+                                        language={props.language}
+                                        text={props.text}
+                                        wrapLines={true}
+                                        theme={dracula}
+                                        showLineNumbers={true}
+                                        codeBlock
 
-                            <div className="demo">
-                                <CopyBlock
-
-                                    language={props.language}
-                                    text={props.text}
-                                    wrapLines={true}
-                                    theme={dracula}
-                                    showLineNumbers={true}
-                                    codeBlock
-
-                                />
-                            </div>
-
+                                    />
+                                </div>
+                            </PerfectScrollbar>
                         </div>
                     </div>
                 </ModalBody>
