@@ -28,9 +28,10 @@ function ChatHeader(props) {
     const {reload} = useSelector(state => state);
     const {roomNo} = useSelector(state=>state)
     const {userNo} = useSelector(state=>state)
-    const {selectedChat, currentOnlineRoomUsers, participantNo} = useSelector(state=>state);
+    const {selectedChat, currentOnlineRoomUsers, participantNo, currentOnlineUsers } = useSelector(state=>state);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [otherParticipantStatus, setOtherParticipantStatus] = useState(false);
+    const [rerender, setRerender] = useState(false);
 
     const {markDown} = useSelector(state => state);
 
@@ -87,6 +88,26 @@ function ChatHeader(props) {
         })
         setOtherParticipantStatus(status);
     },[currentOnlineRoomUsers])
+
+    useEffect(()=>{
+        console.log('currentUsers',selectedChat.otherParticipant[0].User.no, currentOnlineUsers)
+
+        let status = false;
+
+        currentOnlineUsers && currentOnlineUsers.users.map(currentUser => {
+            if(Number(currentUser.userLocalStorage.userNo) === Number(selectedChat.otherParticipant[0].User.no)){
+                status = true;
+            }
+        })
+
+        selectedChat.avatar = (<figure className={status ? "avatar avatar-state-success" : "avatar"}>
+                                    <img src={selectedChat.avatar.props.children.props.src}
+                                         className="rounded-circle" alt="avatar"/>
+                                </figure>)
+
+        setRerender(!rerender);
+
+    },[currentOnlineUsers]);
 
     return (
 
