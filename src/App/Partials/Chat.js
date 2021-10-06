@@ -64,7 +64,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const [chatNo, setChatNo] = useState(null)
 
-        const [pagingOk, setPagingOk] = useState(0)
+        const [pagingOk, setPagingOk] = useState(-1)
 
         const [searchTerm, setSearchTerm] = useState("");
         const [searchOk, setSearchOk] = useState(false);
@@ -86,6 +86,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
 
         const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+
+        const [messageHeight, setMessageHeight] = useState();
 
         // modal에서 사용; modal 닫을 때 실행되는 함수
         const editOpenImageModalToggle = () => {
@@ -178,25 +180,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         useEffect(() => {
 
-            setTimeout(() => {
-                console.log("스코롤 사용 가능 ")
-                setScrollSwitch(true)
-            }, 3000)
+            if(joinOk){
+                setTimeout(() => {
+                    console.log("스코롤 사용 가능 ")
+                    setScrollSwitch(true)
+                }, 3000)
 
 
-            setTimeout(async () => {
-                if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                    if (messageRef.current) {
+                setTimeout(async () => {
+                    if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
+                        if (messageRef.current) {
+                        }
+                    } else if (scrollEl) {
+                        scrollEl.scrollTop = scrollEl.scrollHeight
+                        // console.log("current.clientHeight" , scrollEl.current.clientHeight)
                     }
-                } else if (scrollEl) {
-                    scrollEl.scrollTop = scrollEl.scrollHeight
-                    // console.log("current.clientHeight" , scrollEl.current.clientHeight)
-                }
-            }, 100)
+                }, 100)
 
 
-            setLp(lastPage)
-            setPagingOk(0)
+                console.log('joinOk, lastPage?',lastPage)
+                setLp(lastPage)
+                setPagingOk(0)
+            }
         }, [joinOk])
 
         const handleSubmit = (newValue) => {
@@ -244,23 +249,20 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     setPagingOk(pagingOk + 1)
                 }
             }
-            getChatListUp()
+            // !joinOk : 처음 들어왔을 때에는 paging 되지 않게 하기
+            !joinOk && getChatListUp() //&& (console.log('lp?',lp, pagingOk))
         }, [lp])
 
-
         useEffect(() => {
-            console.log('-----paging OK 실행');
+            //console.log('-----paging OK 실행',pagingOk,'lastPage',lp);
+            messageRef && messageRef.current && setMessageHeight(messageRef.current.clientHeight);
             // 페이징 후 스크롤 위치 조정
             if (scrollEl) {
                 if (searchOk) {
                     scrollEl.scrollTop = 0;
                     setSearchOk(false);
                 } else {
-                    if (lp === 0) {
-                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop) / Math.ceil((messageAllLength - lp) / 10 + 2);
-                    } else {
-                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop) / Math.ceil((messageAllLength - lp) / 10 - 1);
-                    }
+                    scrollEl.scrollTop = messageRef.current.clientHeight - messageHeight
                 }
             }
         }, [pagingOk])
@@ -413,7 +415,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 )
             } else {
                 return (
-                    <div className={"message-item " + message.outgoing} ref={messageRef}
+                    <div className={"message-item " + message.outgoing}
                          id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
                             {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
@@ -496,7 +498,16 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            if (!searchOk && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)) {
+            console.log('onScroll, messsageRef',messageRef.current.clientHeight)
+
+            // 채팅방에 들어온 경우 pagingOk가 0으로 세팅됨 그때 joinOk 를 false로 변경함
+            if(pagingOk === 0){
+                dispatch(joinOKAction(false))
+            }
+            // !joinOk : 처음 접속한 경우 paging 자동 실행되지 않도록 막음
+            // !searchOk : 검색한 상태가 아닌 경우 paging 하지 않음
+            if (!joinOk && !searchOk && scrollRef.current.scrollTop && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)) {
+                console.log('lp 실행')
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
             } else if (searchOk) {
@@ -524,8 +535,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 ref={scrollRef}
                             >
                                 <pre>
-                                <div className="chat-body">
-                                    <div className="messages">
+                                <div className="chat-body" style={{minHeight: '300px'}}>
+                                    <div className="messages" ref={messageRef}>
                                         {
                                             selectedChat.messages
                                                 ?

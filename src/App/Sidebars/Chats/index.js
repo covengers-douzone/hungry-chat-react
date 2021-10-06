@@ -232,7 +232,7 @@ const Index = React.forwardRef(({
                 console.log("ok@@@@@@@@@@@@@@@@@@@@@" , lastReadNoCount.count)
                 dispatch(lastReadNoLengthAction(lastReadNoCount.count))
               //  setJoinOk(!joinOk)
-                dispatch(joinOKAction(!joinOk))
+                dispatch(joinOKAction(true))
             }
         });
         socket.on('message', callback);
