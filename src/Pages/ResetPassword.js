@@ -13,12 +13,12 @@ function ResetPassword({location}) {
     const onSubmit = function handleSubmit(errors, e) {
     e.preventDefault();
 
-    fetch(config.SPRING_URL+"/api/user/passwordupdate", {
+    fetch(`${config.SPRING_URL}/api/user/passwordupdate`, {
         method: "POST",
         credentials: 'include',
         headers: {
             "Access-Control-Allow-Headers" : "Content-Type",
-            "Access-Control-Allow-Origin": config.SPRING_URL,
+            "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
             "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
             'Accept': 'application/json, text/plain',
             'Content-Type': 'application/json;charset=UTF-8'

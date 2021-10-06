@@ -52,7 +52,7 @@ function SettingsModal(props) {
                 credentials: 'include',
                 headers: {
                     "Access-Control-Allow-Headers": "Content-Type",
-                    "Access-Control-Allow-Origin": `${config.FETCH_API_IP}:${config.FETCH_API_PORT}`,
+                    "Access-Control-Allow-Origin": `${config.URL}`,
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                     'Content-Type': 'text/plain',
                     'Accept': 'application/json',
