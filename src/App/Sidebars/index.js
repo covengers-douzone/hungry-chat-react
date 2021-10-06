@@ -8,6 +8,8 @@ import GameIndex from "./Game"
 import fetchApi from "../Module/fetchApi";
 import io from "socket.io-client";
 import * as config from "../../config/config";
+import {currentOnlineRoomUsersAction} from "../../Store/Actions/currentOnlineRoomUsersAction";
+import {currentOnlineUsersAction} from "../../Store/Actions/currentOnlineUsersAction";
 
 
 const Index = React.forwardRef(({history}, scrollRef) => {
@@ -69,6 +71,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         userSocket.on('currentUsers',(users) => {
             //console.log('Socket Users', users);
             setCurrentOnlineUsers(users);
+            dispatch(currentOnlineUsersAction(users));
         })
 
         return (() => {
@@ -184,7 +187,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             // 접속해 있는 다른 유저들
             let otherUserStatus = false;
 
-            currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
+            room.headCount < 3 && currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
                 if(Number(currentOnlineUser.userLocalStorage.userNo) === Number(otherParticipant[0].userNo)){
                     otherUserStatus = true;
                 }

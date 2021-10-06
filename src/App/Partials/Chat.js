@@ -117,7 +117,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         useEffect(() => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
-                console.log("handleSearch", searchTerm)
+                //console.log("handleSearch", searchTerm)
                 const {
                     results: chatlist,
                     searchedChatNoList
@@ -157,7 +157,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [searchTerm])
 
         useEffect(() => {
-            console.log('useEffect !! sendOk', sendOk)
+            //console.log('useEffect !! sendOk', sendOk)
 
             if (scrollEl) {
                 scrollEl.scrollTop = scrollEl.scrollHeight;
@@ -181,10 +181,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
         useEffect(() => {
 
             if(joinOk){
-                setTimeout(() => {
-                    console.log("스코롤 사용 가능 ")
-                    setScrollSwitch(true)
-                }, 3000)
+                // setTimeout(() => {
+                //     console.log("스코롤 사용 가능 ")
+                //     setScrollSwitch(true)
+                // }, 3000)
 
 
                 setTimeout(async () => {
@@ -198,7 +198,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }, 100)
 
 
-                console.log('joinOk, lastPage?',lastPage)
+                //console.log('joinOk, lastPage?',lastPage)
                 setLp(lastPage)
                 setPagingOk(0)
             }
@@ -214,8 +214,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("markDown", markDown);
             formData.append("codeBlock", codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
-            console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
-           console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
+            //console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
+           //console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
 
             myFetch(null, null).send(formData);
 
@@ -293,14 +293,14 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-            console.log("message", message)
+            //console.log("message", message)
             if (message.type === "IMG" ) {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
                 // open image modal
 
-                console.log("fileType", fileType)
+                //console.log("fileType", fileType)
 
                 setImage(imgSource);
                 setFileType(fileType);
@@ -311,7 +311,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 const fileType = 'video';
                 // open image modal
 
-                console.log("fileType", fileType, imgSource)
+                //console.log("fileType", fileType, imgSource)
 
                 setImage(imgSource);
                 setFileType(fileType);
@@ -498,7 +498,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            console.log('onScroll, messsageRef',messageRef.current.clientHeight)
+            //console.log('onScroll, messsageRef',messageRef.current.clientHeight)
 
             // 채팅방에 들어온 경우 pagingOk가 0으로 세팅됨 그때 joinOk 를 false로 변경함
             if(pagingOk === 0){
@@ -507,7 +507,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // !joinOk : 처음 접속한 경우 paging 자동 실행되지 않도록 막음
             // !searchOk : 검색한 상태가 아닌 경우 paging 하지 않음
             if (!joinOk && !searchOk && scrollRef.current.scrollTop && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)) {
-                console.log('lp 실행')
+                //console.log('lp 실행')
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
             } else if (searchOk) {
