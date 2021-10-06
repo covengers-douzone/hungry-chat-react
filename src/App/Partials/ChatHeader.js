@@ -90,22 +90,23 @@ function ChatHeader(props) {
     },[currentOnlineRoomUsers])
 
     useEffect(()=>{
-        console.log('currentUsers',selectedChat.otherParticipant[0].User.no, currentOnlineUsers)
 
-        let status = false;
+        if(selectedChat.headcount < 3 && selectedChat.type === 'private'){
+            let status = false;
 
-        currentOnlineUsers && currentOnlineUsers.users.map(currentUser => {
-            if(Number(currentUser.userLocalStorage.userNo) === Number(selectedChat.otherParticipant[0].User.no)){
-                status = true;
-            }
-        })
+            currentOnlineUsers && currentOnlineUsers.users.map(currentUser => {
+                if(Number(currentUser.userLocalStorage.userNo) === Number(selectedChat.otherParticipant[0].User.no)){
+                    status = true;
+                }
+            })
 
-        selectedChat.avatar = (<figure className={status ? "avatar avatar-state-success" : "avatar"}>
-                                    <img src={selectedChat.avatar.props.children.props.src}
-                                         className="rounded-circle" alt="avatar"/>
-                                </figure>)
+            selectedChat.avatar = (<figure className={status ? "avatar avatar-state-success" : "avatar"}>
+                                        <img src={selectedChat.avatar.props.children.props.src}
+                                             className="rounded-circle" alt="avatar"/>
+                                    </figure>)
 
-        setRerender(!rerender);
+            setRerender(!rerender);
+        }
 
     },[currentOnlineUsers]);
 
