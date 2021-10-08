@@ -18,6 +18,7 @@ import {useSelector} from "react-redux";
 import {friendLists} from "../Sidebars/Friends/Data";
 import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
 import friendListReducer from "../../Store/Reducers/friendListReducer";
+import WomenAvatar4 from "../../assets/img/women_avatar4.jpg";
 
 function InviteModal({
                          openValue,
@@ -35,18 +36,19 @@ function InviteModal({
     const [bChecked, setChecked] = useState(false);
 
 
-    const checkHandler = (no, {target}) => {
+    const checkHandler = (item, {target}) => {
         setChecked(!bChecked);
-        checkedItemHandler(no, target.checked);
+        checkedItemHandler(item, target.checked);
 
     };
 
-    const checkedItemHandler = (no, isChecked) => {
+    const checkedItemHandler = (item, isChecked) => {
+        console.log("friendList", friendList)
         if (isChecked) {
-            callbackAddItem(no);
+            callbackAddItem(item);
             //  callbackItem(no);
         } else if (!isChecked) {
-            callbackDeleteItem(no);
+            callbackDeleteItem(item);
             //    callbackItem(no);
         }
 
@@ -71,6 +73,7 @@ function InviteModal({
                 event.preventDefault(); // 여기가 핵심
             }
         }
+
         window.addEventListener("touchmove", handleTouchMove, {
             passive: false
         });
@@ -119,6 +122,11 @@ function InviteModal({
                                     {item.avatar}
                                     <div className="users-list-body">
                                         <div>
+                                            <figure className="avatar">
+                                                <img src={item.profileImageUrl} className="rounded-circle"
+                                                     alt="avatar"/>
+                                            </figure>
+
                                             <h5>{item.name}</h5>
                                             <p>{item.nickname}</p>
                                         </div>
@@ -126,20 +134,20 @@ function InviteModal({
                                             <input type="checkbox" key={i} style={{
                                                 width: 20,
                                                 height: 20,
-                                            }} onChange={(e) => checkHandler(item.no, e)}/>
+                                            }} onChange={(e) => checkHandler(item, e)}/>
                                         </div>
                                     </div>
                                 </li>
                             }) : null
 
+                        }
+                        </ModalBody>
+                        <ModalFooter>
+                        <Button color="primary" onClick={inviteFriends}>선택</Button>
+                        </ModalFooter>
+                        </Modal>
+                        </div>
+                        )
                     }
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={inviteFriends}>선택</Button>
-                </ModalFooter>
-            </Modal>
-        </div>
-    )
-}
 
-export default InviteModal
+                    export default InviteModal

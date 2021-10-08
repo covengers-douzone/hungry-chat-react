@@ -64,7 +64,10 @@ function AddGroupModal({friendList}) {
 
     const openInviteModal = async () => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
-        setOpenInvite(!openInvite)
+        {
+            setCheckedItems(new Set())
+            setOpenInvite(!openInvite)
+        }
     }
 
     // Create Button Event
@@ -81,7 +84,7 @@ function AddGroupModal({friendList}) {
             await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
 
             Array.from(checkedItems).map(async (item, index) => (
-                await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+                await fetchApi(null,null).createParticipant(item.no ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
             ));
             // 그룹 추가 후 reload
             dispatch(reloadAction(!reload));
@@ -138,19 +141,17 @@ function AddGroupModal({friendList}) {
                         <FormGroup>
                             <p>방 인원 목록</p>
                             <div className="avatar-group">
-                                <figure className="avatar" id="Tooltip-Avatar1">
-                                    <span className="avatar-title bg-success rounded-circle">T</span>
-                                </figure>
-                                <AvatarTooltip name="Tobit Spraging" id={1}/>
+
                                 {
                                     Array.from(checkedItems).map((item, index) => (
-                                        <li key={index}>{item}</li>
+
+                                            <figure className="avatar" >
+                                                <img src={item.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                                            </figure>
                                     ))
                                 }
-                                <figure className="avatar" id="Tooltip-Avatar2">
-                                    <img src={WomenAvatar4} className="rounded-circle" alt="avatar"/>
-                                </figure>
-                                <AvatarTooltip name="Cloe Jeayes" id={2}/>
+
+
 
                                 <a onClick={openInviteModal} title="Add friends" id="Tooltip-Avatar6">
                                     <InviteModal openValue={openInvite}
