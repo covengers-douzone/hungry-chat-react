@@ -43,7 +43,7 @@ function InviteModal({
     };
 
     const checkedItemHandler = (item, isChecked) => {
-        console.log("friendList" , friendList)
+        console.log("friendList", friendList)
         if (isChecked) {
             callbackAddItem(item);
             //  callbackItem(no);
@@ -73,6 +73,7 @@ function InviteModal({
                 event.preventDefault(); // 여기가 핵심
             }
         }
+
         window.addEventListener("touchmove", handleTouchMove, {
             passive: false
         });
@@ -122,7 +123,8 @@ function InviteModal({
                                     <div className="users-list-body">
                                         <div>
                                             <figure className="avatar">
-                                                <img src={item.profileImageUrl} className="rounded-circle" alt="avatar"/>
+                                                <img src={item.profileImageUrl} className="rounded-circle"
+                                                     alt="avatar"/>
                                             </figure>
 
                                             <h5>{item.name}</h5>
@@ -138,14 +140,14 @@ function InviteModal({
                                 </li>
                             }) : null
 
+                        }
+                        </ModalBody>
+                        <ModalFooter>
+                        <Button color="primary" onClick={inviteFriends}>선택</Button>
+                        </ModalFooter>
+                        </Modal>
+                        </div>
+                        )
                     }
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={inviteFriends}>선택</Button>
-                </ModalFooter>
-            </Modal>
-        </div>
-    )
-}
 
-export default InviteModal
+                    export default InviteModal

@@ -84,7 +84,7 @@ function AddGroupModal({friendList}) {
             await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )
 
             Array.from(checkedItems).map(async (item, index) => (
-                await fetchApi(null,null).createParticipant(item ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+                await fetchApi(null,null).createParticipant(item.no ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
             ));
             // 그룹 추가 후 reload
             dispatch(reloadAction(!reload));
