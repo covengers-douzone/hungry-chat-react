@@ -44,13 +44,10 @@ function AddGroupModal({friendList}) {
     const callbackSetItem = (checkItems) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
             setCheckedItems(checkItems)
-
     }
-
     const callbackComplete = () => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
             setCompleteInvite(!completeInvite)
-
     }
     const callbackAddItem = (value) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN")
