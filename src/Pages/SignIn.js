@@ -148,7 +148,7 @@ function SignIn({history}) {
                 <img src={img} style={{width:80, height:80}}/>
                 {/*<Logo/>*/}
             </div>
-            <h5>로그인</h5>
+            <h5>Covengers</h5>
             <Alert isOpen={alertOpen} color="info">아이디/패스워드를 다시 확인해주세요.</Alert>
             <form onSubmit={ loginHandler }>
                 <div className="form-group input-group-lg">

@@ -170,7 +170,7 @@ function Navigation() {
                         <a onClick={handleLogoClick} href={logoUrl} className="logo">
                             <img src={img} style={{width:70, height:70}}/>
                             {/*<Logo/>*/}
-                        </a>  }
+                        </a>  
 
                     </li>
                     {
@@ -178,13 +178,13 @@ function Navigation() {
                                                                              tooltipName={"Tooltip-" + i}/>)
                     }
 
-                    <li >
+                    {/* <li >
                         <li>
                             <a onClick={gameModalToggle}>
                                 <i className="ti ti-game" style={opacity}></i>
                             </a>
                         </li>
-                    </li>
+                    </li> */}
                     <li >
                         <li>
                             <a id="music" onClick={musicStart}>
