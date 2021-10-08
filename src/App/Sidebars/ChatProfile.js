@@ -6,6 +6,11 @@ import {mobileChatProfileAction} from "../../Store/Actions/mobileChatProfileActi
 import fetchList from "../Module/fetchList";
 import OpenImageListModal from "../Modals/OpenImageListModal";
 import OpenImageModal from "../Modals/OpenImageModal";
+import InviteModal from "../Modals/InviteModal";
+import {Modal} from "reactstrap";
+import RoomInviteModal from "../Modals/RoomInviteModal";
+import fetchApi from "../Module/fetchApi";
+import RoomKickModal from "../Modals/RoomKickModal";
 
 function ChatProfile() {
 
@@ -14,10 +19,18 @@ function ChatProfile() {
     const {selectedChat} = useSelector(state => state);
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
     const {reload} = useSelector(state => state);
+    const userNo = Number(localStorage.getItem("userNo"));
+    const [friendList , setFriendList] = useState([]);
 
     //방안의 이미지들 보여주기 위한 모달 state
     const [openImageListModalOpen, setOpenImageListModalOpen] = useState(false);
     const [imageList, setImageList] = useState(false);
+
+    const [openKickModalOpen , setOpenKickModalOpen] =  useState(false);
+    const [checkedInviteItems, setCheckedInviteItems] = useState(new Set());
+    const [checkedKickItems, setCheckedKickItems] = useState(new Set());
+    const [openInviteModalOpen , setOpenInviteModalOpen] =  useState(false);
+
 
     let unknownNum; // 알 수 없는 사용자 수
 
@@ -25,10 +38,64 @@ function ChatProfile() {
 
     const profileActions = (e) => {
         e.preventDefault();
+
         dispatch(chatProfileAction(false));
         dispatch(mobileChatProfileAction(false))
     };
+    useEffect(async () => {
 
+   } , [reload])
+
+
+
+    const callbackInviteAddItem = (item) => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+            checkedInviteItems.add(item)
+        }
+
+    }
+    const callbackInviteComplete = () => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+            console.log("친구 초대 완료" , checkedInviteItems)
+        }
+
+    }
+
+    const callbackInviteDeleteItem = (item) => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN") {
+            checkedInviteItems.delete(item)
+        }
+    }
+
+    const callbackKickAddItem = (item) => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+            checkedKickItems.add(item)
+        }
+
+    }
+    const callbackKickComplete = () => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+            console.log("추바  완료" , checkedKickItems)
+        }
+
+    }
+
+    const callbackKickDeleteItem = (item) => {
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN") {
+            checkedInviteItems.delete(item)
+        }
+    }
+    const handleKickModal = (e) => {
+
+        setCheckedKickItems(new Set())
+        setOpenKickModalOpen(!openKickModalOpen)
+    }
+
+    const handleInviteModal = async (e) => {
+        setCheckedInviteItems(new Set())
+        const result = await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+        setOpenInviteModalOpen(!openInviteModalOpen)
+    }
     // modal에서 사용; modal 닫을 때 실행되는 함수
     const editOpenImageListModalToggle = () => {
         // openImageModalOpen : false로 설정
@@ -55,8 +122,25 @@ function ChatProfile() {
                                className="btn btn-light">
                                 <i className="ti ti-close"></i>
                             </a>
+                            <a className="btn btn-light" onClick={(e) => handleKickModal(e)}>
+                                <i className="fa fa-ban"/>
+                                <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
+                                               callbackAddItem = {callbackKickAddItem} callbackDeleteItem={callbackKickDeleteItem}
+                                               callbackComplete = {callbackKickComplete}>
+
+
+                                </RoomKickModal>
+                            </a>
+                            <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
+                                <i className="fa fa-info"/>
+                                <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} friendList = {friendList}
+                                                 callbackAddItem = {callbackInviteAddItem} callbackDeleteItem={callbackInviteDeleteItem}
+                                                 callbackComplete = {callbackInviteComplete}
+                                />
+                            </a>
                         </li>
                     </ul>
+
                 </header>
                 <div className="sidebar-body">
                     <PerfectScrollbar>
@@ -136,76 +220,6 @@ function ChatProfile() {
                                 </div>
                             </PerfectScrollbar>
                         </div>
-                        {/*<hr/>*/}
-                        {/*<div className="pl-4 pr-4">*/}
-                        {/*    <h6>Social Links</h6>*/}
-                        {/*    <ul className="list-inline social-links">*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-facebook">*/}
-                        {/*                <i className="fa fa-facebook"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-twitter">*/}
-                        {/*                <i className="fa fa-twitter"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-dribbble">*/}
-                        {/*                <i className="fa fa-dribbble"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-whatsapp">*/}
-                        {/*                <i className="fa fa-whatsapp"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-linkedin">*/}
-                        {/*                <i className="fa fa-linkedin"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-google">*/}
-                        {/*                <i className="fa fa-google"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-behance">*/}
-                        {/*                <i className="fa fa-behance"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*        <li className="list-inline-item">*/}
-                        {/*            <a href="/#/" className="btn btn-sm btn-floating btn-instagram">*/}
-                        {/*                <i className="fa fa-instagram"></i>*/}
-                        {/*            </a>*/}
-                        {/*        </li>*/}
-                        {/*    </ul>*/}
-                        {/*</div>*/}
-                        {/*<hr/>*/}
-
-                    {/*<div className="pl-4 pr-4">*/}
-                    {/*    <div className="form-group">*/}
-                    {/*        <div className="form-item custom-control custom-switch">*/}
-                    {/*            <input type="checkbox" className="custom-control-input" id="customSwitch11"/>*/}
-                    {/*            <label className="custom-control-label" htmlFor="customSwitch11">Block</label>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*    <div className="form-group">*/}
-                    {/*        <div className="form-item custom-control custom-switch">*/}
-                    {/*            <input type="checkbox" className="custom-control-input" defaultChecked*/}
-                    {/*                   id="customSwitch12"/>*/}
-                    {/*            <label className="custom-control-label" htmlFor="customSwitch12">Mute</label>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*    <div className="form-group">*/}
-                    {/*        <div className="form-item custom-control custom-switch">*/}
-                    {/*            <input type="checkbox" className="custom-control-input" id="customSwitch13"/>*/}
-                    {/*            <label className="custom-control-label" htmlFor="customSwitch13">Get*/}
-                    {/*                notification</label>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
 
                     </PerfectScrollbar>
                 </div>
