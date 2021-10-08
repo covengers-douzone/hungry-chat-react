@@ -20,6 +20,7 @@ function SignUp({history}) {
     const [emailErrorAlertOpen, setEmailErrorAlertOpen] = useState(false);
     // const [count, setCount] = useState(5);
 
+    const [errorMessage, setErrorMessage] = useState("");
     const [userName, setUserName] = useState();
 
     const [inputCode, setInputCode] = useState();
@@ -136,6 +137,7 @@ function SignUp({history}) {
                        //     console.log(count);
                        // }, 1000)
                     }else{
+                        setErrorMessage(response.message);
                         setEmailErrorAlertOpen(false);
                         setCodeErrorAlertOpen(false);
                         setSuccessAlertOpen(false);
@@ -176,7 +178,7 @@ function SignUp({history}) {
                     <input name="name" type="text" className="form-control form-control-lg" placeholder="이름" required autoFocus/>
                 </div>
 
-                <Alert isOpen={emailErrorAlertOpen} color="info">이미 존재하는 이메일입니다.</Alert>
+                <Alert isOpen={emailErrorAlertOpen} color="info">{errorMessage}</Alert>
                 <div className="form-group">
                     <input name="email" type="email" className="form-control form-control-lg" placeholder="이메일" required/>
                 </div>
