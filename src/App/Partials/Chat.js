@@ -214,8 +214,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("markDown", markDown);
             formData.append("codeBlock", codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
-            //console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
-           //console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
+            console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
+           console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
 
             myFetch(null, null).send(formData);
 
