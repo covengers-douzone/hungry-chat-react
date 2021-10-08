@@ -42,10 +42,6 @@ function ChatProfile() {
         dispatch(chatProfileAction(false));
         dispatch(mobileChatProfileAction(false))
     };
-    useEffect(async () => {
-
-   } , [reload])
-
 
 
     const callbackInviteAddItem = (item) => {
