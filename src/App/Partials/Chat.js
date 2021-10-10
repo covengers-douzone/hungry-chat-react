@@ -418,7 +418,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     <div className={"message-item " + message.outgoing}
                          id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
-                            {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
+                            {message.outgoing === "outgoing-message" ? "" : <img src={message.profileImageUrl} style={{
                                 height: 20,
                                 width: 20,
                                 borderRadius: 50,
