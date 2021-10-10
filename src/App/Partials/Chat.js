@@ -507,9 +507,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             // !joinOk : 처음 접속한 경우 paging 자동 실행되지 않도록 막음
             // !searchOk : 검색한 상태가 아닌 경우 paging 하지 않음
             if (!joinOk && !searchOk && scrollRef.current.scrollTop && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)) {
-                //console.log('lp 실행')
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
-                setLp(newLp)
+                setLp(newLp);
             } else if (searchOk) {
                 scrollRef.current.scrollTop = 0;
             }
