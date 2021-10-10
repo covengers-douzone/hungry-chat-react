@@ -178,8 +178,9 @@ const Index = React.forwardRef(({
             
             
             if(userNo === Number(participant.userNo)){
-                window.location.assign("/chat")
                 alert("추방 당했습니다.")
+                window.location.assign("/chat")
+
             }
 
         })

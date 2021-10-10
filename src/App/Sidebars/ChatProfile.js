@@ -53,7 +53,7 @@ function ChatProfile() {
     const profileActions = (e) => {
         e.preventDefault();
 
-        dispatch(chatProfileAction(false));
+         dispatch(chatProfileAction(false));
         dispatch(mobileChatProfileAction(false))
     };
 
@@ -174,10 +174,7 @@ function ChatProfile() {
                     <span>방 정보</span>
                     <ul className="list-inline">
                         <li className="list-inline-item">
-                            <a href="/#/" onClick={(e) => profileActions(e)}
-                               className="btn btn-light">
-                                <i className="ti ti-close"></i>
-                            </a>
+
                             {
                                 selectedChat.participant.role === "ROLE_HOST" ?
                                     <a  className="btn btn-light" onClick={(e) => handleKickModal(e)} >
@@ -201,7 +198,14 @@ function ChatProfile() {
                                                  callbackComplete = {callbackInviteComplete}
                                 />
                             </a>
+
+                            <a onClick={(e) => profileActions(e)}
+                               className="btn btn-light">
+                                <i className="ti ti-close"></i>
+                            </a>
                         </li>
+
+
                     </ul>
 
                 </header>
