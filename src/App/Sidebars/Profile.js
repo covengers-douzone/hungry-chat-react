@@ -10,7 +10,6 @@ function Profile() {
 
     const {profileInfo} = useSelector(state => state);
     const {profileSidebar, mobileProfileSidebar} = useSelector(state => state);
-    const {reload} = useSelector(state => state);
 
     const profileActions = (e) => {
         e.preventDefault();

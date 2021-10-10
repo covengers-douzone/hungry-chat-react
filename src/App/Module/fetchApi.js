@@ -712,6 +712,103 @@ export default function (defaultState, setState) {
                 console.error(e);
             }
         },
+        deleteParticipant: async function (userNo, roomNo , token) {
+            try {
+
+                const response = await fetch(`${config.URL}/api/deleteParticipant/`, {
+                    method: 'post',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        userNo , roomNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        addParticipant: async function (user ,roomNo, token) {
+            try {
+
+                const response = await fetch(`${config.URL}/api/addParticipant/`, {
+                    method: 'post',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        user ,roomNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        getParticipantNo: async function (participantNo, token) {
+            try {
+
+                const response = await fetch(`${config.URL}/api/getParticipantNo/`, {
+                    method: 'get',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Origin": `${config.URL}`,
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        Authorization: token
+                    },
+                    body: JSON.stringify({
+                        participantNo
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
+
+                const json = await response.json();
+                if (json.result !== 'success') {
+                    throw json.message;
+                }
+                return json.data
+            } catch (e) {
+                console.error(e);
+            }
+        },
+
 
     }
 }

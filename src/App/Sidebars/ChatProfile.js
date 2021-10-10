@@ -11,26 +11,40 @@ import {Modal} from "reactstrap";
 import RoomInviteModal from "../Modals/RoomInviteModal";
 import fetchApi from "../Module/fetchApi";
 import RoomKickModal from "../Modals/RoomKickModal";
+import roleStyle from "../Module/roleStyle";
+import io from "socket.io-client";
+import * as config from "../../config/config";
 
 function ChatProfile() {
-
+    let opacity = roleStyle().opacity()
     const dispatch = useDispatch();
 
     const {selectedChat} = useSelector(state => state);
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
-    const {reload} = useSelector(state => state);
+    const {roomNo} = useSelector(state => state)
+    const {participantNo} = useSelector(state => state)
     const userNo = Number(localStorage.getItem("userNo"));
     const [friendList , setFriendList] = useState([]);
+    const [inviteList , setInviteList] = useState([]);
+
+    const [actionOk , setActionOk] = useState(false);
 
     //방안의 이미지들 보여주기 위한 모달 state
     const [openImageListModalOpen, setOpenImageListModalOpen] = useState(false);
     const [imageList, setImageList] = useState(false);
 
     const [openKickModalOpen , setOpenKickModalOpen] =  useState(false);
-    const [checkedInviteItems, setCheckedInviteItems] = useState(new Set());
-    const [checkedKickItems, setCheckedKickItems] = useState(new Set());
+    const [checkedInviteItems, setCheckedInviteItems] = useState([]);
+    const [checkedKickItems, setCheckedKickItems] = useState([]);
     const [openInviteModalOpen , setOpenInviteModalOpen] =  useState(false);
 
+
+    useEffect(async () => {
+        await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+
+        console.log("chatProfile result " ,
+            await fetchApi(null,null).getParticipantNo(participantNo, localStorage.getItem("Authorization")))
+    },[])
 
     let unknownNum; // 알 수 없는 사용자 수
 
@@ -39,58 +53,104 @@ function ChatProfile() {
     const profileActions = (e) => {
         e.preventDefault();
 
-        dispatch(chatProfileAction(false));
+         dispatch(chatProfileAction(false));
         dispatch(mobileChatProfileAction(false))
     };
 
 
     const callbackInviteAddItem = (item) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
-            checkedInviteItems.add(item)
+            checkedInviteItems.push(item)
         }
 
     }
     const callbackInviteComplete = () => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
-            console.log("친구 초대 완료" , checkedInviteItems)
+            checkedInviteItems.map(async (e,i) => {
+                const results = await fetchApi(null,null).addParticipant(e, roomNo,localStorage.getItem("Authorization"))
+                await  fetchApi(null,null).updateHeadCount("join",roomNo,localStorage.getItem("Authorization"))
+                console.log("e" , results)
+            })
         }
 
     }
 
+
     const callbackInviteDeleteItem = (item) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN") {
-            checkedInviteItems.delete(item)
+            checkedInviteItems.splice(item,1)
         }
     }
 
     const callbackKickAddItem = (item) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
-            checkedKickItems.add(item)
+            checkedKickItems.push(item)
         }
 
     }
     const callbackKickComplete = () => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
-            console.log("추바  완료" , checkedKickItems)
+            checkedKickItems.map(async (e,i) => {
+
+               const results = await fetchApi(null,null).deleteParticipant(e.User.no,e.roomNo,localStorage.getItem("Authorization"))
+                await  fetchApi(null,null).updateHeadCount("exit",roomNo,localStorage.getItem("Authorization"))
+                await fetchApi(null,null).setStatus(participantNo,0,localStorage.getItem("Authorization"));
+                const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
+                socket.emit("kick", ({roomNo , userNo: e.User.no}) , async (response) => {
+                    if (response.status === 'ok') {
+                        socket.disconnect();
+                    }
+                });
+               console.log("results" , results)
+            })
         }
 
     }
 
     const callbackKickDeleteItem = (item) => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN") {
-            checkedInviteItems.delete(item)
+            checkedInviteItems.splice(item,1)
         }
     }
     const handleKickModal = (e) => {
 
-        setCheckedKickItems(new Set())
-        setOpenKickModalOpen(!openKickModalOpen)
+
+        console.log("selectedChat.participant.User.no ", selectedChat.participant.role)
+
+
+        if(selectedChat.participant.role === "ROLE_HOST"){
+            setCheckedKickItems([])
+            setOpenKickModalOpen(!openKickModalOpen)
+        }
+
     }
 
+
+
     const handleInviteModal = async (e) => {
-        setCheckedInviteItems(new Set())
-        const result = await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
+        setCheckedInviteItems([])
+        friendList.forEach(
+            (e1 , i1) => {
+
+                selectedChat.otherParticipantNo.forEach(async (e2 , i2) =>{
+
+                    if ( Number(e2.User.no) === Number(e1.no)){
+                        delete friendList[i1]
+                    }/*else if ( Number(e2.User.no) !== Number(e1.no)){
+                        console.log("푸쉬" , e2.User.no)
+                        console.log("푸쉬" , e1.no)
+                        inviteList.push(e1)
+                    }*/
+                })
+
+            }
+        );
+        console.log("friendList.",friendList)
         setOpenInviteModalOpen(!openInviteModalOpen)
+        }
     }
     // modal에서 사용; modal 닫을 때 실행되는 함수
     const editOpenImageListModalToggle = () => {
@@ -114,27 +174,38 @@ function ChatProfile() {
                     <span>방 정보</span>
                     <ul className="list-inline">
                         <li className="list-inline-item">
-                            <a href="/#/" onClick={(e) => profileActions(e)}
-                               className="btn btn-light">
-                                <i className="ti ti-close"></i>
-                            </a>
-                            <a className="btn btn-light" onClick={(e) => handleKickModal(e)}>
-                                <i className="fa fa-ban"/>
-                                <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
-                                               callbackAddItem = {callbackKickAddItem} callbackDeleteItem={callbackKickDeleteItem}
-                                               callbackComplete = {callbackKickComplete}>
+
+                            {
+                                selectedChat.participant.role === "ROLE_HOST" ?
+                                    <a  className="btn btn-light" onClick={(e) => handleKickModal(e)} >
+                                        <i className="fa fa-ban"  />
+                                        <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
+                                                       callbackAddItem = {callbackKickAddItem} callbackDeleteItem={callbackKickDeleteItem}
+                                                       callbackComplete = {callbackKickComplete}>
 
 
-                                </RoomKickModal>
-                            </a>
+                                        </RoomKickModal>
+                                    </a>
+                                    : null
+                            }
+                            {/*(selectedChat.participant.role !== "ROLE_HOST")*/}
+
                             <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
-                                <i className="fa fa-info"/>
-                                <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} friendList = {friendList}
+                                <i className="fa fa-info" style={opacity}  />
+                                <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} inviteList = {friendList}
+                                                 setInviteList = {setInviteList}
                                                  callbackAddItem = {callbackInviteAddItem} callbackDeleteItem={callbackInviteDeleteItem}
                                                  callbackComplete = {callbackInviteComplete}
                                 />
                             </a>
+
+                            <a onClick={(e) => profileActions(e)}
+                               className="btn btn-light">
+                                <i className="ti ti-close"></i>
+                            </a>
                         </li>
+
+
                     </ul>
 
                 </header>
@@ -158,7 +229,7 @@ function ChatProfile() {
                                 // 다른 참가자
                                 selectedChat.otherParticipantNo.map(participant => {
                                     // unknown 제외
-                                    if(participant.User.no !== 1 || participant.User.no !== 2){
+                                    if(Number(participant.userNo) !== 1 && Number(participant.userNo) !== 2){
                                         return (
                                             <span>
                                                 <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>
