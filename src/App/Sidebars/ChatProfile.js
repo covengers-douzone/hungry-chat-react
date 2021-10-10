@@ -18,9 +18,9 @@ function ChatProfile() {
 
     const {selectedChat} = useSelector(state => state);
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
-    const {reload} = useSelector(state => state);
     const userNo = Number(localStorage.getItem("userNo"));
     const [friendList , setFriendList] = useState([]);
+    const [inviteList , setInviteList] = useState([]);
 
     //방안의 이미지들 보여주기 위한 모달 state
     const [openImageListModalOpen, setOpenImageListModalOpen] = useState(false);
@@ -31,6 +31,10 @@ function ChatProfile() {
     const [checkedKickItems, setCheckedKickItems] = useState(new Set());
     const [openInviteModalOpen , setOpenInviteModalOpen] =  useState(false);
 
+
+    useEffect(async () => {
+        await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+    },[])
 
     let unknownNum; // 알 수 없는 사용자 수
 
@@ -53,6 +57,7 @@ function ChatProfile() {
     const callbackInviteComplete = () => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
             console.log("친구 초대 완료" , checkedInviteItems)
+
         }
 
     }
@@ -87,9 +92,23 @@ function ChatProfile() {
         setOpenKickModalOpen(!openKickModalOpen)
     }
 
+
+
     const handleInviteModal = async (e) => {
         setCheckedInviteItems(new Set())
-        const result = await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+        friendList.map(
+            (e1 , i1) => {
+                selectedChat.otherParticipantNo.map((e2 , i2) =>{
+                    if ( e2.User.no === e1.no){
+
+                        friendList.splice(i1 , 1)
+                    }
+                })
+
+            }
+        );
+        console.log("friendList" ,friendList)
+
         setOpenInviteModalOpen(!openInviteModalOpen)
     }
     // modal에서 사용; modal 닫을 때 실행되는 함수
