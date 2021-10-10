@@ -27,6 +27,8 @@
     "react-contextmenu": "^2.14.0",
     "react-datepicker": "^4.2.1",
     "react-dom": "^16.13.1",
+    "react-file-previewer": "^0.6.3",
+    "react-files": "^2.4.9",
     "react-game-engine": "^1.0.0",
     "react-hook-form": "^6.15.8",
     "react-icons": "^4.2.0",

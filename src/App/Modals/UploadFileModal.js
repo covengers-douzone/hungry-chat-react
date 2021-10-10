@@ -19,6 +19,7 @@ import {
     InputGroupText,
     CustomInput
 } from 'reactstrap'
+import Files from 'react-files'
 
 function UploadFileModal(props) {
 
@@ -36,11 +37,17 @@ function UploadFileModal(props) {
 
          let reader = new FileReader();
          const file = event.target.files[0];
+         const fileType = file.type.split('/')[0];
 
+         console.log('file',file,fileType)
          reader.readAsDataURL(file);
          reader.onloadend = () => {
              setFile(file);
-             setPreviewUrl(reader.result);
+             if(fileType === 'image'){
+                 setPreviewUrl(reader.result);
+             } else if(fileType === 'application'){
+
+             }
          }
          setReader(reader);
      }
@@ -48,8 +55,11 @@ function UploadFileModal(props) {
     const handleSubmit = async event => {
         event.preventDefault();
 
+        const fileType = file.type.split('/')[0];
+
         // chatFooter에 파일 받은거 올림
-        props.handleFile(file,previewURL);
+        fileType === 'image' && props.handleFile(file,previewURL);
+        fileType === 'application' && props.handleFile(file,null);
 
         // 데이터 비우기
         setReader(null);
@@ -87,7 +97,6 @@ function UploadFileModal(props) {
                                         </div>
                                         : null
                                 }
-
                             </div>
                         </FormGroup>
                     </Form>
