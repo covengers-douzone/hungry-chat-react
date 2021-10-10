@@ -192,7 +192,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             // 접속해 있는 다른 유저들
             let otherUserStatus = false;
 
-            room.headCount < 3 && currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
+            room.headCount < 3 && currentOnlineUsers && otherParticipant.length !== 0 && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
                 if(Number(currentOnlineUser.userLocalStorage.userNo) === Number(otherParticipant[0].userNo)){
                     otherUserStatus = true;
                 }

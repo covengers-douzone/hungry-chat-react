@@ -12,6 +12,8 @@ import RoomInviteModal from "../Modals/RoomInviteModal";
 import fetchApi from "../Module/fetchApi";
 import RoomKickModal from "../Modals/RoomKickModal";
 import roleStyle from "../Module/roleStyle";
+import io from "socket.io-client";
+import * as config from "../../config/config";
 
 function ChatProfile() {
     let opacity = roleStyle().opacity()
@@ -66,7 +68,7 @@ function ChatProfile() {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
             checkedInviteItems.map(async (e,i) => {
                 const results = await fetchApi(null,null).addParticipant(e, roomNo,localStorage.getItem("Authorization"))
-                await  fetchApi(null,null).updateHeadCount("join",roomNo,roomNo,localStorage.getItem("Authorization"))
+                await  fetchApi(null,null).updateHeadCount("join",roomNo,localStorage.getItem("Authorization"))
                 console.log("e" , results)
             })
         }
@@ -89,9 +91,17 @@ function ChatProfile() {
     const callbackKickComplete = () => {
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
             checkedKickItems.map(async (e,i) => {
-                console.log("e,UserNO" ,e)
+
                const results = await fetchApi(null,null).deleteParticipant(e.User.no,e.roomNo,localStorage.getItem("Authorization"))
                 await  fetchApi(null,null).updateHeadCount("exit",roomNo,localStorage.getItem("Authorization"))
+                await fetchApi(null,null).setStatus(participantNo,0,localStorage.getItem("Authorization"));
+                const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
+                socket.emit("kick", ({roomNo , userNo: e.User.no}) , async (response) => {
+                    if (response.status === 'ok') {
+                        socket.disconnect();
+                    }
+                });
                console.log("results" , results)
             })
         }
@@ -109,7 +119,7 @@ function ChatProfile() {
         console.log("selectedChat.participant.User.no ", selectedChat.participant.role)
 
 
-        if(selectedChat.participant.User.role === "ROLE_HOST"){
+        if(selectedChat.participant.role === "ROLE_HOST"){
             setCheckedKickItems([])
             setOpenKickModalOpen(!openKickModalOpen)
         }
@@ -215,7 +225,7 @@ function ChatProfile() {
                                 // 다른 참가자
                                 selectedChat.otherParticipantNo.map(participant => {
                                     // unknown 제외
-                                    if(participant.User.no !== 1 || participant.User.no !== 2){
+                                    if(Number(participant.userNo) !== 1 && Number(participant.userNo) !== 2){
                                         return (
                                             <span>
                                                 <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>

@@ -32,6 +32,8 @@ import {lastPageAction} from "../../../Store/Actions/lastPageAction";
 import {currentOnlineRoomUsersAction} from "../../../Store/Actions/currentOnlineRoomUsersAction";
 import {lastReadNoLengthAction} from "../../../Store/Actions/lastReadNoLengthAction";
 import {sendOkAction} from "../../../Store/Actions/sendOkAction";
+import {chatProfileAction} from "../../../Store/Actions/chatProfileAction";
+import {mobileChatProfileAction} from "../../../Store/Actions/mobileChatProfileAction";
 const Index = React.forwardRef(({
                                     roomList,
                                     friendList,
@@ -170,6 +172,16 @@ const Index = React.forwardRef(({
             selectedChat.messages && (selectedChat.messages.splice(idx, 1));
             dispatch(messageLengthAction(selectedChat.messages.length - 1))
             //}, 100)
+        })
+
+        socket.on('kick', async ({roomNo ,participant }) => {
+            
+            
+            if(userNo === Number(participant.userNo)){
+                window.location.assign("/chat")
+                alert("추방 당했습니다.")
+            }
+
         })
       /*  if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
             socket.emit("unknown", (localStorage.getItem("userNo")) , false)
