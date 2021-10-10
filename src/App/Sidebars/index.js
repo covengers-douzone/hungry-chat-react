@@ -139,7 +139,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             openChatHost: openChatHost && openChatHost.User,
             participantNo: currentParticipant && currentParticipant.no,
             otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
-            avatar: <figure className="avatar avatar-state-success">
+            avatar: <figure className="avatar">
                 <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
                      alt="avatar"/>
             </figure>,
