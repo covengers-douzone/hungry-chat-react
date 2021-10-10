@@ -5,6 +5,7 @@ export default  function () {
              (localStorage.getItem("role") === "ROLE_UNKNOWN") ? opacity = {opacity : 0.2} : opacity = {opacity : 1.0}
               return opacity
          }
+
     }
 
 }

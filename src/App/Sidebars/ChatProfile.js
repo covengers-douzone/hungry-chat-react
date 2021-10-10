@@ -11,14 +11,16 @@ import {Modal} from "reactstrap";
 import RoomInviteModal from "../Modals/RoomInviteModal";
 import fetchApi from "../Module/fetchApi";
 import RoomKickModal from "../Modals/RoomKickModal";
+import roleStyle from "../Module/roleStyle";
 
 function ChatProfile() {
-
+    let opacity = roleStyle().opacity()
     const dispatch = useDispatch();
 
     const {selectedChat} = useSelector(state => state);
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
     const {roomNo} = useSelector(state => state)
+    const {participantNo} = useSelector(state => state)
     const userNo = Number(localStorage.getItem("userNo"));
     const [friendList , setFriendList] = useState([]);
     const [inviteList , setInviteList] = useState([]);
@@ -37,6 +39,9 @@ function ChatProfile() {
 
     useEffect(async () => {
         await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+
+        console.log("chatProfile result " ,
+            await fetchApi(null,null).getParticipantNo(participantNo, localStorage.getItem("Authorization")))
     },[])
 
     let unknownNum; // 알 수 없는 사용자 수
@@ -100,14 +105,22 @@ function ChatProfile() {
     }
     const handleKickModal = (e) => {
 
-        setCheckedKickItems([])
-        setOpenKickModalOpen(!openKickModalOpen)
+
+        console.log("selectedChat.participant.User.no ", selectedChat.participant.role)
+
+
+        if(selectedChat.participant.User.role === "ROLE_HOST"){
+            setCheckedKickItems([])
+            setOpenKickModalOpen(!openKickModalOpen)
+        }
+
     }
 
 
 
     const handleInviteModal = async (e) => {
 
+        if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         setCheckedInviteItems([])
         friendList.forEach(
             (e1 , i1) => {
@@ -122,9 +135,8 @@ function ChatProfile() {
 
             }
         );
-        console.log("inviteList" ,inviteList)
-
         setOpenInviteModalOpen(!openInviteModalOpen)
+        }
     }
     // modal에서 사용; modal 닫을 때 실행되는 함수
     const editOpenImageListModalToggle = () => {
@@ -152,17 +164,23 @@ function ChatProfile() {
                                className="btn btn-light">
                                 <i className="ti ti-close"></i>
                             </a>
-                            <a className="btn btn-light" onClick={(e) => handleKickModal(e)}>
-                                <i className="fa fa-ban"/>
-                                <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
-                                               callbackAddItem = {callbackKickAddItem} callbackDeleteItem={callbackKickDeleteItem}
-                                               callbackComplete = {callbackKickComplete}>
+                            {
+                                selectedChat.participant.role === "ROLE_HOST" ?
+                                    <a  className="btn btn-light" onClick={(e) => handleKickModal(e)} >
+                                        <i className="fa fa-ban"  />
+                                        <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
+                                                       callbackAddItem = {callbackKickAddItem} callbackDeleteItem={callbackKickDeleteItem}
+                                                       callbackComplete = {callbackKickComplete}>
 
 
-                                </RoomKickModal>
-                            </a>
+                                        </RoomKickModal>
+                                    </a>
+                                    : null
+                            }
+                            {/*(selectedChat.participant.role !== "ROLE_HOST")*/}
+
                             <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
-                                <i className="fa fa-info"/>
+                                <i className="fa fa-info" style={opacity}  />
                                 <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} inviteList = {inviteList}
                                                  setInviteList = {setInviteList}
                                                  callbackAddItem = {callbackInviteAddItem} callbackDeleteItem={callbackInviteDeleteItem}
