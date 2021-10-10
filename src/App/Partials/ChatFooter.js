@@ -36,6 +36,7 @@ function ChatFooter(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        console.log('file?',file)
         // Chat.js에 메세지 관련 데이터 보내기
         props.onSubmit({
             file: file,
@@ -64,9 +65,10 @@ function ChatFooter(props) {
 
     const handleFile = (userFile,previewURL) => {
         setFile(userFile);
-        setPreviewUrl(previewURL);
-        const type = previewURL.split('/')[0].split(':')[1];
-        setType("image");
+        const type = userFile.type.split('/')[0];
+        setType(type);
+
+        type === 'image' && setPreviewUrl(previewURL);
     }
 
     const handleVideoFile = (userFile,previewURL) => {
@@ -132,6 +134,7 @@ function ChatFooter(props) {
                                 className="form-control"
                                 alt="avatar"
                             />
+
                         :
                         <ReactTextareaAutocomplete
                             ref={props.inputRef}
