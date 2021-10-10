@@ -598,7 +598,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                               toggle={editOpenMessageModalToggle} text={text} fileType={messageType}/>
         </div>
     )
-}
-)
+})
 
 export default Chat
