@@ -42,10 +42,6 @@ function ChatProfile() {
         dispatch(chatProfileAction(false));
         dispatch(mobileChatProfileAction(false))
     };
-    useEffect(async () => {
-
-   } , [reload])
-
 
 
     const callbackInviteAddItem = (item) => {
@@ -162,7 +158,7 @@ function ChatProfile() {
                                 // 다른 참가자
                                 selectedChat.otherParticipantNo.map(participant => {
                                     // unknown 제외
-                                    if(participant.User.no !== 1){
+                                    if(participant.User.no !== 1 || participant.User.no !== 2){
                                         return (
                                             <span>
                                                 <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>

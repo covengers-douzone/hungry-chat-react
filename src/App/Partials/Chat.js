@@ -214,8 +214,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("markDown", markDown);
             formData.append("codeBlock", codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
-            console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
-           console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
+            //console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
+           //console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
 
             myFetch(null, null).send(formData);
 
@@ -237,7 +237,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
         useEffect(() => {
             const getChatListUp = async () => {
                 //  라스트 페이지 넘버가 0이 아니고 , Limit 보다 적다면  0으로 초기화 시킨다  offset이 -로 넘어가면 페이징 처리가 되지 않기때문 .
-                if (scrollEl && scrollSwitch === true) {
+                if (scrollEl) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
                     const chats = chatFormList(chatlist, participantNo).map(chat => {
                         if (searchChatNoList.includes(chat.chatNo)) {
@@ -535,7 +535,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 ref={scrollRef}
                             >
                                 <pre>
-                                <div className="chat-body" style={{minHeight: '300px'}}>
+                                <div className="chat-body" style={{minHeight: '500px'}}>
                                     <div className="messages" ref={messageRef}>
                                         {
                                             selectedChat.messages
