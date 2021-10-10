@@ -63,7 +63,7 @@ function OpenImageListModal(props) {
                        height: "500px"
                    }}
             >
-                <OpenImageModal modal={openImageModalOpen} toggle={editOpenImageModalToggle} image={image} />
+                <OpenImageModal modal={openImageModalOpen} setModal={setOpenImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={'img'} />
                 <ModalHeader toggle={props.toggle}>
                     <i className="fa fa-file-image-o" aria-hidden="true"></i>이미지 파일들
                 </ModalHeader>

@@ -4,6 +4,8 @@ import ReactMarkdown from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ReactPlayer from "react-player";
+import { saveAs } from 'file-saver';
+import Files from 'react-files'
 import remarkGfm from 'remark-gfm'
 
 const clickVideo = (e) => {
@@ -69,6 +71,35 @@ const chatMessageForm = (chat , index ) => {
                                                       light={true}
                                                       onClick={clickVideo}
                                                     />)
+
+    const downloadFile = () => {
+            const file_name = chat.contents.split('public')[1].split('--');
+            saveAs(config.URL + chat.contents.split('public')[1], file_name[1]) // Put your image url here.
+        }
+
+    if(chat.type === "APPLICATION"){
+        const file = new File(["foo"],config.URL + chat.contents.split('public')[1]);
+        console.log(file);
+
+    }
+    chat.type === "APPLICATION" && (contents = <div style={{border: '1px', borderColor: '#e1e1e1', borderStyle: 'solid', backgroundColor: 'white', borderRadius: '5px'}}>
+        <div style={{margin: '5px'}}>
+            <div>
+                {chat.contents.split('public')[1].split('--')[1]}
+            </div>
+            <i className="ti ti-download" onClick={() => downloadFile()}></i>
+        </div>
+    </div>)
+
+    // chat.type === 'APPLICATION' && (contents = <Files
+    //           className='files-dropzone'
+    //           accepts={['image/png', '.pdf', 'audio/*']}
+    //           multiple
+    //           maxFiles={3}
+    //           maxFileSize={10000000}
+    //           minFileSize={0}
+    //           clickable
+    //         >)
                                                     
     const chatMessage = {
         profileImageUrl: chat.Participant && chat.Participant.User.profileImageUrl,
