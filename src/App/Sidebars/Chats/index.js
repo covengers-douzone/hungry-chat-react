@@ -154,9 +154,9 @@ const Index = React.forwardRef(({
                     const chats = chatFormList(chatlist,participantNo);
                     selectedChat.messages = chats;
                     selectedChat.headcount = await fetchApi(chatList, setChatList).getHeadCount(participantNo, localStorage.getItem("Authorization"))
-                    dispatch(messageLengthAction(selectedChat.messages.length - 1))
+                    dispatch(messageLengthAction(Math.ceil((Math.random() * 1000))))
                     //console.log("selectedChat.headcount", selectedChat.headcount)
-                   // dispatch(reloadAction(!reload))
+                    //dispatch(reloadAction(!reload))
                 }
             }, 1000)
 
