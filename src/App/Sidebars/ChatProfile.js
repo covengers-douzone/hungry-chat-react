@@ -39,11 +39,13 @@ function ChatProfile() {
     const [openInviteModalOpen , setOpenInviteModalOpen] =  useState(false);
 
 
-    useEffect(async () => {
-        await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+    useEffect( () => {
+        (async () => {
+            await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
+            console.log("chatProfile result " ,
+                await fetchApi(null,null).getParticipantNo(participantNo, localStorage.getItem("Authorization")))
+        })()
 
-        console.log("chatProfile result " ,
-            await fetchApi(null,null).getParticipantNo(participantNo, localStorage.getItem("Authorization")))
     },[])
 
     let unknownNum; // 알 수 없는 사용자 수
