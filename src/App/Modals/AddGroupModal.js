@@ -10,7 +10,7 @@ import {
     FormGroup,
     Label,
     Input,
-    InputGroup,
+    InputGroup, Alert,
 } from 'reactstrap';
 
 import ManAvatar1 from "../../assets/img/man_avatar1.jpg"
@@ -21,6 +21,8 @@ import {useDispatch, useSelector} from "react-redux";
 import InviteModal from "./InviteModal";
 import {friendListAction} from "../../Store/Actions/friendListAction";
 import {reloadAction} from "../../Store/Actions/reloadAction";
+import io from "socket.io-client";
+import * as config from "../../config/config";
 
 function AddGroupModal({friendList}) {
 
@@ -38,6 +40,8 @@ function AddGroupModal({friendList}) {
     const dispatch = useDispatch();
 
     const [completeInvite , setCompleteInvite] = useState(false)
+
+    const [createdRoom, setCreatedRoom] = useState(false);
 
     const {reload} = useSelector(state => state);
 
@@ -85,6 +89,7 @@ function AddGroupModal({friendList}) {
             ));
             // 그룹 추가 후 reload
             dispatch(reloadAction(!reload));
+            setCreatedRoom(true);
             setModal(!modal);
         }
 
@@ -111,6 +116,26 @@ function AddGroupModal({friendList}) {
         </Tooltip>
     };
 
+    useEffect(() => {
+
+        if(createdRoom){
+            const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
+            const invitedMembers = Array.from(checkedItems).map(member => {
+                return member.no
+            })
+            socket.emit("createdRoom", invitedMembers , async (response) => {
+                if (response.status === 'ok') {
+                    socket.disconnect();
+                }
+            });
+            console.log('createdRoom',invitedMembers)
+
+            setCreatedRoom(false)
+        }
+
+    },[createdRoom])
+
     return (
         <div>
             <button className="btn btn-light" onClick={modalToggle} id="Tooltip-Add-Group">
@@ -127,6 +152,7 @@ function AddGroupModal({friendList}) {
                     <i className="fa fa-users"></i> 신규 그룹
                 </ModalHeader>
                 <ModalBody>
+                    <Alert isOpen={checkedItems.size < 2} color="info">친구는 2명이상 추가해주세요.</Alert>
                     <Form>
                         <FormGroup>
                             <Label for="title">방 제목</Label>
@@ -174,7 +200,7 @@ function AddGroupModal({friendList}) {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={createRoom}>방 만들기</Button>
+                    <Button color="primary" onClick={createRoom} disabled={checkedItems.size < 2}>방 만들기</Button>
                 </ModalFooter>
             </Modal>
         </div>

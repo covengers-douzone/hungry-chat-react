@@ -124,17 +124,21 @@ function ChatProfile() {
         setCheckedInviteItems([])
         friendList.forEach(
             (e1 , i1) => {
+
                 selectedChat.otherParticipantNo.forEach(async (e2 , i2) =>{
-                    if ( e2.User.no === e1.no){
 
-                    }else{
-
+                    if ( Number(e2.User.no) === Number(e1.no)){
+                        delete friendList[i1]
+                    }/*else if ( Number(e2.User.no) !== Number(e1.no)){
+                        console.log("푸쉬" , e2.User.no)
+                        console.log("푸쉬" , e1.no)
                         inviteList.push(e1)
-                    }
+                    }*/
                 })
 
             }
         );
+        console.log("friendList.",friendList)
         setOpenInviteModalOpen(!openInviteModalOpen)
         }
     }
@@ -181,7 +185,7 @@ function ChatProfile() {
 
                             <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
                                 <i className="fa fa-info" style={opacity}  />
-                                <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} inviteList = {inviteList}
+                                <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} inviteList = {friendList}
                                                  setInviteList = {setInviteList}
                                                  callbackAddItem = {callbackInviteAddItem} callbackDeleteItem={callbackInviteDeleteItem}
                                                  callbackComplete = {callbackInviteComplete}

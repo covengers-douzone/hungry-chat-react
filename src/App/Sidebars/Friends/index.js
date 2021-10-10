@@ -14,6 +14,8 @@ import {sidebarAction} from "../../../Store/Actions/sidebarAction";
 import {profileAction} from "../../../Store/Actions/profileAction";
 import {mobileProfileAction} from "../../../Store/Actions/mobileProfileAction";
 import {profileInfoAction} from "../../../Store/Actions/profileInfoAction";
+import io from "socket.io-client";
+import * as config from "../../../config/config";
 
 
 function Index({roomList, friendList, followerList, history, mobileSidebar }) {
@@ -27,7 +29,7 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
 
     const dispatch = useDispatch();
 
-    const {reload} = useSelector(state => state);
+    const {reload, joinRoom} = useSelector(state => state);
     const userNo = Number(localStorage.getItem("userNo"));
 
     const mobileSidebarClose = () => {
@@ -52,6 +54,15 @@ function Index({roomList, friendList, followerList, history, mobileSidebar }) {
                 const roomNo = await fetchApi(null, null).createRoom(friendName, "Private Chat",2 ,"private", null , localStorage.getItem("Authorization"));
                 const participantNo = (await fetchApi(null,null).createParticipant(userNo ,roomNo ,"ROLE_HOST", localStorage.getItem("Authorization") )).no;
                 await fetchApi(null,null).createParticipant(friendNo ,roomNo ,"ROLE_MEMBER", localStorage.getItem("Authorization") )
+
+                const socket = io.connect(`${config.SOCKET_IP}:${config.SOCKET_PORT}`, {transports: ['websocket']});
+
+                socket.emit("createdRoom", [friendNo] , async (response) => {
+                    if (response.status === 'ok') {
+                        socket.disconnect();
+                    }
+                });
+
                 dispatch(joinRoomAction(true));
                 dispatch(participantNoAction(participantNo));
                 dispatch(reloadAction(!reload));

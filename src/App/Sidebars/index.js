@@ -10,6 +10,7 @@ import io from "socket.io-client";
 import * as config from "../../config/config";
 import {currentOnlineRoomUsersAction} from "../../Store/Actions/currentOnlineRoomUsersAction";
 import {currentOnlineUsersAction} from "../../Store/Actions/currentOnlineUsersAction";
+import {reloadAction} from "../../Store/Actions/reloadAction";
 
 
 const Index = React.forwardRef(({history}, scrollRef) => {
@@ -52,6 +53,10 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         // 서버의 경우 user 정보를 토대로 user가 참여한 방 모두를 구독시킴
         userSocket.emit('joinUser',{
             user: localStorage
+        })
+
+        userSocket.on('createRoom',()=>{
+            dispatch(reloadAction(!reload))
         })
 
         // 사이트 접속해있는 유저에 한해서 참여한 방에서 누군가 메세지를 보낸 경우, roomList 를 업데이트 시킴
