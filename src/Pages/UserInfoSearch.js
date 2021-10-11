@@ -119,7 +119,9 @@ function UserInfoSearch() {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <img src={img} style={{width:80, height:80}}/>
+                <img src={img} style={{width:80, height:80}} onClick={()=>{
+                    window.location.assign("/")
+                }}/>
                 {/*<Logo/>*/}
             </div>
             <h5>회원인증</h5>
