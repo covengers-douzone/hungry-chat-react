@@ -189,7 +189,7 @@ function ChatProfile() {
 
                             {
                                 (selectedChat.otherParticipant.length !== 0) &&
-                                (selectedChat.participant.role === "ROLE_HOST" && (selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name) && (selectedChat.otherParticipantNo[0].User.name !== 'unknown')) ?
+                                (selectedChat.participant.role === "ROLE_HOST" && (selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name)) ?
                                     <a  className="btn btn-light" onClick={(e) => handleKickModal(e)} >
                                         <i className="fa fa-ban"  />
                                         <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
@@ -207,7 +207,7 @@ function ChatProfile() {
                             {
 
                                 (selectedChat.otherParticipant.length !== 0) &&
-                                ((selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name)  && (selectedChat.otherParticipantNo[0].User.name !== 'unknown')  ) ?
+                                ((selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name)   ) ?
                                 <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
                                     <i className="fa fa-info" style={opacity}/>
                                     <RoomInviteModal modal={openInviteModalOpen} setModal={setOpenInviteModalOpen}
@@ -220,7 +220,7 @@ function ChatProfile() {
                                 </a> : null
 
                             }{
-                            (Number(selectedChat.headcount) === 1) ?
+                            (Number(selectedChat.headcount) === 1 && unknownNum === 0) ?
                                 <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
                                     <i className="fa fa-info" style={opacity}/>
                                     <RoomInviteModal modal={openInviteModalOpen} setModal={setOpenInviteModalOpen}
@@ -256,7 +256,7 @@ function ChatProfile() {
                                 // 나
                                 <span>
                                     <img src={selectedChat.participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>
-                                    <p className="text-muted">{'(나) '+selectedChat.participant.User.name}</p>
+                                    <p className="text-muted">{'(나) '+selectedChat.participant.User.name + " "  } <b>{(selectedChat.participant.role === "ROLE_HOST") ? "방장" : "맴버"}</b></p>
                                 </span>
                             }
                             {
@@ -267,7 +267,7 @@ function ChatProfile() {
                                         return (
                                             <span>
                                                 <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>
-                                                <p className="text-muted">{'     '+participant.User.name}</p>
+                                                <p className="text-muted">{'     '+participant.User.name + " " } <b>{(participant.role === "ROLE_HOST") ? "방장" : "맴버"}</b></p>
                                             </span>
                                         );
                                     }
