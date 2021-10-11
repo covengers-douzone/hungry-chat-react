@@ -97,7 +97,7 @@ function SettingsModal(props) {
         }catch (err){
             console.log(err.response + err.message);
         }
-        // props.toggle();
+        props.toggle();
     }
 
     const changePasswordHandler = async (e) => {
