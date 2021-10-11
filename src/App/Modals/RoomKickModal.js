@@ -11,9 +11,8 @@ import {
 import fetchApi from "../Module/fetchApi";
 
 function RoomKickModal({
-                             modal, setModal, userList, callbackAddItem, callbackDeleteItem , callbackComplete
-                         }) {
-
+                           modal, setModal, userList, callbackAddItem, callbackDeleteItem, callbackComplete
+                       }) {
 
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -56,6 +55,7 @@ function RoomKickModal({
 
     // Create Button Event
     const modalToggle = async () => {
+        console.log("userList@@@@@@@@@@@@@@@@@@@@@@@ ", userList)
         setModal(!modal);
     }
     const KickUsers = () => {
@@ -68,13 +68,13 @@ function RoomKickModal({
         <div>
             <Modal className="modal-dialog-zoom" isOpen={modal} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> 친구 목록 {modal}
+                    <i className="fa fa-ban"></i> 인원 추방 {modal}
                 </ModalHeader>
                 <ModalBody>
                     {
                         modal === true ?
                             userList.map((item, i) => {
-                                return <li key={i} className="list-group-item">
+                                return       (item.User.no !== 1 && item.User.no !== 2) && <li key={i} className="list-group-item">
                                     {item.avatar}
                                     <div className="users-list-body">
                                         <div>

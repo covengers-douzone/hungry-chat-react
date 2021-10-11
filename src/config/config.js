@@ -15,4 +15,4 @@ export const URL = 'http://127.0.0.1:9999';
 
 // spring
 // export const SPRING_URL = "http://97bb-218-39-226-3.ngrok.io"
-export const SPRING_URL = 'http://localhost:8888'
+export const SPRING_URL = 'http://127.0.0.1:8888'

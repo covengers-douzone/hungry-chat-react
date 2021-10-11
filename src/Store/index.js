@@ -58,7 +58,7 @@ const reducers = combineReducers({
     codeBlock : codeBlockReducer,
     markDown : markDownReducer,
     lastReadNoLength : lastReadNoLengthReducer,
-    sendOk : sendOkReducer
+    sendOk : sendOkReducer,
 });
 
 const store = createStore(reducers, composeWithDevTools());

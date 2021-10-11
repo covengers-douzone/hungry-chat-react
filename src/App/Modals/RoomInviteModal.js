@@ -11,7 +11,7 @@ import {
 import fetchApi from "../Module/fetchApi";
 
 function RoomInviteModal({
-                             modal, setModal, friendList, callbackAddItem, callbackDeleteItem , callbackComplete
+                             modal, setModal, inviteList , setInviteList, callbackAddItem, callbackDeleteItem , callbackComplete
                          }) {
 
 
@@ -56,9 +56,11 @@ function RoomInviteModal({
 
     // Create Button Event
     const modalToggle = async () => {
+        setInviteList([])
         setModal(!modal);
     }
     const inviteFriends = () => {
+        setInviteList([])
         callbackComplete()
         setModal(!modal);
     }
@@ -68,12 +70,12 @@ function RoomInviteModal({
         <div>
             <Modal className="modal-dialog-zoom" isOpen={modal} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> 친구 목록 {modal}
+                    <i className="fa fa-info"></i> 친구 초대 {modal}
                 </ModalHeader>
                 <ModalBody>
                     {
                         modal === true ?
-                            friendList.map((item, i) => {
+                            inviteList.map((item, i) => {
                                 return <li key={i} className="list-group-item">
                                     {item.avatar}
                                     <div className="users-list-body">

@@ -10,6 +10,7 @@ import io from "socket.io-client";
 import * as config from "../../config/config";
 import {currentOnlineRoomUsersAction} from "../../Store/Actions/currentOnlineRoomUsersAction";
 import {currentOnlineUsersAction} from "../../Store/Actions/currentOnlineUsersAction";
+import {reloadAction} from "../../Store/Actions/reloadAction";
 
 
 const Index = React.forwardRef(({history}, scrollRef) => {
@@ -52,6 +53,10 @@ const Index = React.forwardRef(({history}, scrollRef) => {
         // 서버의 경우 user 정보를 토대로 user가 참여한 방 모두를 구독시킴
         userSocket.emit('joinUser',{
             user: localStorage
+        })
+
+        userSocket.on('createRoom',()=>{
+            dispatch(reloadAction(!reload))
         })
 
         // 사이트 접속해있는 유저에 한해서 참여한 방에서 누군가 메세지를 보낸 경우, roomList 를 업데이트 시킴
@@ -139,7 +144,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             openChatHost: openChatHost && openChatHost.User,
             participantNo: currentParticipant && currentParticipant.no,
             otherParticipantNo: otherParticipant && otherParticipant.map((participant) => participant.no),
-            avatar: <figure className="avatar avatar-state-success">
+            avatar: <figure className="avatar">
                 <img src={openChatHost && openChatHost.User.profileImageUrl} className="rounded-circle"
                      alt="avatar"/>
             </figure>,
@@ -187,7 +192,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
             // 접속해 있는 다른 유저들
             let otherUserStatus = false;
 
-            room.headCount < 3 && currentOnlineUsers && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
+            room.headCount < 3 && currentOnlineUsers && otherParticipant.length !== 0 && currentOnlineUsers.users && (currentOnlineUsers.users.map(currentOnlineUser => {
                 if(Number(currentOnlineUser.userLocalStorage.userNo) === Number(otherParticipant[0].userNo)){
                     otherUserStatus = true;
                 }
