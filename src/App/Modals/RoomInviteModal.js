@@ -70,7 +70,7 @@ function RoomInviteModal({
         <div>
             <Modal className="modal-dialog-zoom" isOpen={modal} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> 친구 목록 {modal}
+                    <i className="fa fa-info"></i> 친구 초대 {modal}
                 </ModalHeader>
                 <ModalBody>
                     {

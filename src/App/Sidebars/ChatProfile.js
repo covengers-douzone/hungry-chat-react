@@ -14,6 +14,7 @@ import RoomKickModal from "../Modals/RoomKickModal";
 import roleStyle from "../Module/roleStyle";
 import io from "socket.io-client";
 import * as config from "../../config/config";
+import {reloadAction} from "../../Store/Actions/reloadAction";
 
 function ChatProfile() {
     let opacity = roleStyle().opacity()
@@ -23,6 +24,7 @@ function ChatProfile() {
     const {chatProfileSidebar, mobileChatProfileSidebar} = useSelector(state => state);
     const {roomNo} = useSelector(state => state)
     const {participantNo} = useSelector(state => state)
+    const {reload} = useSelector(state => state)
     const userNo = Number(localStorage.getItem("userNo"));
     const [friendList , setFriendList] = useState([]);
     const [inviteList , setInviteList] = useState([]);
@@ -41,10 +43,12 @@ function ChatProfile() {
 
     useEffect( () => {
         (async () => {
+
             await fetchApi(friendList, setFriendList).getFriendList(userNo, localStorage.getItem("Authorization"))
             console.log("chatProfile result " ,
                 await fetchApi(null,null).getParticipantNo(participantNo, localStorage.getItem("Authorization")))
         })()
+
 
     },[])
 
@@ -73,8 +77,10 @@ function ChatProfile() {
                 await  fetchApi(null,null).updateHeadCount("join",roomNo,localStorage.getItem("Authorization"))
                 console.log("e" , results)
             })
-        }
 
+            dispatch(reloadAction(!reload))
+
+        }
     }
 
 
@@ -106,6 +112,8 @@ function ChatProfile() {
                 });
                console.log("results" , results)
             })
+
+            dispatch(reloadAction(!reload))
         }
 
     }
@@ -131,6 +139,8 @@ function ChatProfile() {
 
 
     const handleInviteModal = async (e) => {
+
+        console.log("selectedChat" ,selectedChat)
 
         if(localStorage.getItem("role") !== "ROLE_UNKNOWN"){
         setCheckedInviteItems([])
@@ -178,7 +188,8 @@ function ChatProfile() {
                         <li className="list-inline-item">
 
                             {
-                                selectedChat.participant.role === "ROLE_HOST" ?
+                                (selectedChat.otherParticipant.length !== 0) &&
+                                (selectedChat.participant.role === "ROLE_HOST" && (selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name) && (selectedChat.otherParticipantNo[0].User.name !== 'unknown')) ?
                                     <a  className="btn btn-light" onClick={(e) => handleKickModal(e)} >
                                         <i className="fa fa-ban"  />
                                         <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
@@ -187,19 +198,40 @@ function ChatProfile() {
 
 
                                         </RoomKickModal>
+
                                     </a>
                                     : null
                             }
-                            {/*(selectedChat.participant.role !== "ROLE_HOST")*/}
 
-                            <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
-                                <i className="fa fa-info" style={opacity}  />
-                                <RoomInviteModal modal = {openInviteModalOpen} setModal={setOpenInviteModalOpen} inviteList = {friendList}
-                                                 setInviteList = {setInviteList}
-                                                 callbackAddItem = {callbackInviteAddItem} callbackDeleteItem={callbackInviteDeleteItem}
-                                                 callbackComplete = {callbackInviteComplete}
-                                />
-                            </a>
+                            {/*(selectedChat.participant.role !== "ROLE_HOST")*/}
+                            {
+
+                                (selectedChat.otherParticipant.length !== 0) &&
+                                ((selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name)  && (selectedChat.otherParticipantNo[0].User.name !== 'unknown')  ) ?
+                                <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
+                                    <i className="fa fa-info" style={opacity}/>
+                                    <RoomInviteModal modal={openInviteModalOpen} setModal={setOpenInviteModalOpen}
+                                                     inviteList={friendList}
+                                                     setInviteList={setInviteList}
+                                                     callbackAddItem={callbackInviteAddItem}
+                                                     callbackDeleteItem={callbackInviteDeleteItem}
+                                                     callbackComplete={callbackInviteComplete}
+                                    />
+                                </a> : null
+
+                            }{
+                            (Number(selectedChat.headcount) === 1) ?
+                                <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
+                                    <i className="fa fa-info" style={opacity}/>
+                                    <RoomInviteModal modal={openInviteModalOpen} setModal={setOpenInviteModalOpen}
+                                                     inviteList={friendList}
+                                                     setInviteList={setInviteList}
+                                                     callbackAddItem={callbackInviteAddItem}
+                                                     callbackDeleteItem={callbackInviteDeleteItem}
+                                                     callbackComplete={callbackInviteComplete}
+                                    />
+                                </a> : null
+                        }
 
                             <a onClick={(e) => profileActions(e)}
                                className="btn btn-light">
