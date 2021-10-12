@@ -295,24 +295,25 @@ const Index = React.forwardRef(({
             }
         }
     };
-
-
     const profileActions = (chat) => {
-
         let hostProfile;
         let otherUserProfile;
-        chat.otherParticipantNo.map(participant => {
+        console.log("chat ::::::: ",chat)
+        console.log("role ::::::: ",chat.participant.role)
+
+        chat.otherParticipantNo.length !== 0 ? chat.otherParticipantNo.map(participant => {
             if (participant.role === "ROLE_HOST") {
                 hostProfile = participant.User
+            } else {
+                otherUserProfile = participant.User
             }
-            otherUserProfile = participant.User
-        })
+        }) : chat.participant.role === "ROLE_HOST" ? hostProfile = chat.participant.User : otherUserProfile = chat.participant.User
+
         // 개인톡(내가 방장일 경우)
         hostProfile === undefined ? dispatch(profileInfoAction(otherUserProfile)) : dispatch(profileInfoAction(hostProfile));
         dispatch(profileAction(true));
         dispatch(mobileProfileAction(true))
     };
-
     const ChatListView = (props) => {
         const {chat,i} = props;
         return <li style={chat.type === "public" ? {color: "yellowgreen"} : null}
