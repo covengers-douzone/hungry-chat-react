@@ -95,7 +95,22 @@ function UploadFileModal(props) {
                                                   alt="avatar"
                                             />
                                         </div>
-                                        : null
+                                        :
+                                        file ?
+                                        <div style={{border: '1px', borderColor: '#e1e1e1', borderStyle: 'solid', backgroundColor: 'white', borderRadius: '5px', minHeight: '50px', minWidth: '250px'}}>
+                                            <div style={{margin: '5px'}}>
+                                                <div style={{marginLeft: '20px'}}>
+                                                    {file.name}
+                                                </div>
+                                            </div>
+                                            <div style={{margin: '5px'}}>
+                                                <div style={{marginLeft: '20px', color: 'gray'}}>
+                                                    {file.size > (1024 * 1024) ? Math.floor(file.size / (1024 * 1024)) + ' MB' :
+                                                        file.size > 1024 ? Math.floor(file.size / 1024) + ' KB' : file.size + ' Byte'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                            : null
                                 }
                             </div>
                         </FormGroup>
