@@ -23,10 +23,8 @@ const ChatsDropdown = ({chat}) => {
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
     const profileActions = () => {
-
             dispatch(profileAction(true));
             dispatch(mobileProfileAction(true))
-
     };
 
     const chatDeleteAction = async () => {
