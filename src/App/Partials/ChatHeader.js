@@ -122,7 +122,7 @@ function ChatHeader(props) {
                         selectedChat.type === 'private' && selectedChat.headcount === 2 ?
                             <small className="text-muted">
                                 {
-                                    otherParticipantStatus ? <i className={'text-primary'}>채팅방 접속</i> : <i>오프라인</i>
+                                    otherParticipantStatus ? <i className={'text-primary'}>채팅방 접속 중</i> : null
                                 }
                             </small>
                         : null

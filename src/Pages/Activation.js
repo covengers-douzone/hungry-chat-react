@@ -4,6 +4,7 @@ import {useHistory} from "react-router-dom";
 import { func } from "prop-types";
 import {Alert} from "reactstrap";
 import * as config from "../config/config"
+import img from "../assets/img/covengers-logo.png";
 
 function Activation({location}) {
     
@@ -143,7 +144,10 @@ function Activation({location}) {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <Logo/>
+                <img src={img} style={{width:80, height:80}} onClick={()=>{
+                    window.location.assign("/")
+                }}/>
+                {/*<Logo/>*/}
             </div>
             <h5>계정활성화</h5>
             <p>※ "{username}" 계정은 회원탈퇴를 하였습니다. 계정복구를 원하신다면 아래의 인증절차를 따라주십시오.</p> 

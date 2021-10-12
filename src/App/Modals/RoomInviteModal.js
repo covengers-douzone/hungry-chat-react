@@ -6,30 +6,15 @@ import {
     ModalBody,
     ModalFooter,
     Tooltip,
-    Form,
-    FormGroup,
-    Label,
-    Input,
-    InputGroup,
+
 } from 'reactstrap';
 import fetchApi from "../Module/fetchApi";
 
-import {useSelector} from "react-redux";
-import {friendLists} from "../Sidebars/Friends/Data";
-import FriendsDropdown from "../Sidebars/Friends/FriendsDropdown";
-import friendListReducer from "../../Store/Reducers/friendListReducer";
-import WomenAvatar4 from "../../assets/img/women_avatar4.jpg";
+function RoomInviteModal({
+                             modal, setModal, inviteList , setInviteList, callbackAddItem, callbackDeleteItem , callbackComplete
+                         }) {
 
-function InviteModal({
-                         openValue,
-                         friendList,
-                         callbackItem,
-                         callbackAddItem,
-                         callbackDeleteItem,
-                         callbackComplete
-                     }) {
 
-    const [modal, setModal] = useState(false);
 
     const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -43,29 +28,17 @@ function InviteModal({
     };
 
     const checkedItemHandler = (item, isChecked) => {
-        console.log("friendList", friendList)
+
         if (isChecked) {
             callbackAddItem(item);
-            //  callbackItem(no);
+
         } else if (!isChecked) {
             callbackDeleteItem(item);
-            //    callbackItem(no);
+
         }
 
     };
 
-    useEffect(() => {
-
-        if (openValue === true) {
-            setModal(true)
-        } else {
-            setModal(!openValue);
-        }
-
-    }, [openValue])
-    useEffect(() => {
-        setModal(false)
-    }, [])
 
     useEffect(() => {
         function handleTouchMove(event) {
@@ -83,41 +56,26 @@ function InviteModal({
 
     // Create Button Event
     const modalToggle = async () => {
+        setInviteList([])
         setModal(!modal);
     }
     const inviteFriends = () => {
+        setInviteList([])
         callbackComplete()
         setModal(!modal);
     }
-
-    const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
-
-    const AvatarTooltip = (props) => {
-
-        const [tooltipOpen, setTooltipOpen] = useState(false);
-
-        const toggle = () => setTooltipOpen(!tooltipOpen);
-
-        return <Tooltip
-            placement="top"
-            isOpen={tooltipOpen}
-            target={"Tooltip-Avatar" + props.id}
-            toggle={toggle}>
-            {props.name}
-        </Tooltip>
-    };
 
 
     return (
         <div>
             <Modal className="modal-dialog-zoom" isOpen={modal} centered>
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-users"></i> 친구 목록 {modal}
+                    <i className="fa fa-info"></i> 친구 초대 {modal}
                 </ModalHeader>
                 <ModalBody>
                     {
                         modal === true ?
-                            friendList.map((item, i) => {
+                            inviteList.map((item, i) => {
                                 return <li key={i} className="list-group-item">
                                     {item.avatar}
                                     <div className="users-list-body">
@@ -140,14 +98,14 @@ function InviteModal({
                                 </li>
                             }) : null
 
-                        }
-                        </ModalBody>
-                        <ModalFooter>
-                        <Button color="primary" onClick={inviteFriends}>선택</Button>
-                        </ModalFooter>
-                        </Modal>
-                        </div>
-                        )
                     }
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={inviteFriends}>선택</Button>
+                </ModalFooter>
+            </Modal>
+        </div>
+    )
+}
 
-                    export default InviteModal
+export default RoomInviteModal

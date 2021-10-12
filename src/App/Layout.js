@@ -33,7 +33,7 @@ function Layout({history}) {
         <div className="layout">
             <Navigation/>
             <div className="content">
-                <SidebarIndex history={history}  ref = {scrollRef}  upOffset = {upOffset}  downOffset={downOffset}/>
+                <SidebarIndex history={history}  ref = {scrollRef}  upOfRfset = {upOffset}  downOffset={downOffset}/>
                 <Chat history={history}  ref = {scrollRef} upOffset = {upOffset} downOffset ={downOffset} />
                 {
                     (profileSidebar || mobileProfileSidebar) ? <Profile/> : null

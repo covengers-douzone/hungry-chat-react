@@ -2,6 +2,7 @@ import { func } from "prop-types";
 import React, {useEffect} from "react"
 import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
+import img from "../assets/img/covengers-logo.png";
 
 function UserId({location}) {
     let history = useHistory();
@@ -18,7 +19,9 @@ function UserId({location}) {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <Logo/>
+                <img src={img} style={{width:80, height:80}} onClick={()=>{
+                    window.location.assign("/")
+                }}/>
             </div>
             <h5>ID 목록</h5>
 

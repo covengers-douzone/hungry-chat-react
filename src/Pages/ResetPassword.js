@@ -3,6 +3,7 @@ import {ReactComponent as Logo} from '../assets/img/logo.svg'
 import {useHistory} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as config from "../config/config"
+import img from "../assets/img/covengers-logo.png";
 
 function ResetPassword({location}) {
     const { register, handleSubmit, errors } = useForm();
@@ -37,7 +38,10 @@ function ResetPassword({location}) {
     return (
         <div className="form-wrapper">
             <div className="logo">
-                <Logo/>
+                <img src={img} style={{width:80, height:80}} onClick={()=>{
+                    window.location.assign("/")
+                }}/>
+                {/*<Logo/>*/}
             </div>
             <h5>비밀번호 초기화</h5>
             <form onSubmit={ handleSubmit(onSubmit) }>
