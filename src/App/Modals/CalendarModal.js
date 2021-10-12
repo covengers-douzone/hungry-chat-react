@@ -94,10 +94,14 @@ function CalendarModal(props){
         }
     }
 
+    const role = localStorage.getItem("role") === "ROLE_USER";
+
     return (
             <Modal style={{minWidth:'1000px', minHeight: '500px'}} isOpen={props.modal} centered>
-                <ModalHeader toggle={props.toggle}>
-                <i className="ti ti-calendar"></i> 캘린더
+                <ModalHeader toggle={() => {
+                    props.toggle();
+                }}>
+                    <i className="ti ti-calendar"></i> 캘린더
                 </ModalHeader>
                 <ModalBody style={{minWidth:'1000px', minHeight: '500px', position:"relative"}}>
                     <Alert isOpen={alertOpen}>일정 : {newTitle}</Alert>
@@ -115,25 +119,29 @@ function CalendarModal(props){
                                 일정 보기 & 클릭하여 일정 추가하기
                             </NavLink>
                         </NavItem>
-                        <NavItem>
-                            <NavLink href="#/"
-                                     className={classnames({active: activeTab === '2'})}
-                                     onClick={() => {
-                                         setAlertOpen(false);
-                                         setEventSuccessOpen(false);
-                                         toggle('2');
-                                     }}
-                            >
-                                날짜로 일정 추가하기
-                            </NavLink>
-                        </NavItem>
+                        { role ?
+                            <NavItem>
+                                <NavLink href="#/"
+                                         className={classnames({active: activeTab === '2'})}
+                                         onClick={() => {
+                                             setAlertOpen(false);
+                                             setEventSuccessOpen(false);
+                                             toggle('2');
+                                         }}
+                                >
+                                    날짜로 일정 추가하기
+                                </NavLink>
+                            </NavItem> : ""
+                        }
                     </Nav>
+
                     <TabContent activeTab={activeTab}>
                         <TabPane tabId="1">
-                            <Calendar
+                            { role ?  <Calendar
                                 selectable
                                 localizer={localizer}
                                 events={allEvents}
+                                views={['month','agenda']}
                                 startAccessor="start"
                                 endAccessor={(event) => {
                                     return addMinutes(new Date(event.end), 1)
@@ -145,12 +153,29 @@ function CalendarModal(props){
                                 onSelectSlot={event => {
                                     handleSelectSlots(event)
                                 }}
-                                style={{ height: 500, margin: "50px" }} />
+                                style={{ height: 500, margin: "50px" }} /> :
+                                <Calendar
+                                    localizer={localizer}
+                                    events={allEvents}
+                                    views={['month','agenda']}
+                                    startAccessor="start"
+                                    endAccessor={(event) => {
+                                        return addMinutes(new Date(event.end), 1)
+                                    }}
+                                    onSelectEvent={event => {
+                                        setAlertOpen(true);
+                                        setTitle(event.title);
+                                    }}
+                                    onSelectSlot={event => {
+                                        handleSelectSlots(event)
+                                    }}
+                                    style={{ height: 500, margin: "50px" }} />
+                            }
+
                         </TabPane>
                         <TabPane tabId="2">
                             <div className="calendar-setting">
                                 <Alert isOpen={eventSuccessOpen}>일정 추가 완료</Alert>
-
                                 <div>
                                     <label id="calendar_title">일정 제목</label>
                                     <br/>
@@ -174,6 +199,8 @@ function CalendarModal(props){
                             </div>
                         </TabPane>
                     </TabContent>
+
+
                 </ModalBody>
             </Modal>
         )

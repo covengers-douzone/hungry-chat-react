@@ -13,11 +13,11 @@ function SignIn({history}) {
         const username = e.target.email.value;
         const password = e.target.password.value;
         if(e.target.email.value !== '' || e.target.password.value !== ''){
-            fetch(config.SPRING_URL+"/api/user/activation",{
+            fetch(`${config.SPRING_URL}/api/user/activation`,{
                 method: "POST",
                 headers: {
                     "Access-Control-Allow-Headers":"Authorization",
-                    "Access-Control-Allow-Origin": config.SPRING_URL,
+                    "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                     "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                     "Accept":"application/json",
                     "Content-Type":"application/json"
@@ -41,11 +41,11 @@ function SignIn({history}) {
                                     isDeleted: response.data
                                 })
                     }else {
-                                    fetch(config.SPRING_URL+"/api/user/login",{
+                                    fetch(`${config.SPRING_URL}/api/user/login`,{
                                         method: "POST",
                                         headers: {
                                             "Access-Control-Allow-Headers":"Authorization",
-                                            "Access-Control-Allow-Origin": config.SPRING_URL,
+                                            "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                                             "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                                             "Accept":"application/json",
                                             "Content-Type":"application/json"
@@ -88,7 +88,7 @@ function SignIn({history}) {
     const unknownLoginHandler = async (e) => {
         e.preventDefault();
         try {
-            await fetch(config.SPRING_URL+"/api/user/unknownLogin", {
+            await fetch(`${config.SPRING_URL}/api/user/unknownLogin`, {
                 method: "get",
                 headers: {
                     "Accept": "application/json",
@@ -100,11 +100,11 @@ function SignIn({history}) {
                     throw new Error("unknownLoginHandler error occured");
                 }
             }).then(response => {
-                fetch(config.SPRING_URL+"/api/user/login", {
+                fetch(`${config.SPRING_URL}/api/user/login`, {
                     method: "POST",
                     headers: {
                         "Access-Control-Allow-Headers": "Authorization",
-                        "Access-Control-Allow-Origin": config.SPRING_URL,
+                        "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                         "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                         "Accept": "application/json",
                         "Content-Type": "application/json"

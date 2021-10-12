@@ -24,15 +24,15 @@ function App() {
             <Switch>
 
                 {/*<Route path="/sign-in" component={SignIn}/>*/}
-                <Route path="/chat" component={Layout}/>
-                <Route path="/sign-up" component={SignUp}/>
-                <Route path="/lock-screen" component={LockScreen}/>
-                <Route path="/reset-password" component={ResetPassword}/>
-                <Route path="/phone-code" component={PhoneCode}/>
-                <Route path="/userinfo" component={UserInfoSearch}/>
-                <Route path="/userId" component={UserId}/>
-                <Route path="/activation" component={Activation}/>
-                <Route exact path="/" component={SignIn}/>
+                <Route exact path="/chat" component={Layout}/>
+                <Route exact path="/sign-up" component={SignUp}/>
+                <Route exact path="/lock-screen" component={LockScreen}/>
+                <Route exact path="/reset-password" component={ResetPassword}/>
+                <Route exact path="/phone-code" component={PhoneCode}/>
+                <Route exact path="/userinfo" component={UserInfoSearch}/>
+                <Route exact path="/userId" component={UserId}/>
+                <Route exact path="/activation" component={Activation}/>
+                <Route path="/" component={SignIn}/>
             </Switch>
         </Router>
     )

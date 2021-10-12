@@ -41,12 +41,12 @@ function Activation({location}) {
             authCode -= 1000;
         }
         setCode(authCode);// 인증코드
-        fetch(config.SPRING_URL+"/api/user/sms", {
+        fetch(`${config.SPRING_URL}/api/user/sms`, {
             method: "POST",
             credentials: 'include',
             headers: {
                 "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": config.SPRING_URL,
+                "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -74,12 +74,12 @@ function Activation({location}) {
         e.preventDefault();
 
         if(e.target.text.value === e.target.code.value){
-            fetch(config.SPRING_URL+"/api/user/useractivation", {
+            fetch(`${config.SPRING_URL}/api/user/useractivation`, {
                 method: "POST",
                 credentials: 'include',
                 headers: {
                     "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": config.SPRING_URL,
+                    "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                     'Accept': 'application/json, text/plain',
                     'Content-Type': 'application/json;charset=UTF-8'
@@ -92,11 +92,11 @@ function Activation({location}) {
                 })
             }).then(response =>  {
                     if(response.status === 200) {
-                        fetch(config.SPRING_URL+"/api/user/login",{
+                        fetch(`${config.SPRING_URL}/api/user/login`,{
                                         method: "POST",
                                         headers: {
                                             "Access-Control-Allow-Headers":"Authorization",
-                                            "Access-Control-Allow-Origin":config.SPRING_URL,
+                                            "Access-Control-Allow-Origin":`${config.SPRING_URL}`,
                                             "Access-Control-Allow-Methods":"OPTIONS,POST,GET",
                                             "Accept":"application/json",
                                             "Content-Type":"application/json"

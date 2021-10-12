@@ -76,7 +76,7 @@ function Navigation() {
         if(localStorage.getItem("role") === "ROLE_UNKNOWN"){
            e.preventDefault()
         }else{
-            setLogoUrl("/chat/" + localStorage.getItem("userNo"))
+            setLogoUrl("/chat")
         }
     }
 
@@ -158,6 +158,15 @@ function Navigation() {
         audio.pause()
     }
 
+    const ch_name = localStorage.getItem("name")
+    const ch_color = {
+        default: "#757575",
+        cap : "#304ffe",
+        dr : "#d500f9",
+        hulk : "#00c853",
+        thor : "#ffd600"
+    }
+
     return (
         <nav className="navigation">
             <EditProfileModal modal={editModalOpen} toggle={editModalToggle}/>
@@ -166,25 +175,25 @@ function Navigation() {
             <div className="nav-group">
                 <ul>
                     <li>
-
-                        <a onClick={handleLogoClick} href={logoUrl} className="logo">
-                            <img src={img} style={{width:70, height:70}}/>
-                            {/*<Logo/>*/}
-                        </a>  
-
+                        <a onClick={handleLogoClick} href={logoUrl} className="logo" style={ch_name === "Ketchup America" ? {backgroundColor: ch_color.cap} : ch_name === "Dr.Stranger" ? {backgroundColor: ch_color.dr} : ch_name === "Green monster" ? {backgroundColor: ch_color.hulk} : ch_name === "Static electricity" ? {backgroundColor: ch_color.thor} : {backgroundColor: ch_color.default}} >
+                                <img src={img} style={{width:70, height:70}}/>
+                                {/*<Logo/>*/}
+                        </a>
                     </li>
                     {
                         navigationItems.map((item, i) => <NavigationItemView key={i} item={item}
                                                                              tooltipName={"Tooltip-" + i}/>)
                     }
 
-                    {/* <li >
-                        <li>
-                            <a onClick={gameModalToggle}>
-                                <i className="ti ti-game" style={opacity}></i>
-                            </a>
-                        </li>
-                    </li> */}
+                    {/*<li >*/}
+                    {/*    <li>*/}
+                    {/*        <a onClick={gameModalToggle}>*/}
+                    {/*            <i className="ti ti-game" style={opacity}></i>*/}
+                    {/*        </a>*/}
+                    {/*    </li>*/}
+                    {/*</li>*/}
+
+
                     <li >
                         <li>
                             <a id="music" onClick={musicStart}>

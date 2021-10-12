@@ -29,20 +29,7 @@ import dark from "react-syntax-highlighter/dist/cjs/styles/hljs/dark";
 
 function CodeBlockModal({modal, setModal}) {
 
-    const {roomNo} = useSelector(state => state);
-    const {participantNo} = useSelector(state => state);
-    const {headCount} = useSelector(state => state)
-    const {codeBlock} = useSelector(state => state)
-    const {sendOk} = useSelector(state => state)
-
-    const [language, changeLanguage] = useState("jsx");
-    const [languageDemo, changeDemo] = useState(sample["jsx"]);
-    const [lineNumbers, toggleLineNumbers] = useState(true);
-
-
-
-    const [text, setText] = useState("");
-    const [codeBlockText, setCodeBlockText] = useState(" class HelloMessage extends React.Component {\n" +
+    let exampleText = " class HelloMessage extends React.Component {\n" +
         "  handlePress = () => {\n" +
         "    alert('Hello')\n" +
         "  }\n" +
@@ -59,7 +46,21 @@ function CodeBlockModal({modal, setModal}) {
         "ReactDOM.render(\n" +
         "  <HelloMessage name=\"Taylor\" />, \n" +
         "  mountNode \n" +
-        "); ");
+        "); "
+    const {roomNo} = useSelector(state => state);
+    const {participantNo} = useSelector(state => state);
+    const {headCount} = useSelector(state => state)
+    const {codeBlock} = useSelector(state => state)
+    const {sendOk} = useSelector(state => state)
+
+    const [language, changeLanguage] = useState("jsx");
+    const [languageDemo, changeDemo] = useState(sample["jsx"]);
+    const [lineNumbers, toggleLineNumbers] = useState(true);
+
+
+
+    const [text, setText] = useState("");
+    const [codeBlockText, setCodeBlockText] = useState(exampleText);
     const [content, setContent] = useState("hello");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const toggle = () => setDropdownOpen(prevState => !prevState);

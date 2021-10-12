@@ -43,15 +43,17 @@ function Index({roomList, openRoomList, history,}) {
 
     const chatSelectHandle = async (chat) => {
         try {
+
             if (chat.password) {
                 setEnterPasswordChat(chat);
                 setModal(!modal);
             } else {
                 const result = roomList && roomList.filter(room => {
-                    return (room.type === "public" || room.type === "official") && room.participantNo === chat.participantNo;
+                    return (room.type === "public" ||  room.type === "official") && room.participantNo === chat.participantNo;
                 })
+                console.log("chatSelectHandle" , result)
 
-                if (result.length === 0) {
+                if (result.length === 0) { // 처음 들어온 방
 
                     const roomNo = chat.id
                     const participantNo = (await fetchApi(null, null).createParticipant(localStorage.getItem("userNo"), chat.id, "ROLE_MEMBER",
@@ -59,14 +61,16 @@ function Index({roomList, openRoomList, history,}) {
                     //  dispatch(messageLengthAction(selectedChat.messages.length))
                     dispatch(participantNoAction(participantNo));
                     dispatch(reloadAction(!reload));
-                    await fetchApi(null, null).updateHeadCount("join", roomNo, localStorage.getItem("Authorization"))
-                } else {
+                    const result = await fetchApi(null, null).updateHeadCount("join", roomNo, localStorage.getItem("Authorization"))
+
+
+                } else { // 처음 안들어 온 방
                     dispatch(participantNoAction(result[0].participantNo));
                 }
 
                 dispatch(sidebarAction('Chats'));
                 dispatch(joinRoomAction(true));
-                console.log(" dispatch(joinRoomAction(true))")
+
 
 
             }

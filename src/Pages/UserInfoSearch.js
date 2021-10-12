@@ -39,12 +39,12 @@ function UserInfoSearch() {
         }
         setCode(authCode);// 인증코드
          //console.log(e.target.number.value);
-        fetch(config.SPRING_URL+"/api/user/sms", {
+        fetch(`${config.SPRING_URL}/api/user/sms`, {
             method: "POST",
             credentials: 'include',
             headers: {
                 "Access-Control-Allow-Headers" : "Content-Type",
-                "Access-Control-Allow-Origin": config.SPRING_URL,
+                "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -77,12 +77,12 @@ function UserInfoSearch() {
         e.preventDefault();
 
         if(e.target.text.value === e.target.code.value){
-            fetch(config.SPRING_URL+"/api/user/useridsearch", {
+            fetch(`${config.SPRING_URL}/api/user/useridsearch`, {
                 method: "POST",
                 credentials: 'include',
                 headers: {
                     "Access-Control-Allow-Headers" : "Content-Type",
-                    "Access-Control-Allow-Origin": config.SPRING_URL,
+                    "Access-Control-Allow-Origin": `${config.SPRING_URL}`,
                     "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
                     'Accept': 'application/json, text/plain',
                     'Content-Type': 'application/json;charset=UTF-8'

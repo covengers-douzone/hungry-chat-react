@@ -28,14 +28,12 @@ function ChatHeader(props) {
     const {reload} = useSelector(state => state);
     const {roomNo} = useSelector(state=>state)
     const {userNo} = useSelector(state=>state)
-    const {selectedChat, currentOnlineRoomUsers, participantNo} = useSelector(state=>state);
+    const {selectedChat, currentOnlineRoomUsers, participantNo, currentOnlineUsers } = useSelector(state=>state);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [otherParticipantStatus, setOtherParticipantStatus] = useState(false);
+    const [rerender, setRerender] = useState(false);
 
     const {markDown} = useSelector(state => state);
-
-
-
 
 
     const [calenderModalOpen, setCalendarModalOpen] = useState(false);
@@ -91,6 +89,27 @@ function ChatHeader(props) {
         setOtherParticipantStatus(status);
     },[currentOnlineRoomUsers])
 
+    useEffect(()=>{
+
+        if(selectedChat.headcount < 3 && selectedChat.type === 'private'){
+            let status = false;
+
+            currentOnlineUsers && currentOnlineUsers.users.map(currentUser => {
+                if(Number(currentUser.userLocalStorage.userNo) === Number(selectedChat.otherParticipant[0].User.no)){
+                    status = true;
+                }
+            })
+
+            selectedChat.avatar = (<figure className={status ? "avatar avatar-state-success" : "avatar"}>
+                                        <img src={selectedChat.avatar.props.children.props.src}
+                                             className="rounded-circle" alt="avatar"/>
+                                    </figure>)
+
+            setRerender(!rerender);
+        }
+
+    },[currentOnlineUsers]);
+
     return (
 
         <div className="chat-header">
@@ -103,7 +122,7 @@ function ChatHeader(props) {
                         selectedChat.type === 'private' && selectedChat.headcount === 2 ?
                             <small className="text-muted">
                                 {
-                                    otherParticipantStatus ? <i className={'text-primary'}>온라인</i> : <i>오프라인</i>
+                                    otherParticipantStatus ? <i className={'text-primary'}>채팅방 접속</i> : <i>오프라인</i>
                                 }
                             </small>
                         : null

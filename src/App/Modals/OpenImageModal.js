@@ -98,8 +98,17 @@ function OpenImageModal(props) {
                    }}
             >
                 <ModalHeader toggle={modalToggle}>
-                    <i className="fa fa-image">
-                    </i> 이미지
+                    {
+                        props.fileType === 'img' ?
+                            <div>
+                                <i className="fa fa-image"></i> 이미지
+                            </div>
+                        : props.fileType === 'video' ?
+                            <div>
+                                <i className="fa fa-video-camera" aria-hidden="true"></i> 비디오
+                            </div>
+                             : null
+                    }
                 </ModalHeader>
                 <div className={"modal-content"} style={{"background-color": null}}>
                     <div className="align-items-center" style={{'margin-top': marginTop,}}>

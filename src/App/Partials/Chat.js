@@ -64,7 +64,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const [chatNo, setChatNo] = useState(null)
 
-        const [pagingOk, setPagingOk] = useState(0)
+        const [pagingOk, setPagingOk] = useState(-1)
 
         const [searchTerm, setSearchTerm] = useState("");
         const [searchOk, setSearchOk] = useState(false);
@@ -78,7 +78,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const [scrollSwitch, setScrollSwitch] = useState(false)
 
-        const [language , setLanguage] = useState("null")
+        const [language, setLanguage] = useState("null")
 
 
         // image 클릭 시 image 크게 보이게 하는 modal
@@ -86,6 +86,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
         const [openCodeModalOpen, setOpenCodeModalOpen] = useState(false);
 
         const [openMessageModalOpen, setOpenMessageModalOpen] = useState(false);
+
+        const [messageHeight, setMessageHeight] = useState();
 
         // modal에서 사용; modal 닫을 때 실행되는 함수
         const editOpenImageModalToggle = () => {
@@ -101,22 +103,42 @@ const Chat = React.forwardRef((props, scrollRef) => {
             setText(null);
         }
 
+        const searchRef = useRef();
         const inputRef = useRef();
+
+        useEffect(() => {
+            if (searchRef && searchRef.current) {
+                searchRef.current.focus();
+            } else if (inputRef && inputRef.current) {
+                inputRef.current.textareaRef.focus()
+            }
+        })
 
         useEffect(() => {
             //console.log("searchTerm", searchTerm)
             const searchList = async () => {
-                console.log("handleSearch",searchTerm)
-                const {results: chatlist, searchedChatNoList} = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
-                if(searchedChatNoList.length > 0){
+                //console.log("handleSearch", searchTerm)
+                const {
+                    results: chatlist,
+                    searchedChatNoList
+                } = await fetchApi(chatList, setChatList).getChatSearchList(selectedChat.id, 0, messageAllLength, searchTerm, localStorage.getItem("Authorization"))
+                if (searchedChatNoList && searchedChatNoList.length > 0) {
                     setSearchChatNoList(searchedChatNoList);
                     const chatNum = chatlist.length;
                     const newLp = messageAllLength - chatNum - 1 > 0 ? messageAllLength - chatNum - 1 : 0;
-                    setLp(newLp)
+                    setLp(newLp === lp ? newLp + 1 : newLp)
+                } else {
+                    // 검색 결과가 안나오는 경우
+                    setSearchChatNoList(searchedChatNoList);
+                    if (lastPage === lp) {
+                        setLp(lastPage + 1);
+                    } else {
+                        setLp(lastPage);
+                    }
                 }
             }
 
-            if(searchTerm !== ""){
+            if (searchTerm !== "") {
                 // 찾을때 chatlist 변경
                 searchList();
                 setSearchOk(true);
@@ -135,10 +157,12 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }, [searchTerm])
 
         useEffect(() => {
-            console.log('ssssssssssssssssss',sendOk)
+            //console.log('useEffect !! sendOk', sendOk)
+
             if (scrollEl) {
                 scrollEl.scrollTop = scrollEl.scrollHeight;
             }
+
         }, [sendOk])
 
         useEffect(() => {
@@ -156,25 +180,28 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         useEffect(() => {
 
-            setTimeout(() => {
-                console.log("스코롤 사용 가능 ")
-                setScrollSwitch(true)
-            }, 3000)
+            if(joinOk){
+                // setTimeout(() => {
+                //     console.log("스코롤 사용 가능 ")
+                //     setScrollSwitch(true)
+                // }, 3000)
 
 
-            setTimeout(async () => {
-                if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
-                    if (messageRef.current) {
+                setTimeout(async () => {
+                    if (lastReadNo && scrollEl) { // 마지막 읽은 메시지가 존재 한다면. 스크롤 위치를 최상단에 위치
+                        if (messageRef.current) {
+                        }
+                    } else if (scrollEl) {
+                        scrollEl.scrollTop = scrollEl.scrollHeight
+                        // console.log("current.clientHeight" , scrollEl.current.clientHeight)
                     }
-                } else if (scrollEl) {
-                    scrollEl.scrollTop = scrollEl.scrollHeight
-                    // console.log("current.clientHeight" , scrollEl.current.clientHeight)
-                }
-            }, 100)
+                }, 100)
 
 
-            setLp(lastPage)
-            setPagingOk(0)
+                //console.log('joinOk, lastPage?',lastPage)
+                setLp(lastPage)
+                setPagingOk(0)
+            }
         }, [joinOk])
 
         const handleSubmit = (newValue) => {
@@ -187,8 +214,11 @@ const Chat = React.forwardRef((props, scrollRef) => {
             formData.append("markDown", markDown);
             formData.append("codeBlock", codeBlock)
             formData.append("Authorization", localStorage.getItem("Authorization"));
+            //console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
+           //console.log(" handleSubmit markDown@@@@@@@@@@@@2", newValue)
+
             myFetch(null, null).send(formData);
-            console.log(" handleSubmit markDown@@@@@@@@@@@@2", markDown)
+
             setInputMsg("");
             //dispatch(sendOkAction(!sendOk));
             //setSendOk(!sendOk)
@@ -210,7 +240,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 if (scrollEl && scrollSwitch === true) {
                     const chatlist = await fetchApi(chatList, setChatList).getChatList(selectedChat.id, lp, messageAllLength, localStorage.getItem("Authorization"))
                     const chats = chatFormList(chatlist, participantNo).map(chat => {
-                        if(searchChatNoList.includes(chat.chatNo)){
+                        if (searchChatNoList.includes(chat.chatNo)) {
                             chat.search = true
                         }
                         return chat
@@ -219,23 +249,20 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     setPagingOk(pagingOk + 1)
                 }
             }
-            getChatListUp()
+            // !joinOk : 처음 들어왔을 때에는 paging 되지 않게 하기
+            !joinOk && getChatListUp() //&& (console.log('lp?',lp, pagingOk))
         }, [lp])
 
-
         useEffect(() => {
-            console.log('-----paging OK 실행');
+            //console.log('-----paging OK 실행',pagingOk,'lastPage',lp);
+            messageRef && messageRef.current && setMessageHeight(messageRef.current.clientHeight);
             // 페이징 후 스크롤 위치 조정
-            if(scrollEl){
-                if(searchOk){
+            if (scrollEl) {
+                if (searchOk) {
                     scrollEl.scrollTop = 0;
                     setSearchOk(false);
                 } else {
-                    if(lp === 0) {
-                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/Math.ceil((messageAllLength - lp)/10 + 2);
-                    } else{
-                        scrollEl.scrollTop = (scrollRef.current.scrollBottom - scrollRef.current.scrollTop)/Math.ceil((messageAllLength - lp)/10 - 1);
-                    }
+                    scrollEl.scrollTop = messageRef.current.clientHeight - messageHeight
                 }
             }
         }, [pagingOk])
@@ -253,10 +280,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 }
             }
             const splitData = putChatNo.split(",")
-            const lastData = splitData[splitData.length - 1].split("["); // 마지막 데이터는 [ 와 표시가 된다 ,
+            const lastData = splitData[splitData.length - 1].split("["); // 마지막 데터는 [ 와 표시가 된다 ,
             const chatNo = Number(splitData[0]) // [1] 에서부터 lastData 이전까지  사용하면된다.
             // const index =  Number(lastData[0])  // [1]은 [object ~~ 값 ]
-            // await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
+            await fetchApi(null, null).deleteChatNo(chatNo, localStorage.getItem("Authorization"))
             // const idx = selectedChat.messages.findIndex(e => e.chatNo === chatNo)
             // selectedChat.messages && (selectedChat.messages.splice (idx , 1));
             setChatNo(chatNo)
@@ -266,29 +293,42 @@ const Chat = React.forwardRef((props, scrollRef) => {
 
         const handleClickMessage = (message) => {
             // image가 있는 message인 경우
-            console.log("message", message)
-            if (message.type === "IMG" || message.type === "VIDEO") {
+            //console.log("message", message)
+            if (message.type === "IMG" ) {
                 // image source(이미지 저장 위치: localhost:9999/assets/~~~)
                 const imgSource = message.text.props.src
                 const fileType = message.text.type;
                 // open image modal
 
-                console.log("message.text.type", fileType)
+                //console.log("fileType", fileType)
 
                 setImage(imgSource);
                 setFileType(fileType);
                 setOpenImageModalOpen(true);
-            } else if (message.type === "MARKDOWN") {
+            }
+            else if (message.type === "VIDEO") {
+                const imgSource = message.text.props.url
+                const fileType = 'video';
+                // open image modal
+
+                //console.log("fileType", fileType, imgSource)
+
+                setImage(imgSource);
+                setFileType(fileType);
+                setOpenImageModalOpen(true);
+            }
+            else if (message.type === "MARKDOWN") {
                 let splitResult = message.text.props.children.split('\n');
                 let language = splitResult[0].split('```')
                 let contents = ""
+                // for (let i = 1; i < splitResult.length; i++) {
                 // for (let i = 1; i < splitResult.length; i++) {
                 //     if (splitResult[i] !== "") {
                 //         contents = splitResult[i]
                 //         break;
                 //     }
                 // }
-                for(let i = 1; i < splitResult.length -1; i++){
+                for (let i = 1; i < splitResult.length - 1; i++) {
                     contents += splitResult[i] + "\n"
                 }
                 setLanguage(language[1])
@@ -375,7 +415,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                 )
             } else {
                 return (
-                    <div className={"message-item " + message.outgoing} ref={messageRef}
+                    <div className={"message-item " + message.outgoing}
                          id={message.index} onClick={() => handleClickMessage(message)} style={{marginTop: 1}}>
                         <ContextMenuTrigger id={`contextMenu${message.chatNo}`}>
                             {message.profileImageUrl === "" ? "" : <img src={message.profileImageUrl} style={{
@@ -392,16 +432,17 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 width: 145
                             }}>{message.nickname}</p>
 
-                            <div className={"message-content " + (message.file ? 'message-file' : '') + (message.search ? "message-search" : '')}
-                                 onClick={() => handleClickMessage(message)}>
+                            <div
+                                className={"message-content " + (message.file ? 'message-file' : '') + (message.search ? "message-search" : '')}
+                                onClick={() => handleClickMessage(message)}>
                                 {message.file ? message.file : message.text.length > 20 ? message.text.substring(0, 20) + " ..." : message.text}
                             </div>
 
 
                             <ContextMenu id={`contextMenu${message.chatNo}`}>
-                                <MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>
-                                    <button> 메세지 정보</button>
-                                </MenuItem>
+                                {/*<MenuItem id="Message-Information-item" data={`test`} onClick={handleMessageDelete}>*/}
+                                {/*    <button> 메세지 정보</button>*/}
+                                {/*</MenuItem>*/}
                                 <MenuItem id="Message-Delete-item" data={`${message.chatNo},${message.index}`}
                                           onClick={handleMessageDelete}
                                           disabled={(message.participantNo !== participantNo)}>
@@ -457,10 +498,19 @@ const Chat = React.forwardRef((props, scrollRef) => {
         }
 
         const onScroll = (e) => {
-            if( !searchOk && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)){
+            //console.log('onScroll, messsageRef',messageRef.current.clientHeight)
+
+            // 채팅방에 들어온 경우 pagingOk가 0으로 세팅됨 그때 joinOk 를 false로 변경함
+            if(pagingOk === 0){
+                dispatch(joinOKAction(false))
+            }
+            // !joinOk : 처음 접속한 경우 paging 자동 실행되지 않도록 막음
+            // !searchOk : 검색한 상태가 아닌 경우 paging 하지 않음
+            if (!joinOk && !searchOk && scrollRef.current.scrollTop && e.target.scrollTop < (e.target.scrollHeight / 20) && (scrollRef.current.scrollTop > e.target.scrollTop)) {
+                //console.log('lp 실행')
                 const newLp = lp - config.CHAT_LIMIT < 0 ? 0 : lp - config.CHAT_LIMIT;
                 setLp(newLp)
-            } else if(searchOk){
+            } else if (searchOk) {
                 scrollRef.current.scrollTop = 0;
             }
             scrollRef.current.scrollTop = e.target.scrollTop;
@@ -474,7 +524,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                     selectedChat.name
                         ?
                         <React.Fragment>
-                            <h3>현재 총 인원 : {selectedChat.headcount}  </h3>
+                            {/*<h3>현재 총 인원 : {selectedChat.headcount}  </h3>*/}
                             <ChatHeader history={props.history} selectedChat={selectedChat}/>
                             <PerfectScrollbar
                                 onUpdateSize={(ref) => {
@@ -485,8 +535,8 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                 ref={scrollRef}
                             >
                                 <pre>
-                                <div className="chat-body">
-                                    <div className="messages">
+                                <div className="chat-body" style={{minHeight: '300px'}}>
+                                    <div className="messages" ref={messageRef}>
                                         {
                                             selectedChat.messages
                                                 ?
@@ -508,16 +558,6 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                     <i className="ti ti-search" style={{color: 'white'}}>채팅검색</i>
                                 </div>
 
-                                <input hidden="hidden"/>
-                                <input
-                                    type="text"
-                                    className={isOpen ? "show-menu" : "hide-menu"}
-                                    placeholder="채팅검색"
-                                    ref={inputRef}
-                                    onChange={handleSearch}
-                                />
-
-
                                 {
                                     isOpen ?
                                         <form>
@@ -525,7 +565,7 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                                 type="text"
                                                 className="form-control" // + (isOpen ? "show-menu" : "hide-menu")}
                                                 placeholder="채팅검색"
-                                                ref={inputRef}
+                                                ref={searchRef}
                                                 onChange={handleSearch}
                                                 style={{
                                                     backgroundColor: '#EBEBEB',
@@ -535,11 +575,10 @@ const Chat = React.forwardRef((props, scrollRef) => {
                                         </form>
                                         : null
                                 }
-
-
-
                             </div>
-                            <ChatFooter onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
+
+                            <ChatFooter setMenu={setMenu} inputRef={inputRef} setSearchTerm={setSearchTerm}
+                                        onSubmit={handleSubmit} onChange={handleChange} inputMsg={inputMsg}
                                         setInputMsg={setInputMsg}
                             />
 
