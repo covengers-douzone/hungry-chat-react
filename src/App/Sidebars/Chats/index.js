@@ -143,6 +143,7 @@ const Index = React.forwardRef(({
                     //쳇 리스트 갯수 구하기
                     const chatListCount = await fetchApi(chatList, setChatList).getChatListCount(selectedChat.id, localStorage.getItem("Authorization"))
 
+                    console.log('chatListCount',chatListCount)
                     if ((chatListCount.count <= config.CHAT_LIMIT)  ) {
                         lastPage = 0;
                     } else {
