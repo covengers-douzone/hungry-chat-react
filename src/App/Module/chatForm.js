@@ -77,17 +77,16 @@ const chatMessageForm = (chat , index ) => {
             saveAs(config.URL + chat.contents.split('public')[1], file_name[1]) // Put your image url here.
         }
 
-    if(chat.type === "APPLICATION"){
-        const file = new File(["foo"],config.URL + chat.contents.split('public')[1]);
-        console.log(file);
-
-    }
-    chat.type === "APPLICATION" && (contents = <div style={{border: '1px', borderColor: '#e1e1e1', borderStyle: 'solid', backgroundColor: 'white', borderRadius: '5px'}}>
-        <div style={{margin: '5px'}}>
-            <div>
+    chat.type === "APPLICATION" && (contents = <div style={{alignItems: 'center',display: 'flex', border: '1px', borderColor: '#e1e1e1', borderStyle: 'solid', backgroundColor: 'white', borderRadius: '5px', minHeight: '50px', minWidth: '250px'}}>
+        <div style={{display: 'inline-block', marginLeft: '10px', marginRight: '10px'}}>
+            <div style={{paddingRight: '5px',paddingLeft: '5px', paddingTop: '1px', paddingBottom: '1px',border: '1px', borderColor: '#e1e1e1', borderRadius: '10px', backgroundColor: '#e1e1e1'}}>
+                <i className="ti ti-download" onClick={() => downloadFile()}></i>
+            </div>
+        </div>
+        <div style={{margin: '5px',display: 'flex', justifyContent: 'center'}}>
+            <div style={{display: 'inline-block', marginRight: '10px'}}>
                 {chat.contents.split('public')[1].split('--')[1]}
             </div>
-            <i className="ti ti-download" onClick={() => downloadFile()}></i>
         </div>
     </div>)
 
