@@ -93,7 +93,7 @@ const Index = React.forwardRef(({history}, scrollRef) => {
                     const notReadCount_ = (await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"))).unreadChatCount;
                     setNotReadCount(notReadCount_);
                     await fetchApi(openRoomList, setOpenRoomList).getOpenChatRoomList('official', localStorage.getItem("Authorization"));
-
+                    console.log("openRoomList : ",openRoomList);
 
                 } else { // 회원 로직
                     const notReadCount_ = (await fetchApi(roomList, setRoomList).getRoomList(userNo, localStorage.getItem("Authorization"))).unreadChatCount;
