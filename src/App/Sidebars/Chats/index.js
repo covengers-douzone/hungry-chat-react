@@ -53,6 +53,7 @@ const Index = React.forwardRef(({
     const {reload} = useSelector(state => state)
     const {joinOk} = useSelector(state => state);
     const {sendOk} = useSelector(state => state);
+    const {messageAllLength} = useSelector(state => state);
     const userNo = Number(localStorage.getItem("userNo"));
 
     const [tooltipOpen1, setTooltipOpen1] = useState(false);
@@ -92,12 +93,9 @@ const Index = React.forwardRef(({
         })
         selectedChat.messages && selectedChat.messages.push(message);
 
-
-
-
-
         dispatch(sendOkAction(selectedChat.messages.length));
        dispatch(messageLengthAction(selectedChat.messages.length)) // 메세지보내면 렌더링 시킬려고
+        dispatch(messageAllLengthAction(messageAllLength + 1));
 
     }
 
