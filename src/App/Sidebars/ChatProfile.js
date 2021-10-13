@@ -15,6 +15,7 @@ import roleStyle from "../Module/roleStyle";
 import io from "socket.io-client";
 import * as config from "../../config/config";
 import {reloadAction} from "../../Store/Actions/reloadAction";
+import OpenFileListModal from "../Modals/OpenFileListModal";
 
 function ChatProfile() {
     let opacity = roleStyle().opacity()
@@ -33,7 +34,10 @@ function ChatProfile() {
 
     //방안의 이미지들 보여주기 위한 모달 state
     const [openImageListModalOpen, setOpenImageListModalOpen] = useState(false);
+    const [openFileListModalOpen, setOpenFileListModalOpen] = useState(false);
+
     const [imageList, setImageList] = useState(false);
+    const [fileList, setFileList] = useState(false);
 
     const [openKickModalOpen , setOpenKickModalOpen] =  useState(false);
     const [checkedInviteItems, setCheckedInviteItems] = useState([]);
@@ -170,6 +174,12 @@ function ChatProfile() {
         setOpenImageListModalOpen(!openImageListModalOpen);
     }
 
+    // modal에서 사용; modal 닫을 때 실행되는 함수
+    const editOpenFileListModalToggle = () => {
+        // openImageModalOpen : false로 설정
+        setOpenFileListModalOpen(!openFileListModalOpen);
+    }
+
     const clickImage = async () => {
         const imageListFromDB = await fetchList(localStorage.getItem("Authorization")).getFileListInRoom(selectedChat.id /*roomNo*/,"IMG");
 
@@ -178,19 +188,28 @@ function ChatProfile() {
         setOpenImageListModalOpen(true);
     }
 
+    const clickFileList = async () => {
+        const fileListFromDB = await fetchList(localStorage.getItem("Authorization")).getFileListInRoom(selectedChat.id /*roomNo*/,"APPLICATION");
+
+        console.log(fileListFromDB)
+        setFileList(fileListFromDB);
+        setOpenImageListModalOpen(true);
+    }
+
     return (
         <div className={`sidebar-group ${mobileChatProfileSidebar ? "mobile-open" : ""}`}>
             <OpenImageListModal modal={openImageListModalOpen} toggle={editOpenImageListModalToggle} imageList={imageList} />
+            <OpenFileListModal modal={openFileListModalOpen} toggle={editOpenFileListModalToggle} fileList={fileList} />
             <div className={chatProfileSidebar ? 'sidebar active' : 'sidebar'}>
                 <header>
-                    <span>방 정보</span>
+                    <span className={'text-success'}>Room Info</span>
                     <ul className="list-inline">
                         <li className="list-inline-item">
 
                             {
                                 (selectedChat.otherParticipant.length !== 0) &&
                                 (selectedChat.participant.role === "ROLE_HOST" && (selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name)) ?
-                                    <a  className="btn btn-light" onClick={(e) => handleKickModal(e)} >
+                                    <a  className="btn btn-danger" onClick={(e) => handleKickModal(e)} style={{marginRight: '15px'}}>
                                         <i className="fa fa-ban"  />
                                         <RoomKickModal modal = {openKickModalOpen} setModal={setOpenKickModalOpen} userList = {selectedChat.otherParticipantNo}
                                                        callbackAddItem = {callbackKickAddItem} callbackDeleteItem={callbackKickDeleteItem}
@@ -208,8 +227,8 @@ function ChatProfile() {
 
                                 (selectedChat.otherParticipant.length !== 0) &&
                                 ((selectedChat.name !==  selectedChat.otherParticipantNo[0].User.name)   ) ?
-                                <a className="btn btn-light" onClick={(e) => handleInviteModal(e)}>
-                                    <i className="fa fa-info" style={opacity}/>
+                                <a className="btn btn-success" onClick={(e) => handleInviteModal(e)} style={{marginRight: '15px'}}>
+                                    <i className="fa fa-plus" style={opacity}/>
                                     <RoomInviteModal modal={openInviteModalOpen} setModal={setOpenInviteModalOpen}
                                                      inviteList={friendList}
                                                      setInviteList={setInviteList}
@@ -246,18 +265,27 @@ function ChatProfile() {
                 <div className="sidebar-body">
                     <PerfectScrollbar>
                         <hr/>
-                        <div className="pl-4 pr-4">
-                            <h6>인원 수</h6>
+                        <div className="pl-4 pr-4 text-success" style={{marginBottom: '3px'}}>
+                            <h6>Type</h6>
+                            <p className="text-muted">{selectedChat.type === 'private' && selectedChat.otherParticipant.length < 2 ? '1:1 채팅방':
+                            selectedChat.type === 'private' ? '그룹방' : '오픈 채팅방'}</p>
+                        </div>
+                        <hr/>
+                        <div className="pl-4 pr-4 text-success" style={{marginBottom: '3px'}}>
+                            <h6>Headcount</h6>
                             <p className="text-muted">{selectedChat.headcount} 명</p>
                         </div>
-                        <div className="pl-4 pr-4">
-                            <h6>참여자 정보</h6>
+                        <hr/>
+
+                        <div className="pl-4 pr-4 text-success" style={{marginBottom: '3px'}}>
+                            <h6>Participant</h6>
                             {
                                 // 나
-                                <span>
-                                    <img src={selectedChat.participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>
-                                    <p className="text-muted">{'(나) '+selectedChat.participant.User.name + " "  } <b>{(selectedChat.participant.role === "ROLE_HOST") ? "방장" : "맴버"}</b></p>
-                                </span>
+                                <div>
+                                    <img src={selectedChat.participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{display: 'inline-block', width: '30px', height: '30px',marginRight: '10px'}}/>
+                                    <p className="text-muted" style={{display: 'inline-block'}}>{'(나) '+selectedChat.participant.User.name + " "} </p>
+                                    <b style={{float: 'right'}}>{(selectedChat.participant.role === "ROLE_HOST") ? "방장" : "멤버"}</b>
+                                </div>
                             }
                             {
                                 // 다른 참가자
@@ -265,10 +293,11 @@ function ChatProfile() {
                                     // unknown 제외
                                     if(Number(participant.userNo) !== 1 && Number(participant.userNo) !== 2){
                                         return (
-                                            <span>
-                                                <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{float: 'left', width: '20px'}}/>
-                                                <p className="text-muted">{'     '+participant.User.name + " " } <b>{(participant.role === "ROLE_HOST") ? "방장" : "맴버"}</b></p>
-                                            </span>
+                                            <div>
+                                                <img src={participant.User.profileImageUrl} id="profile-avatar" className={"rounded-circle"} alt="avatar" style={{display: 'inline-block', width: '30px', height: '30px',marginRight: '10px'}}/>
+                                                <p className="text-muted" style={{display: 'inline-block'}}>{'     '+participant.User.name + " " }</p>
+                                                <b style={{float: 'right'}}>{(participant.role === "ROLE_HOST") ? "방장" : "멤버"}</b>
+                                            </div>
                                         );
                                     }
                                 })
@@ -284,8 +313,8 @@ function ChatProfile() {
                         </div>
 
                         <hr/>
-                        <div className="pl-4 pr-4">
-                            <h6>파일</h6>
+                        <div className="pl-4 pr-4 text-success" style={{marginBottom: '3px'}}>
+                            <h6>File</h6>
                             <PerfectScrollbar>
                                 <div className="files">
                                     <ul className="list-inline">
@@ -297,23 +326,9 @@ function ChatProfile() {
                                             </figure>
                                         </li>
                                         <li className="list-inline-item">
-                                            <figure className="avatar avatar-lg">
-                                                <span className="avatar-title bg-warning">
-                                                    <i className="fa fa-file-pdf-o"></i>
-                                                </span>
-                                            </figure>
-                                        </li>
-                                        <li className="list-inline-item">
-                                            <figure className="avatar avatar-lg">
+                                            <figure className="avatar avatar-lg" onClick={()=>{clickFileList()}}>
                                                 <span className="avatar-title bg-success">
-                                                    <i className="fa fa-file-excel-o"></i>
-                                                </span>
-                                            </figure>
-                                        </li>
-                                        <li className="list-inline-item">
-                                            <figure className="avatar avatar-lg">
-                                                <span className="avatar-title bg-info">
-                                                    <i className="fa fa-file-text-o"></i>
+                                                    <i className="fa fa-file-o" aria-hidden="true"></i>
                                                 </span>
                                             </figure>
                                         </li>
