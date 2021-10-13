@@ -193,7 +193,7 @@ function ChatProfile() {
 
         console.log(fileListFromDB)
         setFileList(fileListFromDB);
-        setOpenImageListModalOpen(true);
+        setOpenFileListModalOpen(true);
     }
 
     return (
