@@ -303,13 +303,7 @@ function ChatProfile() {
                                                 </span>
                                             </figure>
                                         </li>
-                                        <li className="list-inline-item">
-                                            <figure className="avatar avatar-lg">
-                                                <span className="avatar-title bg-success">
-                                                    <i className="fa fa-file-excel-o"></i>
-                                                </span>
-                                            </figure>
-                                        </li>
+                                        
                                         <li className="list-inline-item">
                                             <figure className="avatar avatar-lg">
                                                 <span className="avatar-title bg-info">
