@@ -65,7 +65,7 @@ function OpenImageListModal(props) {
             >
                 <OpenImageModal modal={openImageModalOpen} setModal={setOpenImageModalOpen} toggle={editOpenImageModalToggle} image={image} fileType={'img'} />
                 <ModalHeader toggle={props.toggle}>
-                    <i className="fa fa-file-image-o" aria-hidden="true"></i>이미지 파일들
+                    <i className="fa fa-file-image-o" aria-hidden="true"></i>공유된 이미지들
                 </ModalHeader>
                 <div className={"modal-content"} style={{'flex-direction':'row',height:'500px'}}>
                     <PerfectScrollbar>
@@ -82,6 +82,7 @@ function OpenImageListModal(props) {
                                             <img
                                                 style={{
                                                     height: "100px",
+                                                    maxWidth: '100px',
                                                     margin: '10px'
                                                 }}
                                                 src={url}
