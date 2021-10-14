@@ -4,13 +4,9 @@ import ManAvatar5 from "../../assets/img/man_avatar5.jpg"
 import CallBg from "../../assets/img/call-bg.png"
 
 function VoiceCallModal() {
-
     const [modal, setModal] = useState(false);
-
     const modalToggle = () => setModal(!modal);
-
     const [tooltipOpen, setTooltipOpen] = useState(false);
-
     const tooltipToggle = () => setTooltipOpen(!tooltipOpen);
 
     return (
