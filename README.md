@@ -96,9 +96,9 @@ hungry-chat-react
         - 보낸 이미지 리스트
 - 로그아웃
 
-## 결과물
+## 5. 결과물
 
-## 이슈사항
+## 6. 이슈사항
 
 * [socket 중복 생성 문제 해결](https://velog.io/@mong-head/React-Socket-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%A4%91%EB%B3%B5-%ED%98%B8%EC%B6%9C-%EB%B0%A9%EC%A7%80)
 
