@@ -2,10 +2,12 @@
 
 - 친구 및 친구가 아닌 사람들과 채팅하는 프로그램의 Front-end
 
-## 1. Environment (실행환경)
+## 1. 실행 환경 (Environment)
 
 - Java : 8~14 version
     - Java 16은 module 설치가 안됨
+- Node : 14 version
+    - Node.js 8이나 16등은 module 설치가 
 - Browser : Chrome, Opera, Edge
 
 ## 2. 실행 방법
@@ -18,7 +20,7 @@ npm i
 npm start
 ```
 
-## 3. Architecture
+## 3. 구조 (Architecture)
 
 ```text
 hungry-chat-react
