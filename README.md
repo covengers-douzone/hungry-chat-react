@@ -123,5 +123,6 @@ hungry-chat-react
 ## 6. 이슈사항
 
 * [socket 중복 생성 문제 해결](https://velog.io/@mong-head/React-Socket-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%A4%91%EB%B3%B5-%ED%98%B8%EC%B6%9C-%EB%B0%A9%EC%A7%80)
+* [scss 버전 충돌 문제](https://velog.io/@mong-head/React-scss-%EA%B4%80%EB%A0%A8-%EB%B2%84%EC%A0%84-%EB%AC%B8%EC%A0%9C)
 
 
